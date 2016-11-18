@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><note class="filter" maintenanceversion="1.0" replicaid="0625806D0062AD0E" version="9.0" xmlns="http://www.lotus.com/dxl">
+<noteinfo noteid="1a66" sequence="1" unid="7EFE5967F0C56BD70625806F00746E4E">
+<created><datetime>20161118T151144,14-06</datetime></created>
+<modified><datetime>20161118T151144,15-06</datetime></modified>
+<revised><datetime>20161118T151144,14-06</datetime></revised>
+<lastaccessed><datetime>20161118T151144,15-06</datetime></lastaccessed>
+<addedtofile><datetime>20161118T151144,15-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Cristhian Romero/O=CV3</name><name>CN=localCristhian/OU=DEV/O=CV3</name><name>CN=David Quiros/O=CV3</name></updatedby>
+<wassignedby><name>CN=David Quiros/O=CV3</name></wassignedby>
+<item name="$TITLE" sign="true"><text>ssjs_DocsAdicionales</text></item>
+<item name="$Flags"><text>.5834Q</text></item>
+<item name="$PublicAccess" sign="true"><text>1</text></item>
+<item name="$DesignerVersion" sign="true"><text>8.5.3</text></item>
+</note>
