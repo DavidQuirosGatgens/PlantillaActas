@@ -47,7 +47,7 @@ if (docIDArray.length>0){
 			</xp:this.action></xp:eventHandler></xp:button>
 	</xp:panel>
 	<xe:dataView id="dataView1" collapsibleDetail="true"
-		columnTitles="true" var="rowHandle" pageName="/xpOrden.xsp"
+		columnTitles="true" var="rowHandle" pageName="/Doc_Orden.xsp"
 		openDocAsReadonly="true">
 		<xe:this.summaryColumn>
 			<xe:viewSummaryColumn columnName="$3"
@@ -82,12 +82,19 @@ if (docIDArray.length>0){
 				for="dataView1" partialRefresh="true" refreshPage="true">
 			</xe:pagerAddRows>
 			<xp:panel xp:key="detail">
-				<xp:label value="Tipo sesión:" id="label8" for="tipoSesion1" style="font-weight:bold">
-				</xp:label>&#160;<xp:text escape="true" id="computedField1">
+				<xp:label value="Tipo sesión:" id="label8"
+					for="tipoSesion1" style="font-weight:bold">
+				</xp:label>
+				&#160;
+				<xp:text escape="true" id="computedField1">
 					<xp:this.value><![CDATA[#{javascript:rowHandle.getDocument().getItemValueString("TipoSesion")}]]></xp:this.value>
 				</xp:text>
-				<xp:br></xp:br><xp:label value="Lugar:" id="label1" for="tipoSesion1" style="font-weight:bold">
-				</xp:label>&#160;<xp:text escape="true" id="computedField2">
+				<xp:br></xp:br>
+				<xp:label value="Lugar:" id="label1" for="tipoSesion1"
+					style="font-weight:bold">
+				</xp:label>
+				&#160;
+				<xp:text escape="true" id="computedField2">
 					<xp:this.value><![CDATA[#{javascript:rowHandle.getDocument().getItemValueString("Lugar")}]]></xp:this.value>
 				</xp:text>
 				<xp:repeat id="repeat1" rows="30" var="repeatTemas">
@@ -125,16 +132,21 @@ if (rowHandle.isDocument()){
 							</xp:td>
 							<xp:td>
 
-							<xp:link escape="true" id="link2" style="font-weight:bold">
+								<xp:link escape="true" id="link2"
+									style="font-weight:bold">
 									<xp:this.text><![CDATA[#{javascript:repeatTemas.getDocument().getItemValueString("Titulo")}]]></xp:this.text>
-									<xp:eventHandler event="onclick" submit="true" refreshMode="complete" id="eventHandler2">
+									<xp:eventHandler event="onclick"
+										submit="true" refreshMode="complete" id="eventHandler2">
 										<xp:this.action>
-											<xp:openPage name="/xpTema.xsp" target="openDocument" documentId="#{javascript:repeatTemas.getNoteID()}">
+											<xp:openPage
+												name="/xpTema.xsp" target="openDocument"
+												documentId="#{javascript:repeatTemas.getNoteID()}">
 											</xp:openPage>
 										</xp:this.action>
 									</xp:eventHandler>
 
-								</xp:link></xp:td>
+								</xp:link>
+							</xp:td>
 						</xp:tr>
 
 					</xp:table>
