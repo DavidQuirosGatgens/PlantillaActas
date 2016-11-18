@@ -6,7 +6,7 @@
 		
 	</xp:panel>
 	<xe:dataView id="dataView1" collapsibleDetail="true"
-		columnTitles="true" var="rowHandle" pageName="/xpActa.xsp"
+		columnTitles="true" var="rowHandle" pageName="/Doc_Acta.xsp"
 		openDocAsReadonly="true">
 		<xe:this.summaryColumn>
 			<xe:viewSummaryColumn columnName="$5"

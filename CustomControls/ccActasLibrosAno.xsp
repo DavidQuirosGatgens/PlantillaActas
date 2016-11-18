@@ -11,7 +11,7 @@ context.reloadPage();}]]></xp:this.action>
 							<xp:this.action><![CDATA[#{javascript:sessionScope.viewMode = 0;
 context.reloadPage()}]]></xp:this.action>
 						</xp:eventHandler>
-</xp:link><xp:viewPanel rows="30" id="viewPanel1">
+</xp:link><xp:viewPanel rows="30" id="viewPanel1" pageName="/Doc_Acta.xsp">
 		<xp:this.facets>
 			<xp:pager partialRefresh="true" layout="Previous Group Next" xp:key="headerPager" id="pager1">
 			</xp:pager>

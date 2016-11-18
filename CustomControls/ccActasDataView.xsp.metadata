@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?><note class="form" maintenanceversion="1.0" replicaid="0625806D0062AD0E" version="9.0" xmlns="http://www.lotus.com/dxl">
-<noteinfo noteid="176e" sequence="27" unid="F114085955CE2EEC06257F7300782043">
+<noteinfo noteid="176e" sequence="36" unid="F114085955CE2EEC06257F7300782043">
 <created><datetime>20160311T155205,79-06</datetime></created>
-<modified><datetime>20161118T102850,70-06</datetime></modified>
-<revised><datetime>20161118T102850,69-06</datetime></revised>
-<lastaccessed><datetime>20161118T102850,70-06</datetime></lastaccessed>
+<modified><datetime>20161118T153743,28-06</datetime></modified>
+<revised><datetime>20161118T153743,27-06</datetime></revised>
+<lastaccessed><datetime>20161118T153743,28-06</datetime></lastaccessed>
 <addedtofile><datetime>20161116T115805,17-06</datetime></addedtofile></noteinfo>
-<updatedby><name>CN=Johan Arroyo/O=CV3</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localCristhian/OU=DEV/O=CV3</name></updatedby>
-<wassignedby><name>CN=localCristhian/OU=DEV/O=CV3</name></wassignedby>
+<updatedby><name>CN=David Quiros/O=CV3</name></updatedby>
+<wassignedby><name>CN=David Quiros/O=CV3</name></wassignedby>
 <item name="$TITLE"><text>ccActasDataView.xsp</text></item>
 <item name="$Flags"><text>gC~4;</text></item>
 
 
+<item name="$DesignerVersion"><text>8.5</text></item>
 
 
 
 
 
-<item name="$FileNames" sign="true"><text>ccActasDataView.xsp</text></item>
-<item name="$DesignerVersion" sign="true"><text>8.5</text></item>
 
-</note>
+
+<item name="$FileNames" sign="true"><text>ccActasDataView.xsp</text></item></note>

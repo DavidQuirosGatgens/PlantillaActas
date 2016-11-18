@@ -41,7 +41,7 @@ if (docIDArray.length>0){
 			</xp:this.action></xp:eventHandler></xp:button>
 	</xp:panel>
 	<xe:dataView id="dataView1" collapsibleDetail="true"
-		columnTitles="true" var="rowHandle" pageName="/xpActa.xsp"
+		columnTitles="true" var="rowHandle" pageName="/Doc_Acta.xsp"
 		openDocAsReadonly="true" rows="10">
 		<xe:this.summaryColumn>
 			<xe:viewSummaryColumn columnName="$5"
@@ -79,7 +79,7 @@ if (docIDArray.length>0){
 						<xp:td style="height:20.0px;width:30.0px"></xp:td>
 						<xp:td style="width:681.0px">
 							<xp:viewPanel rows="30" id="viewPanel1"
-								disableTheme="false" summary="aaaaaaa">
+								disableTheme="false">
 								<xp:this.facets>
 									<xp:pager partialRefresh="true"
 										layout="Previous Group Next" xp:key="headerPager" id="pager3"
