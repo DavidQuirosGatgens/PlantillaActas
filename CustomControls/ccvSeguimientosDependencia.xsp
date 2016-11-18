@@ -45,7 +45,7 @@ context.reloadPage()}]]></xp:this.action>
 						</xp:eventHandler>
 </xp:link></xp:panel>
 
-	<xp:viewPanel rows="30" id="viewPanel1">
+	<xp:viewPanel rows="30" id="viewPanel1" pageName="/Doc_Seguimiento.xsp">
 		<xp:this.facets>
 			<xp:pager partialRefresh="true" layout="Previous Group Next"
 				xp:key="headerPager" id="pager1">

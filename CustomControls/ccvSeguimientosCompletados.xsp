@@ -6,7 +6,7 @@
 		<xp:dominoView var="view1" viewName="SeguimientosCompletados">
 		</xp:dominoView>
 	</xp:this.data>
-	<xp:viewPanel value="#{view1}" id="viewPanel1" pageName="/xpSeguimiento.xsp">
+	<xp:viewPanel value="#{view1}" id="viewPanel1" pageName="/Doc_Seguimiento.xsp">
 		<xp:this.facets>
 			<xp:pager partialRefresh="true" layout="Previous Group Next"
 				xp:key="headerPager" id="pager1">

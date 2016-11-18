@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?><note class="form" maintenanceversion="1.0" replicaid="0625806D0062AD0E" version="9.0" xmlns="http://www.lotus.com/dxl">
-<noteinfo noteid="124a" sequence="46" unid="1F7BAE45893818CC06257DB2005C53E4">
+<noteinfo noteid="124a" sequence="55" unid="1F7BAE45893818CC06257DB2005C53E4">
 <created><datetime>20141218T104827,88-06</datetime></created>
-<modified><datetime>20161118T102858,13-06</datetime></modified>
-<revised><datetime>20161118T102858,12-06</datetime></revised>
-<lastaccessed><datetime>20161118T102858,13-06</datetime></lastaccessed>
+<modified><datetime>20161118T155815,09-06</datetime></modified>
+<revised><datetime>20161118T155815,08-06</datetime></revised>
+<lastaccessed><datetime>20161118T155815,09-06</datetime></lastaccessed>
 <addedtofile><datetime>20161116T115800,47-06</datetime></addedtofile></noteinfo>
-<updatedby><name>CN=Milton Villegas/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=CV3JOHAN/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=SJODOMDES/OU=SVR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localJohan/OU=DEV/O=CV3</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localCristhian/OU=DEV/O=CV3</name></updatedby>
-<wassignedby><name>CN=localCristhian/OU=DEV/O=CV3</name></wassignedby>
+<updatedby><name>CN=David Quiros/O=CV3</name></updatedby>
+<wassignedby><name>CN=David Quiros/O=CV3</name></wassignedby>
 <item name="$TITLE"><text>ccvSeguimientosInactivos.xsp</text></item>
 <item name="$Flags"><text>gC~4;</text></item>
 
 
-<item name="$FileNames" sign="true"><text>ccvSeguimientosInactivos.xsp</text></item>
-
-
-<item name="$DesignerVersion" sign="true"><text>8.5</text></item>
+<item name="$DesignerVersion"><text>8.5</text></item>
 
 
 
 
-</note>
+
+
+
+<item name="$FileNames" sign="true"><text>ccvSeguimientosInactivos.xsp</text></item></note>
