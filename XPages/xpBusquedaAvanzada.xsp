@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xc="http://www.ibm.com/xsp/custom"
+	xmlns:xe="http://www.ibm.com/xsp/coreex"
+	pageTitle="#{javascript:database.getTitle()}">
+
+	<xc:Plantilla>
+		<xp:this.facets>
+			
+			<xe:formTable id="formTable1" xp:key="facetMiddle"
+				formTitle="Búsqueda ">
+				<xe:this.formDescription><![CDATA[#{javascript:var vParam=database.getView("(Parametros)");
+var docParam=vParam.getFirstDocument();
+if(docParam!=null){
+	return docParam.getItemValueString("Empresa");
+}
+}]]></xe:this.formDescription>
+				<xe:formRow id="formRow1">
+					<xp:this.facets>
+						<xc:ccBusquedaAvanzada xp:key="label"></xc:ccBusquedaAvanzada>
+					</xp:this.facets>
+					<xp:panel>
+
+					</xp:panel>
+				</xe:formRow>
+			</xe:formTable>
+			<xc:Menu xp:key="facetLeft"></xc:Menu>
+		</xp:this.facets>
+	</xc:Plantilla>
+</xp:view>

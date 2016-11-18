@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='utf-8'?>
+<note class='sharedfield' xmlns='http://www.lotus.com/dxl' version='9.0' maintenanceversion='1.0'
+ replicaid='0625806D0062AD0E'>
+<noteinfo noteid='7ba' unid='FF4810ED8E8C8D9C06257DA20055AF21' sequence='39'>
+<created><datetime>20141202T093553,93-06</datetime></created>
+<modified><datetime>20161118T102859,47-06</datetime></modified>
+<revised><datetime>20161118T102859,46-06</datetime></revised>
+<lastaccessed><datetime>20161118T102859,47-06</datetime></lastaccessed>
+<addedtofile><datetime>20161116T115757,71-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Debbie Branco/O=Iris</name><name>CN=Lotus Notes Template Development/O=Lotus Notes</name><name
+>CN=DOMINO/O=SWING</name><name>CN=sw01/O=SWING</name><name>CN=Ivan Pavić/O=SWING</name><name
+>CN=sw01/O=SWING</name><name>CN=Nikša Marković/O=SWING</name><name>CN=sw01/O=SWING</name><name
+>CN=Nikša Marković/O=SWING</name><name>CN=sw01/O=SWING</name><name>CN=Elisa Núñez/OU=Tec/O=CV3</name><name
+>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=CV3JOHAN/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name
+>CN=SJODOMDES/OU=SVR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=localJohan/OU=DEV/O=CV3</name><name>CN=localMilton/OU=DEV/O=CV3</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localCristhian/OU=DEV/O=CV3</name></updatedby>
+<wassignedby><name>CN=localCristhian/OU=DEV/O=CV3</name></wassignedby>
+<item name='$TITLE' sign='true'><text>From</text></item>
+<item name='From' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='$Fields'><text>From</text></item>
+<item name='$Flags'><text/></item>
+<item name='$Info' sign='true'>
+<rawitemdata type='1'>
+hhgBAIAAAAAAgAAAAQABAP///wAAAAAA
+</rawitemdata></item>
+<item name='$Body' summary='true' sign='true'>
+<rawitemdata type='1'>
+gQKC/1IAAQAAAAAAAAAAAKAFAACgBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAABAAAAAJQHAAAAAAAAAAAAAAAAgwQBAIX/CAABAAAK3QYAAIr//v9QAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAACK/1oAhAAABwAwAgAAAAAAAAMBAA4JHgAAAAAAAAAEABQAAAAeAAkAFABsqaEI
++UgPbhJ5AVCuhNFQBAAEAAQABABGcm9tRG9jdW1lbnQgYXV0aG9yIG5hbWXeBgAAiv+F/wgAAQAA
+Cg==
+</rawitemdata></item>
+<item name='$HideInfo' summary='false' sign='true'><datetime dst='true'>20120119T130012,82+02</datetime></item></note>
+

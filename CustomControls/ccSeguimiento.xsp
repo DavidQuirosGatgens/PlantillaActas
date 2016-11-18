@@ -1,0 +1,1467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xc="http://www.ibm.com/xsp/custom"
+	xmlns:xe="http://www.ibm.com/xsp/coreex" dojoParseOnLoad="true"
+	dojoTheme="true">
+	<xp:this.data>
+		<xp:dominoDocument var="docSeguimiento" formName="Seguimiento"
+			computeWithForm="both">
+
+			<xp:this.querySaveDocument><![CDATA[#{javascript:if (currentDocument.isNewNote()){
+	currentDocument.replaceItemValue("Estado","Activo")
+}}]]></xp:this.querySaveDocument>
+		</xp:dominoDocument>
+
+		<xp:dominoView var="view1" viewName="TareasPorSeguimiento"></xp:dominoView>
+	</xp:this.data>
+
+	<xp:this.beforePageLoad><![CDATA[#{javascript:if (docSeguimiento.isNewNote()){
+	if (docSeguimiento.getParentId()!=null){
+		// En caso de ser un seguimiento dentro de  un acta
+		var parentDoc = database.getDocumentByUNID(docSeguimiento.getParentId());
+		docSeguimiento.setValue("IDdocActa", parentDoc.getItemValue("IDdocActa"));
+		docSeguimiento.setValue("IDdocOrden", parentDoc.getItemValue("IDdocOrden"));
+		docSeguimiento.setValue("IDdocTema", parentDoc.getItemValue("IDdocTema"));
+		docSeguimiento.setValue("IDAcuerdo", parentDoc.getItemValue("IDAcuerdo"));
+		docSeguimiento.setValue("TipoSeguimiento", "SeguimientoDeAcuerdo");
+		// docSeguimiento.setValue("Observaciones", "\n" +"\n" +"\n" +"Acuerdo: " + parentDoc.getItemValueString("NumeroAcuerdo")+ "\n" +parentDoc.getItemValueString("Acuerdo")+"\"" + parentDoc.getItemValueString("Detalle")+"\"") ;
+		docSeguimiento.setValue("Observaciones", "\n" +"\n" +"\n" + parentDoc.getItemValueString("Detalle")) ;
+		
+		var docActa:NotesDocument=database.getView("(IdDocumentos)").getDocumentByKey(parentDoc.getItemValue("IDdocActa"));
+		if(docActa!=null){
+		
+			docSeguimiento.setValue("FechaSesion",docActa.getItemValue("FechasOrden"));
+			/*
+			var itemvalue:java.util.Vector = docActa.getItemValueDateTimeArray(itemname);
+			var iterator = itemvalue.iterator();
+			while (iterator.hasNext()) {
+				var itemvalue1 = iterator.next();
+				if ((typeof(itemvalue1)).endsWith("DateTime")) {
+					docSeguimiento.replaceItemValue(itemvalue1)
+				} 
+			}*/
+		}
+	}else{
+		// En caso de ser un seguimiento general
+		docSeguimiento.setValue("TipoSeguimiento", "SeguimientoGeneral")
+	}
+	
+
+	 
+}
+//Se almacena la url de la pagina anterior
+if(sessionScope.RedirectSeguimiento==""){
+	sessionScope.RedirectSeguimiento=context.getHistoryUrl(-1);
+}
+}]]></xp:this.beforePageLoad>
+	<xp:this.resources>
+		<xp:script src="/GeneralSSJS.jss" clientSide="false"></xp:script>
+		<xp:dojoModule name="dijit.form.TimeTextBox"></xp:dojoModule>
+		<xp:script src="/ClientSideValidationV1.js" clientSide="true"></xp:script>
+	</xp:this.resources>
+	<xp:button value="Salvar" id="button1">
+		<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable()  &&
+context.getUser().getRoles().contains('[Secretaria]')}]]></xp:this.rendered>
+		<xp:eventHandler event="onclick" submit="true"
+			refreshMode="complete">
+
+			<xp:this.script><![CDATA[var msg="";
+if(!validaCampoTexto(dojo.byId("#{id:Descripcion}")))msg= msg + "Descripción.\n";
+if(!validaCampoTexto(dojo.byId("#{id:FechaLimite}")))msg= msg + "Fecha Límite.\n";
+if(!validaCampoTexto(dojo.byId("#{id:Dependencia}")))msg= msg + "Dependencia.\n";
+if(!validaCampoTexto(dojo.byId("#{id:Observaciones}")))msg= msg + "Observaciones.\n";
+if(msg!=""){
+	alert("Debe incluir los siguientes Datos: \n" + msg);
+	return false;
+}
+]]></xp:this.script>
+
+
+			
+			<xp:this.action>
+				<xp:actionGroup>
+
+					<xp:this.condition><![CDATA[#{javascript:var msg="";
+if(docSeguimiento.getItemValueArray( 'ResponsablesAcuerdo' )[0]==null){
+	view.postScript("alert('Debe incluir los siguientes Datos:  Responsables del documento.');");
+	return false;
+}
+if(@IsMember("DiasPrevios",currentDocument.getDocument(true).getItemValue("TiposAlertasActivas")) && (currentDocument.getDocument(true).getItemValueInteger("AlertaNDiasPrevios").toString()=="0")){
+	view.postScript("alert('Debe incluir los siguientes Datos:  Días Previos para Alerta.');");
+	return false;
+}
+if(@IsMember("DiasPosteriores",currentDocument.getDocument(true).getItemValue("TiposAlertasActivas")) && docSeguimiento.getDocument(true).getItemValueInteger("AlertaNDiasPosteriores").toString()=="0"){
+	view.postScript("alert('Debe incluir los siguientes Datos:  Días Posteriores para Alerta.');");
+	return false;
+}
+if(@IsMember("CantidadDias",currentDocument.getDocument(true).getItemValue("TipoRepeticiones")) && docSeguimiento.getDocument(true).getItemValueInteger("Repeticion_CantidadDias").toString()=="0"){
+	view.postScript("alert('Debe incluir los siguientes Datos:  Cantidad de días de repetición.');");
+	return false;
+}
+return true}]]></xp:this.condition>
+
+
+					<xp:executeScript>
+						<xp:this.script><![CDATA[#{javascript:if (currentDocument.isNewNote()){
+	generaBitIngreso=true;
+	currentDocument.replaceItemValue("Estado","Activo")
+}
+docSeguimiento.getDocument(true).save()
+if(generaBitIngreso){
+	var User:NotesName=session.createName(@UserName()); 
+	CreateBitacora(User,"Se crea el Documento","",docSeguimiento.getDocument(true).getItemValueString("IdDocumento"));
+}}]]></xp:this.script>
+					</xp:executeScript><xp:openPage>
+						<xp:this.name><![CDATA[#{javascript://redirecciona pagina anterior
+try{
+if(sessionScope.RedirectSeguimiento!=""){
+	var dir=sessionScope.RedirectSeguimiento;
+	sessionScope.RedirectSeguimiento="";
+	return dir;
+}else{
+	context.redirectToHome();
+}
+}
+catch(err) {
+   context.redirectToHome();
+}
+}]]></xp:this.name>
+					</xp:openPage>
+					
+				</xp:actionGroup>
+			</xp:this.action></xp:eventHandler>
+	</xp:button>
+	<xp:button value="Editar" id="button4">
+
+		<xp:this.rendered><![CDATA[#{javascript:!currentDocument.isEditable() && currentDocument.getItemValueString("Estado")!="Inactivo" &&
+context.getUser().getRoles().contains('[Secretaria]')}]]></xp:this.rendered>
+		<xp:eventHandler event="onclick" submit="true"
+			refreshMode="complete">
+			<xp:this.action>
+				<xp:changeDocumentMode mode="edit"
+					var="docSeguimiento">
+				</xp:changeDocumentMode>
+			</xp:this.action>
+		</xp:eventHandler>
+	</xp:button>
+	<xp:button value="Salir" id="button2">
+		<xp:eventHandler event="onclick" submit="true"
+			refreshMode="norefresh">
+			<xp:this.action>
+
+				<xp:actionGroup>
+
+
+					<xp:executeScript
+						script="#{javascript:viewStateBean.restoreState=true;}">
+					</xp:executeScript>
+
+
+					<xp:openPage>
+						<xp:this.name><![CDATA[#{javascript://redirecciona pagina anterior
+try{
+if(sessionScope.RedirectSeguimiento!=""){
+	var dir=sessionScope.RedirectSeguimiento;
+	sessionScope.RedirectSeguimiento="";
+	return dir;
+}else{
+	context.redirectToHome();
+}
+}
+catch(err) {
+   context.redirectToHome();
+}
+}]]></xp:this.name>
+					</xp:openPage>
+				</xp:actionGroup>
+			</xp:this.action>
+		</xp:eventHandler>
+	</xp:button>
+
+	<xp:button value="Inactivar Seguimiento" id="button5">
+
+		<xp:this.rendered><![CDATA[#{javascript:currentDocument.getItemValueString("Estado")=="Activo" &&
+context.getUser().getRoles().contains('[Secretaria]')}]]></xp:this.rendered>
+		<xp:eventHandler event="onclick" submit="true"
+			refreshMode="partial">
+			<xp:this.action>
+				<xp:actionGroup>
+					<xp:this.condition><![CDATA[#{javascript:var msg="";
+if(docSeguimiento.getItemValueArray( 'ResponsablesAcuerdo' )[0]==null){
+	view.postScript("alert('Debe incluir los siguientes Datos:  Responsables del documento.');");
+	return false;
+}
+if(@IsMember("DiasPrevios",currentDocument.getDocument(true).getItemValue("TiposAlertasActivas")) && (currentDocument.getDocument(true).getItemValueInteger("AlertaNDiasPrevios").toString()=="0")){
+	view.postScript("alert('Debe incluir los siguientes Datos:  Días Previos para Alerta.');");
+	return false;
+}
+if(@IsMember("DiasPosteriores",currentDocument.getDocument(true).getItemValue("TiposAlertasActivas")) && docSeguimiento.getDocument(true).getItemValueInteger("AlertaNDiasPosteriores").toString()=="0"){
+	view.postScript("alert('Debe incluir los siguientes Datos:  Días Posteriores para Alerta.');");
+	return false;
+}
+if(@IsMember("CantidadDias",currentDocument.getDocument(true).getItemValue("TipoRepeticiones")) && docSeguimiento.getDocument(true).getItemValueInteger("Repeticion_CantidadDias").toString()=="0"){
+	view.postScript("alert('Debe incluir los siguientes Datos:  Cantidad de días de repetición.');");
+	return false;
+}
+return true}]]></xp:this.condition>
+
+					<xp:executeScript>
+						<xp:this.script><![CDATA[#{javascript:currentDocument.replaceItemValue("Estado", "Inactivo");
+var User:NotesName=session.createName(@UserName()); 
+CreateBitacora(User,"Inactivar Seguimiento","",docSeguimiento.getDocument(true).getItemValueString("IdDocumento"));
+currentDocument.save();
+var vTareasPendientes:NotesView= database.getView("(TareasPendientesPorDocPadre)");
+var dc:NotesDocumentCollection= vTareasPendientes.getAllDocumentsByKey(currentDocument.getItemValueString("IDDocumento"), true);
+var docTarea:NotesDocument= dc.getFirstDocument();
+var docTareaNext:NotesDocument;
+
+var date:NotesDateTime= session.createDateTime("Today");
+date.setNow()
+
+while (docTarea!=null) {
+	docTareaNext= dc.getNextDocument(docTarea);
+	print("Tarea: " + docTarea.getItemValueString("Estado"));
+	docTarea.replaceItemValue("Estado", "Cancelada");
+	docTarea.replaceItemValue("UsuarioCancelaTarea", session.getEffectiveUserName());
+	docTarea.replaceItemValue("FechaCancelada", date.getLocalTime()  );
+	docTarea.save(true, true, false);
+	
+	docTarea= docTareaNext; 	
+}
+
+}]]></xp:this.script>
+					</xp:executeScript>
+				</xp:actionGroup>
+			</xp:this.action></xp:eventHandler>
+	</xp:button>
+	<xp:button value="Activar Seguimiento" id="button6">
+
+		<xp:this.rendered><![CDATA[#{javascript:currentDocument.getItemValueString("Estado")=="Inactivo" && 
+!currentDocument.isEditable() && 
+
+context.getUser().getRoles().contains('[Secretaria]')}]]></xp:this.rendered>
+		<xp:eventHandler event="onclick" submit="true"
+			refreshMode="partial">
+			<xp:this.action>
+				<xp:actionGroup>
+					<xp:this.condition><![CDATA[#{javascript:var msg="";
+if(docSeguimiento.getItemValueArray( 'ResponsablesAcuerdo' )[0]==null){
+	view.postScript("alert('Debe incluir los siguientes Datos:  Responsables del documento.');");
+	return false;
+}
+if(@IsMember("DiasPrevios",currentDocument.getDocument(true).getItemValue("TiposAlertasActivas")) && (currentDocument.getDocument(true).getItemValueInteger("AlertaNDiasPrevios").toString()=="0")){
+	view.postScript("alert('Debe incluir los siguientes Datos:  Días Previos para Alerta.');");
+	return false;
+}
+if(@IsMember("DiasPosteriores",currentDocument.getDocument(true).getItemValue("TiposAlertasActivas")) && docSeguimiento.getDocument(true).getItemValueInteger("AlertaNDiasPosteriores").toString()=="0"){
+	view.postScript("alert('Debe incluir los siguientes Datos:  Días Posteriores para Alerta.');");
+	return false;
+}
+if(@IsMember("CantidadDias",currentDocument.getDocument(true).getItemValue("TipoRepeticiones")) && docSeguimiento.getDocument(true).getItemValueInteger("Repeticion_CantidadDias").toString()=="0"){
+	view.postScript("alert('Debe incluir los siguientes Datos:  Cantidad de días de repetición.');");
+	return false;
+}
+return true}]]></xp:this.condition>
+
+					<xp:executeScript>
+						<xp:this.script><![CDATA[#{javascript:var User:NotesName=session.createName(@UserName()); 
+CreateBitacora(User,"Activar Seguimiento","",docSeguimiento.getDocument(true).getItemValueString("IdDocumento"));
+currentDocument.replaceItemValue("Estado", "Activo");
+currentDocument.save();}]]></xp:this.script>
+					</xp:executeScript>
+				</xp:actionGroup>
+			</xp:this.action></xp:eventHandler>
+	</xp:button>
+	
+	
+	<xp:br></xp:br>
+	<xp:link escape="true" text="Abrir Acuerdo" id="link2"
+		style="font-weight:bold;text-decoration:underline"
+		rendered="#{javascript:!docSeguimiento.isNewNote()}">
+
+
+
+
+
+		
+	<xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+		<xp:this.action>
+			<xp:openPage name="/xpAcuerdo.xsp" target="openDocument">
+				<xp:this.documentId><![CDATA[#{javascript:var viewRef:NotesView=database.getView("(IdDocumentos)");
+var docRef:NotesDocument=viewRef.getDocumentByKey(docSeguimiento.getItemValueString("IDAcuerdo"))
+if(docRef!=null){
+	return docRef.getUniversalID();
+}
+}]]></xp:this.documentId>
+			</xp:openPage>
+		</xp:this.action></xp:eventHandler></xp:link>
+	<xp:br></xp:br>
+	
+	<xp:panel id="pnlTodoContenido"
+		style="border-radius: 10px;border-style: solid;border-color: rgb(185,222,188);border-width:medium;width:909.0px">
+		<xp:panel style="width:888.0px">
+			<xp:this.rendered><![CDATA[#{javascript:currentDocument.getItemValueString("TipoSeguimiento")=="SeguimientoDeAcuerdo"}]]></xp:this.rendered>
+			<xp:table>
+				<xp:tr>
+					<xp:td>
+						<xp:label id="numerOrden_Label1"
+							for="numerOrden1" style="font-weight:bold" value="# Acta:">
+						</xp:label>
+					</xp:td>
+					<xp:td id="td1">
+
+						<xp:eventHandler event="onclick" submit="true"
+							refreshMode="complete" id="eventHandler2">
+						</xp:eventHandler>
+
+						<xp:inputText
+							value="#{docSeguimiento.ActaNumero}" id="actaNumero1"
+							readonly="true">
+							<xp:this.defaultValue><![CDATA[#{javascript:try{
+	if (currentDocument.getItemValueString("TipoSeguimiento")=="SeguimientoDeAcuerdo"){
+		var docAsociado:NotesDocument=database.getView("(vActas_byUNID)").getDocumentByKey(docSeguimiento.getItemValueString("IDdocActa").trim(),true);
+		return docAsociado.getItemValueString("NumerOrden")
+	}
+}catch(ex){
+}
+
+return ""}]]></xp:this.defaultValue>
+						</xp:inputText>
+					</xp:td>
+				</xp:tr>
+				<xp:tr>
+					<xp:td>
+						<xp:label value="Tema:" id="label1"
+							for="numerOrden1" style="font-weight:bold">
+						</xp:label>
+					</xp:td>
+					<xp:td>
+						<xp:inputText
+							value="#{docSeguimiento.TemaTitulo}" id="temaTitulo1"
+							readonly="true">
+							<xp:this.defaultValue><![CDATA[#{javascript:if (currentDocument.getItemValueString("TipoSeguimiento")=="SeguimientoDeAcuerdo"){
+	var docAsociado:NotesDocument=database.getView("(vTemas_byUNID)").getDocumentByKey(docSeguimiento.getItemValueString("IDdocTema"));
+	return docAsociado.getItemValueString("Titulo")
+}
+return ""}]]></xp:this.defaultValue>
+						</xp:inputText>
+					</xp:td>
+				</xp:tr>
+				<xp:tr>
+					<xp:td>
+						<xp:label value="Acuerdo:" id="label2"
+							for="numerOrden1" style="font-weight:bold">
+						</xp:label>
+					</xp:td>
+					<xp:td>
+
+						<xp:inputText
+							value="#{docSeguimiento.AcuerdoTitulo}" id="acuerdoTitulo1"
+							readonly="true">
+							<xp:this.defaultValue><![CDATA[#{javascript:if (currentDocument.getItemValueString("TipoSeguimiento")=="SeguimientoDeAcuerdo"){
+	var docAsociado:NotesDocument=database.getView("(vAcuerdos_byUNID)").getDocumentByKey(docSeguimiento.getItemValueString("IDAcuerdo"));
+	return docAsociado.getItemValueString("Acuerdo")
+}
+return ""}]]></xp:this.defaultValue>
+						</xp:inputText>
+					</xp:td>
+				</xp:tr>
+			</xp:table>
+		</xp:panel>
+		<xp:table style="width:893.0px">
+			<xp:tr>
+				<xp:td></xp:td>
+				<xp:td></xp:td>
+			</xp:tr>
+			<xp:tr>
+				<xp:td>
+					<xp:label value="Autor:" id="label7"
+						for="numerOrden1" style="font-weight:bold">
+					</xp:label>
+				</xp:td>
+				<xp:td>
+					<xp:text escape="true" id="computedField4">
+						<xp:this.value><![CDATA[#{javascript:@Name("[ABBREVIATE]",docSeguimiento.getItemValueString("Autor"))}]]></xp:this.value>
+					</xp:text>
+				</xp:td>
+			</xp:tr>
+			<xp:tr>
+				<xp:td
+					rendered="#{javascript:!currentDocument.isNewNote()}">
+					<xp:label value="Estado:" id="estado_Label1"
+						for="estado1" style="font-weight:bold">
+					</xp:label>
+				</xp:td>
+				<xp:td
+					rendered="#{javascript:!currentDocument.isNewNote()}">
+					<xp:inputText value="#{docSeguimiento.Estado}"
+						id="estado1" readonly="true" style="font-weight:bold">
+					</xp:inputText>
+				</xp:td>
+			</xp:tr>
+			<xp:tr>
+				<xp:td>
+					<xp:label value="Descripción:"
+						id="descripción_Label1" for="descripción1">
+					</xp:label>
+				</xp:td>
+				<xp:td>
+
+
+					<xp:inputTextarea id="Descripcion"
+						style="width:486.0px;height:76.0px"
+						value="#{docSeguimiento.Descripcion}">
+					</xp:inputTextarea>
+				</xp:td>
+			</xp:tr>
+
+
+			<xp:tr>
+				<xp:td>
+					<xp:label value="Fecha límite:"
+						id="fechaLimite_Label1" for="fechaLimite1">
+					</xp:label>
+				</xp:td>
+				<xp:td>
+
+					<xe:djDateTextBox id="FechaLimite"
+						value="#{docSeguimiento.FechaLimite}"
+						rendered="#{javascript:docSeguimiento.isEditable()}">
+						<xp:eventHandler event="onChange" submit="true"
+							refreshMode="partial" id="eventHandler20"
+							refreshId="pnlTodoContenido">
+						</xp:eventHandler>
+
+						<xp:eventHandler event="onClick" submit="true"
+							refreshMode="norefresh" id="eventHandler13">
+						</xp:eventHandler>
+
+
+						<xe:this.converter>
+							<xp:convertDateTime pattern="dd/MM/yyyy">
+							</xp:convertDateTime>
+						</xe:this.converter>
+					</xe:djDateTextBox>
+
+					<xp:text escape="true" id="computedField1"
+						value="#{docSeguimiento.FechaLimite}"
+						rendered="#{javascript:!docSeguimiento.isEditable()}">
+						<xp:this.converter>
+							<xp:convertDateTime pattern="dd/MM/yyyy"></xp:convertDateTime>
+						</xp:this.converter>
+					</xp:text>
+				</xp:td>
+			</xp:tr>
+			<xp:tr>
+				<xp:td>
+					<xp:label value="¿Activar alertas?:"
+						id="activarAlertas_Label1" for="activarAlertas1">
+					</xp:label>
+				</xp:td>
+				<xp:td>
+
+
+
+
+
+
+
+					<xp:radioGroup id="radioGroup1"
+						value="#{docSeguimiento.ActivarAlertas}" defaultValue="No">
+						<xp:selectItem itemLabel="Si" itemValue="Si"
+							id="selectItem7">
+						</xp:selectItem>
+						<xp:selectItem itemLabel="No" itemValue="No"
+							id="selectItem8">
+						</xp:selectItem>
+						<xp:eventHandler event="onclick" submit="true"
+							refreshMode="partial" refreshId="pnlConfiguracionAvisos"
+							id="eventHandler16">
+						</xp:eventHandler>
+					</xp:radioGroup>
+				</xp:td>
+			</xp:tr>
+
+			<xp:tr>
+				<xp:td colspan="2">
+
+					<xp:panel id="pnlConfiguracionAvisos"
+						style="border-color:rgb(192,192,192);border-style:solid;border-width:thin">
+						<xp:table>
+							<xp:tr>
+								<xp:td>
+									<xp:label
+										value="Tipos alertas activas:" id="tiposAlertasActivas_Label1"
+										for="tiposAlertasActivas1">
+										<xp:this.rendered><![CDATA[#{javascript:currentDocument.getItemValueString("ActivarAlertas")=="Si"}]]></xp:this.rendered>
+									</xp:label>
+								</xp:td>
+								<xp:td>
+									<xp:table>
+										<xp:tr>
+											<xp:td>
+												<xp:checkBoxGroup
+													id="checkBoxGroup1"
+													value="#{docSeguimiento.TiposAlertasActivas}"
+													layout="pageDirection">
+
+
+													<xp:this.rendered><![CDATA[#{javascript:currentDocument.getItemValueString("ActivarAlertas")=="Si"}]]></xp:this.rendered>
+													<xp:selectItem
+														itemLabel="Configurar Cantidad Días Previos"
+														itemValue="DiasPrevios" id="selectItem11">
+													</xp:selectItem>
+													<xp:selectItem
+														itemLabel="Día Previo" itemValue="DiaPrevio"
+														id="selectItem12">
+													</xp:selectItem>
+													<xp:selectItem
+														itemLabel="Día Límite" itemValue="DiaLimite"
+														id="selectItem13">
+													</xp:selectItem>
+													<xp:selectItem
+														itemLabel="Día Posterior" itemValue="DiaPosterior"
+														id="selectItem14">
+													</xp:selectItem>
+													<xp:selectItem
+														itemLabel="Configurar Cantidad Días Posteriores"
+														itemValue="DiasPosteriores" id="selectItem15">
+													</xp:selectItem>
+													<xp:eventHandler
+														event="onclick" submit="true" refreshMode="partial"
+														refreshId="pnlDiasConfigurables" id="eventHandler17">
+													</xp:eventHandler>
+												</xp:checkBoxGroup>
+											</xp:td>
+											<xp:td>
+												<xp:panel
+													id="pnlDiasConfigurables">
+
+													<xp:table>
+														<xp:this.rendered><![CDATA[#{javascript:function contains(a, obj) { 
+  for (var i = 0; i < a.length; i++) { 
+    if (a[i] === obj) { 
+    	return true; 
+    } 
+  } 
+  return false; 
+}
+
+
+var valores= currentDocument.getItemValueArray("TiposAlertasActivas");
+contains(valores, "DiasPrevios");}]]></xp:this.rendered>
+														<xp:tr>
+															<xp:td>
+																<xp:label
+																	value="Días Previos para Alerta:"
+																	id="alertaNDiasPrevios_Label1"
+																	for="alertaNDiasPrevios1">
+																</xp:label>
+															</xp:td>
+															<xp:td>
+
+																<xe:djNumberTextBox
+																	id="AlertaNDiasPrevios"
+																	value="#{docSeguimiento.AlertaNDiasPrevios}">
+
+
+																	<xe:this.required><![CDATA[#{javascript://docSeguimiento.getDocument(true).getItemValueString("TiposAlertasActivas")=="DiasPrevios"
+return false}]]></xe:this.required>
+
+
+
+
+																	<xe:this.converter>
+																		<xp:convertNumber
+																			integerOnly="true" type="number">
+																		</xp:convertNumber>
+																	</xe:this.converter>
+																</xe:djNumberTextBox>
+
+
+
+															</xp:td>
+														</xp:tr>
+													</xp:table>
+													<xp:table>
+														<xp:this.rendered><![CDATA[#{javascript:function contains(a, obj) { 
+  for (var i = 0; i < a.length; i++) { 
+    if (a[i] === obj) { 
+    	return true; 
+    } 
+  } 
+  return false; 
+}
+
+
+var valores= currentDocument.getItemValueArray("TiposAlertasActivas");
+contains(valores, "DiasPosteriores");}]]></xp:this.rendered>
+														<xp:tr>
+															<xp:td>
+																<xp:label
+																	value="Días Posteriores para Alerta:"
+																	id="alertaNDiasPosteriores_Label1"
+																	for="alertaNDiasPosteriores1">
+																</xp:label>
+															</xp:td>
+															<xp:td>
+
+																<xe:djNumberTextBox
+																	id="djNumberTextBox1"
+																	value="#{docSeguimiento.AlertaNDiasPosteriores}">
+
+																	<xe:this.converter>
+																		<xp:convertNumber
+																			integerOnly="true" type="number">
+																		</xp:convertNumber>
+																	</xe:this.converter>
+																</xe:djNumberTextBox>
+															</xp:td>
+														</xp:tr>
+													</xp:table>
+												</xp:panel>
+											</xp:td>
+										</xp:tr>
+									</xp:table>
+								</xp:td>
+							</xp:tr>
+						</xp:table>
+					</xp:panel>
+				</xp:td>
+
+			</xp:tr>
+			<xp:tr>
+				<xp:td>
+					<xp:label value="¿Habilitar repeticiones?:"
+						id="habilitarRepeticiones_Label1" for="habilitarRepeticiones1">
+					</xp:label>
+				</xp:td>
+				<xp:td>
+
+					<xp:radioGroup id="radioGroup2"
+						value="#{docSeguimiento.HabilitarRepeticiones}"
+						defaultValue="No">
+						<xp:selectItem itemLabel="Si" itemValue="Si"
+							id="selectItem9">
+						</xp:selectItem>
+						<xp:selectItem itemLabel="No" itemValue="No"
+							id="selectItem10">
+						</xp:selectItem>
+						<xp:eventHandler event="onclick" submit="true"
+							refreshMode="partial" refreshId="pnlRepeticiones"
+							id="eventHandler15">
+						</xp:eventHandler>
+					</xp:radioGroup>
+				</xp:td>
+			</xp:tr>
+			<xp:tr>
+				<xp:td colspan="2">
+					<xp:panel id="pnlRepeticiones">
+						<xp:panel id="pnlRepeticionesActivas"
+							style="border-color:rgb(192,192,192);border-style:solid;border-width:thin">
+							<xp:this.rendered><![CDATA[#{javascript:currentDocument.getItemValueString("HabilitarRepeticiones")=="Si"}]]></xp:this.rendered>
+
+							<xp:table>
+								<xp:tr>
+									<xp:td>
+										<xp:label
+											value="Tipo repeticiones:" id="tipoRepeticiones_Label1"
+											for="tipoRepeticiones1">
+										</xp:label>
+									</xp:td>
+									<xp:td>
+										<xp:radioGroup
+											id="rdgTipoRepeticion"
+											value="#{docSeguimiento.TipoRepeticiones}">
+											<xp:selectItem
+												itemLabel="Diario" itemValue="Diario" id="selectItem1">
+											</xp:selectItem>
+											<xp:selectItem
+												itemLabel="Cantidad Días" itemValue="CantidadDias"
+												id="selectItem2">
+											</xp:selectItem>
+											<xp:selectItem
+												itemLabel="Semanal" itemValue="Semanal" id="selectItem3">
+											</xp:selectItem>
+
+											<xp:selectItem
+												itemLabel="Mensual" itemValue="Mensual" id="selectItem4">
+											</xp:selectItem>
+											<xp:selectItem
+												itemLabel="Trimestral" itemValue="Trimestral"
+												id="selectItem5">
+											</xp:selectItem>
+											<xp:selectItem
+												itemLabel="Semestral" itemValue="Semestral"
+												id="selectItem6">
+											</xp:selectItem>
+											<xp:eventHandler
+												event="onclick" submit="true" refreshMode="partial"
+												refreshId="pnlContieneCantidadDias" id="eventHandler12">
+											</xp:eventHandler>
+										</xp:radioGroup>
+									</xp:td>
+								</xp:tr>
+								<xp:tr>
+									<xp:td></xp:td>
+									<xp:td>
+										<xp:panel
+											id="pnlContieneCantidadDias">
+											<xp:panel
+												id="pnlCantidadDias">
+												<xp:this.rendered><![CDATA[#{javascript:currentDocument.getItemValueString("TipoRepeticiones")=="CantidadDias"}]]></xp:this.rendered>
+												<xp:table>
+													<xp:tr>
+														<xp:td>
+															<xp:label
+																value="Cantidad de días de repetición:"
+																id="repeticion_CantidadDias_Label1"
+																for="repeticion_CantidadDias1">
+															</xp:label>
+														</xp:td>
+														<xp:td>
+
+															<xe:djNumberTextBox
+																id="djNumberTextBox3"
+																value="#{docSeguimiento.Repeticion_CantidadDias}">
+																<xe:this.converter>
+																	<xp:convertNumber
+																		integerOnly="true" type="number"
+																		maxIntegerDigits="0">
+																	</xp:convertNumber>
+																</xe:this.converter>
+															</xe:djNumberTextBox>
+														</xp:td>
+													</xp:tr>
+													<xp:tr>
+														<xp:td></xp:td>
+														<xp:td></xp:td>
+													</xp:tr>
+												</xp:table>
+											</xp:panel>
+											&#160;&#160;
+											<xp:label
+												id="lblRepeticion">
+												<xp:this.value><![CDATA[#{javascript:function getWeekDay( dia) {
+    switch (dia) {
+        case 0:
+            return "Domingo";
+            break;
+        case 1:
+            return "Lunes";
+            break;
+        case 2:
+            return "Martes";
+            break;
+        case 3:
+            return "Miércoles";
+            break;
+        case 4:
+            return "Jueves";
+            break;
+        case 5:
+            return "Viernes";
+            break;
+        case  6:
+            return "Sábado";
+            break;
+    }     
+ }
+
+try{
+
+
+	// if currentDocument.getItemValueString("TipoRepeticiones")==""
+	var resultado; 
+	switch ( currentDocument.getItemValueString("TipoRepeticiones")){
+	   case "Diario" : 
+	      resultado= "Se crea una repetición cada día.";
+	      break;
+	   case "CantidadDias" : 
+	   	  var cantDias= currentDocument.getItemValueString("Repeticion_CantidadDias");
+	   	  if (cantDias.equals("")){
+	   		  resultado= "";
+	   	  }else{
+		   	  resultado= "Se crea una repetición cada "+ cantDias +" días";
+	   	  }
+	      break;
+	   case "Semanal" : 
+	      resultado= "Se crea una repetición cada semana el día " + getWeekDay( currentDocument.getItemValueDateTime("FechaLimite").toJavaDate().getDay());
+	      break;
+	   case "Mensual" : 
+	      resultado= "Se crea una repetición cada día " + currentDocument.getItemValueDateTime("FechaLimite").toJavaDate().getDate() + " de cada mes";
+	      break;
+	   case "Trimestral" : 
+	      resultado= "Se crea una repetición cada tres meses el día " + currentDocument.getItemValueDateTime("FechaLimite").toJavaDate().getDate();
+	      break;
+	   case "Semestral" : 
+	      resultado= "Se crea una repetición cada seis meses el día " + currentDocument.getItemValueDateTime("FechaLimite").toJavaDate().getDate();
+	      break;
+	   default : statement;
+	}
+
+}catch(err) {
+}
+
+}]]></xp:this.value>
+											</xp:label>
+										</xp:panel>
+									</xp:td>
+								</xp:tr>
+								<xp:tr>
+									<xp:td colspan="2">
+
+
+										<xp:br></xp:br>
+									</xp:td>
+								</xp:tr>
+								<xp:tr>
+									<xp:td></xp:td>
+									<xp:td></xp:td>
+								</xp:tr>
+							</xp:table>
+						</xp:panel>
+					</xp:panel>
+				</xp:td>
+
+			</xp:tr>
+			<xp:tr>
+				<xp:td></xp:td>
+				<xp:td></xp:td>
+			</xp:tr>
+			<xp:tr>
+				<xp:td></xp:td>
+				<xp:td></xp:td>
+			</xp:tr>
+			<xp:tr>
+				<xp:td>
+					<xp:label value="Responsable:"
+						id="responsableAcuerdo_Label1" for="responsableAcuerdo1">
+					</xp:label>
+
+				</xp:td>
+				<xp:td></xp:td>
+			</xp:tr>
+			<xp:tr>
+				<xp:td colspan="2">
+
+
+
+					<xp:panel id="panelResponsables">
+
+
+
+						<xp:button id="button3" value="...">
+							<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable() &&  (docSeguimiento.getItemValueString( 'ResponsablesAcuerdo' ) == "" )}]]></xp:this.rendered>
+							<xp:eventHandler event="onclick"
+								submit="false" id="eventHandler8">
+								<xp:this.script><![CDATA[XSP.openDialog('#{id:dialogNewResponsable}')]]></xp:this.script>
+							</xp:eventHandler>
+						</xp:button>
+						<xp:br></xp:br>
+						<xe:dialog id="dialogNewResponsable"
+							title="Seleccione al Responsable">
+
+							<xe:dialogButtonBar id="dialogButtonBar4">
+								<xp:button value="Aceptar"
+									id="button17">
+									<xp:eventHandler event="onclick"
+										submit="true" refreshMode="partial"
+										refreshId="panelResponsables" id="eventHandler3">
+										<xp:this.action>
+
+											<xp:actionGroup>
+
+												<xp:executeScript>
+													<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogNewResponsable")
+c.hide()}]]></xp:this.script>
+												</xp:executeScript>
+
+												<xp:executeScript>
+													<xp:this.script><![CDATA[#{javascript:
+var field = docSeguimiento.getValue( 'ResponsablesAcuerdo' );
+var field2 = docSeguimiento.getValue( 'PuestoResponsable' );
+if(field==""){
+	field=getComponent("inputNombreResponsable").getValue();
+	field2=getComponent("inputPuestoResponsable").getValue();
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+	if( !field2 ){ field2 = []; }
+	if( typeof field2 === 'string' ){
+		field2 = [ field2 ];
+	}
+}else{
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+	field.push(getComponent("inputNombreResponsable").getValue());
+	if( !field2 ){ field2 = []; }
+	if( typeof field2 === 'string' ){
+		field2 = [ field2 ];
+	}
+	field2.push(getComponent("inputPuestoResponsable").getValue());
+}
+docSeguimiento.setValue( 'ResponsablesAcuerdo', field );
+docSeguimiento.setValue( 'PuestoResponsable', field2 );
+
+}]]></xp:this.script>
+												</xp:executeScript>
+											</xp:actionGroup>
+										</xp:this.action>
+									</xp:eventHandler>
+								</xp:button>
+								<xp:link escape="true" text="Cancel"
+									id="link5">
+									<xp:eventHandler event="onclick"
+										submit="false" id="eventHandler5">
+										<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogNewResponsable}')]]></xp:this.script>
+									</xp:eventHandler>
+								</xp:link>
+							</xe:dialogButtonBar>
+							<xe:dialogContent id="dialogContent3">
+								<xp:panel id="pnlDialogResponsable">
+
+									<xp:table>
+										<xp:tr>
+											<xp:td>
+												<xp:label
+													value="Tipo responsable:" id="tipoResponsable_Label1"
+													for="tipoResponsable1">
+												</xp:label>
+											</xp:td>
+											<xp:td></xp:td>
+											<xp:td>
+												<xp:radioGroup
+													id="radioGroup4" value="#{docSeguimiento.TipoResponsable}"
+													defaultValue="Interno">
+													<xp:selectItem
+														itemLabel="Interno" id="selectItem18"
+														itemValue="Interno">
+													</xp:selectItem>
+													<xp:selectItem
+														itemLabel="Externo" id="selectItem19"
+														itemValue="Externo">
+													</xp:selectItem>
+
+													<xp:eventHandler
+														event="onclick" submit="true" refreshMode="complete"
+														id="eventHandler18">
+													</xp:eventHandler>
+												</xp:radioGroup>
+											</xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td>
+												<xp:label
+													id="lblSeleccionResponsable">
+													<xp:this.value><![CDATA[#{javascript:if(currentDocument.getItemValueString("TipoResponsable")=="Externo"){
+	return "Dirección de Correo";
+} else{
+	return "Nombre";
+}
+}]]></xp:this.value>
+												</xp:label>
+											</xp:td>
+											<xp:td>
+												<xe:namePicker
+													id="namePicker3" for="inputNombreResponsable"
+													dialogTitle="Seleccione los Nombres">
+													<xe:this.dataProvider>
+														<xe:namePickerAggregator>
+
+															<xe:this.dataProviders>
+																<xe:dominoViewNamePicker
+																	label="Nombre" labelColumn="Nombre" loaded="true"
+																	viewName="vUsuario">
+																</xe:dominoViewNamePicker>
+															</xe:this.dataProviders>
+														</xe:namePickerAggregator>
+													</xe:this.dataProvider>
+													<xe:this.rendered><![CDATA[#{javascript:currentDocument.getItemValueString("TipoResponsable")!="Externo"}]]></xe:this.rendered>
+												</xe:namePicker>
+											</xp:td>
+											<xp:td>
+												<xp:inputText
+													id="inputNombreResponsable" style="width:300px">
+
+
+													<xp:eventHandler
+														event="onchange" submit="true" refreshMode="complete"
+														id="eventHandler1">
+														<xp:this.action><![CDATA[#{javascript:
+try{
+	var viewClientes=database.getView("vUsuario");
+	if(viewClientes!=null){
+		if(!getComponent("inputNombreResponsable").getValue().equals("")){
+			var docCliente=viewClientes.getDocumentByKey(getComponent("inputNombreResponsable").getValue());
+			if (docCliente!=null){
+			    getComponent("inputPuestoResponsable").setValue(docCliente.getItemValueString('Puesto'));
+				//currentDocument.setValue("IDPuesto",docCliente.getItemValue('IDPuesto'))
+			}else{
+				getComponent("inputPuestoResponsable").setValue("");
+				//currentDocument.setValue("IDPuesto","")
+			}
+		}
+	}
+	}catch(e){
+		print('Error: ' + e);
+		return "";
+}
+}]]></xp:this.action>
+													</xp:eventHandler>
+												</xp:inputText>
+											</xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td>Puesto</xp:td>
+											<xp:td></xp:td>
+											<xp:td>
+												<xp:inputText
+													id="inputPuestoResponsable" style="width:302.0px">
+													<xp:this.readonly><![CDATA[#{javascript:currentDocument.getItemValueString("TipoResponsable")=="Interno" ||
+currentDocument.getItemValueString("TipoResponsable")==""}]]></xp:this.readonly>
+												</xp:inputText>
+											</xp:td>
+										</xp:tr>
+									</xp:table>
+
+
+									<xp:br></xp:br>
+								</xp:panel>
+							</xe:dialogContent>
+						</xe:dialog>
+
+
+
+						<xp:repeat
+							value="#{docSeguimiento.ResponsablesAcuerdo}" var="Responsables"
+							indexVar="ResponsablesIndex" id="repeatItemsResponsables">
+							<xp:table border="1" cellpadding="2"
+								cellspacing="0">
+								<xp:tr>
+									<xp:td style="width:25.0px">
+										<xp:text escape="true"
+											id="computedField5"
+											value="#{javascript:ResponsablesIndex + 1}">
+											<xp:this.converter>
+												<xp:convertNumber
+													type="number" integerOnly="true">
+												</xp:convertNumber>
+											</xp:this.converter>
+										</xp:text>
+									</xp:td>
+									<xp:td></xp:td>
+									<xp:td style="width:60.0px">
+										<xp:link escape="true"
+											text="edit" id="link6"
+											rendered="#{javascript:currentDocument.isEditable()}">
+
+											<xp:eventHandler
+												event="onclick" submit="false" id="eventHandler6">
+												<xp:this.script><![CDATA[XSP.openDialog('#{id:dialogEditResponsable}')]]></xp:this.script>
+											</xp:eventHandler>
+										</xp:link>
+									</xp:td>
+									<xp:td style="width:60.0px">
+										<xp:link escape="true"
+											text="eliminar" id="link4"
+											rendered="#{javascript:currentDocument.isEditable()}">
+											<xp:eventHandler
+												event="onclick" submit="true" refreshMode="partial"
+												id="eventHandler4" refreshId="panelResponsables">
+												<xp:this.action><![CDATA[#{javascript:var field:Array = docSeguimiento.getValue( 'ResponsablesAcuerdo' );
+var field2:Array = docSeguimiento.getValue( 'PuestoResponsable' );
+
+docSeguimiento.replaceItemValue( 'ResponsablesAcuerdo', SpliceArray(field,ResponsablesIndex,1));
+ 
+docSeguimiento.replaceItemValue( 'PuestoResponsable', SpliceArray(field2,ResponsablesIndex,1) );
+
+}]]></xp:this.action>
+											</xp:eventHandler>
+										</xp:link>
+									</xp:td>
+
+									<xp:td style="width:305.0px">
+
+										<xp:inputText
+											id="inputIterResponsablesAcuerdo" style="width:300px"
+											readonly="#{javascript:true}">
+											<xp:this.rendered><![CDATA[#{javascript:return ( docSeguimiento.getItemValueArray( 'ResponsablesAcuerdo' ).length > 1 );}]]></xp:this.rendered>
+
+											<xp:this.value><![CDATA[#{docSeguimiento.ResponsablesAcuerdo[ResponsablesIndex]}]]></xp:this.value>
+										</xp:inputText>
+
+										<xp:text escape="true"
+											id="computedField7"
+											value="#{docSeguimiento.ResponsablesAcuerdo}"
+											rendered="#{javascript:return ( docSeguimiento.getItemValueArray( 'ResponsablesAcuerdo' ).length == 1 );}">
+										</xp:text>
+									</xp:td>
+									<xp:td style="width:305.0px">
+										<xp:inputText
+											id="inputIterPuestoResponsable" style="width:300px"
+											readonly="#{javascript:true}">
+											<xp:this.rendered><![CDATA[#{javascript:return ( docSeguimiento.getItemValueArray( 'ResponsablesAcuerdo' ).length > 1 );}]]></xp:this.rendered>
+
+											<xp:this.value><![CDATA[#{docSeguimiento.PuestoResponsable[ResponsablesIndex]}]]></xp:this.value>
+										</xp:inputText>
+										<xp:text escape="true"
+											id="computedField8"
+											value="#{docSeguimiento.PuestoResponsable}">
+											<xp:this.rendered><![CDATA[#{javascript:return ( docSeguimiento.getItemValueArray( 'ResponsablesAcuerdo' ).length == 1 );
+}]]></xp:this.rendered>
+										</xp:text>
+									</xp:td>
+
+
+								</xp:tr>
+
+							</xp:table>
+
+
+							<xe:dialog id="dialogEditResponsable"
+								title="Editar Responsable">
+								<xe:dialogContent id="dialogContent4">
+									<xp:panel>
+										<xp:table>
+											<xp:tr>
+												<xp:td>
+													<xp:label
+														value="Tipo responsable:" id="label4"
+														for="tipoResponsable1">
+													</xp:label>
+												</xp:td>
+												<xp:td></xp:td>
+												<xp:td>
+													<xp:radioGroup
+														id="radioGroup3" value="#{docSeguimiento.TipoResponsable}"
+														defaultValue="Interno" readonly="true">
+														<xp:selectItem
+															itemLabel="Interno" id="selectItem16"
+															itemValue="Interno">
+														</xp:selectItem>
+														<xp:selectItem
+															itemLabel="Externo" id="selectItem17"
+															itemValue="Externo">
+														</xp:selectItem>
+
+														<xp:eventHandler
+															event="onclick" submit="true" refreshMode="complete"
+															id="eventHandler19">
+														</xp:eventHandler>
+													</xp:radioGroup>
+												</xp:td>
+												<xp:td></xp:td>
+											</xp:tr>
+											<xp:tr>
+												<xp:td>Nombre</xp:td>
+												<xp:td>
+
+													<xe:namePicker
+														id="namePicker2" dialogTitle="Seleccione los Nombres">
+														<xe:this.dataProvider>
+															<xe:namePickerAggregator>
+
+																<xe:this.dataProviders>
+																	<xe:dominoViewNamePicker
+																		label="Nombre" labelColumn="Nombre" loaded="true"
+																		viewName="vUsuario">
+																	</xe:dominoViewNamePicker>
+																</xe:this.dataProviders>
+															</xe:namePickerAggregator>
+														</xe:this.dataProvider>
+														<xe:this.for><![CDATA[#{javascript:if(docSeguimiento.getItemValueArray( 'ResponsablesAcuerdo' ).length > 1 ){
+	return "inputEditResponsableMult";
+}else{
+	return "inputEditResponsable";
+}}]]></xe:this.for>
+														<xe:this.rendered><![CDATA[#{javascript:currentDocument.getItemValueString("TipoResponsable")!="Externo"}]]></xe:this.rendered>
+													</xe:namePicker>
+												</xp:td>
+												<xp:td>
+													<xp:inputText
+														id="inputEditResponsableMult" style="width:300px"
+														required="true">
+														<xp:this.rendered><![CDATA[#{javascript:return ( docSeguimiento.getItemValueArray( 'ResponsablesAcuerdo' ).length > 1 );}]]></xp:this.rendered>
+														<xp:this.value><![CDATA[#{docSeguimiento.ResponsablesAcuerdo[ResponsablesIndex]}]]></xp:this.value>
+														<xp:eventHandler
+															event="onchange" submit="true" refreshMode="complete"
+															id="eventHandler7">
+															<xp:this.action><![CDATA[#{javascript:
+try{
+	var viewClientes=database.getView("vUsuario");
+	if(viewClientes!=null){
+		if(!getComponent("inputEditResponsableMult").getValue().equals("")){
+			var docCliente=viewClientes.getDocumentByKey(getComponent("inputEditResponsableMult").getValue());
+			if (docCliente!=null){
+			    getComponent("inputEditResponsablePuestoMult").setValue(docCliente.getItemValueString('Puesto'));
+				//currentDocument.setValue("IDPuesto",docCliente.getItemValue('IDPuesto'))
+			}else{
+				getComponent("inputEditResponsablePuestoMult").setValue("");
+				//currentDocument.setValue("IDPuesto","")
+			}
+		}
+	}
+	}catch(e){
+		print('Error: ' + e);
+		return "";
+}
+}]]></xp:this.action>
+														</xp:eventHandler>
+													</xp:inputText>
+													<xp:br></xp:br>
+													<xp:inputText
+														id="inputEditResponsable" style="width:300px"
+														required="true"
+														value="#{docSeguimiento.ResponsablesAcuerdo}"
+														rendered="#{javascript:return ( docSeguimiento.getItemValueArray( 'ResponsablesAcuerdo' ).length == 1 );}">
+														<xp:eventHandler
+															event="onchange" submit="true" refreshMode="complete"
+															id="eventHandler11">
+															<xp:this.action><![CDATA[#{javascript:
+try{
+	var viewClientes=database.getView("vUsuario");
+	if(viewClientes!=null){
+		if(!getComponent("inputEditResponsable").getValue().equals("")){
+			var docCliente=viewClientes.getDocumentByKey(getComponent("inputEditResponsable").getValue());
+			if (docCliente!=null){
+			    getComponent("inputEditResponsablePuesto").setValue(docCliente.getItemValueString('Puesto'));
+				//currentDocument.setValue("IDPuesto",docCliente.getItemValue('IDPuesto'))
+			}else{
+				getComponent("inputEditResponsablePuesto").setValue("");
+				//currentDocument.setValue("IDPuesto","")
+			}
+		}
+	}
+	}catch(e){
+		print('Error: ' + e);
+		return "";
+}
+}]]></xp:this.action>
+														</xp:eventHandler>
+													</xp:inputText>
+												</xp:td>
+												<xp:td></xp:td>
+											</xp:tr>
+											<xp:tr>
+												<xp:td>Puesto</xp:td>
+												<xp:td></xp:td>
+												<xp:td>
+
+
+													<xp:inputText
+														id="inputEditResponsablePuestoMult" readonly="true">
+														<xp:this.rendered><![CDATA[#{javascript:return ( docSeguimiento.getItemValueArray( 'ResponsablesAcuerdo' ).length > 1 );}]]></xp:this.rendered>
+														<xp:this.value><![CDATA[#{docSeguimiento.PuestoResponsable[ResponsablesIndex]}]]></xp:this.value>
+													</xp:inputText>
+													<xp:br></xp:br>
+													<xp:inputText
+														id="inputEditResponsablePuesto"
+														rendered="#{javascript:return ( docSeguimiento.getItemValueArray( 'ResponsablesAcuerdo' ).length == 1 );}"
+														value="#{docSeguimiento.PuestoResponsable}">
+														<xp:this.readonly><![CDATA[#{javascript:currentDocument.getItemValueString("TipoResponsable")=="Interno" ||
+currentDocument.getItemValueString("TipoResponsable")==""}]]></xp:this.readonly>
+													</xp:inputText>
+												</xp:td>
+												<xp:td></xp:td>
+											</xp:tr>
+
+
+										</xp:table>
+									</xp:panel>
+								</xe:dialogContent>
+								<xe:dialogButtonBar
+									id="dialogButtonBar5">
+									<xp:button value="Aceptar"
+										id="button13">
+										<xp:eventHandler event="onclick"
+											submit="true" refreshMode="partial"
+											refreshId="repeatItemsResponsables" id="eventHandler9">
+											<xp:this.action>
+
+												<xp:actionGroup>
+
+
+
+													<xp:executeScript>
+														<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogEditResponsable")
+c.hide()}]]></xp:this.script>
+													</xp:executeScript>
+
+													<xp:executeScript>
+														<xp:this.script><![CDATA[#{javascript:
+var field = docSeguimiento.getValue( 'ResponsablesAcuerdo' );
+var field2 = docSeguimiento.getValue( 'PuestoResponsable' );
+
+if( !field ){ field = []; }
+if( typeof field === 'string' ){
+	field = [ field ];
+}
+
+docSeguimiento.setValue( 'ResponsablesAcuerdo', field );
+
+if( !field2 ){ field2 = []; }
+if( typeof field2 === 'string' ){
+	field2 = [ field2 ];
+}
+
+docSeguimiento.setValue( 'PuestoResponsable', field2 );
+}]]></xp:this.script>
+													</xp:executeScript>
+												</xp:actionGroup>
+											</xp:this.action>
+										</xp:eventHandler>
+									</xp:button>
+									<xp:link escape="true" text="Cancel"
+										id="link8">
+										<xp:eventHandler event="onclick"
+											submit="false" id="eventHandler10">
+											<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogEditResponsable}')]]></xp:this.script>
+										</xp:eventHandler>
+									</xp:link>
+								</xe:dialogButtonBar>
+							</xe:dialog>
+
+						</xp:repeat>
+						<xp:inputText
+							value="#{docSeguimiento.ResponsablesAcuerdo}"
+							readonly="#{javascript:return !docSeguimiento.isEditable();}"
+							id="inputText2" required="true">
+							<xp:this.rendered><![CDATA[#{javascript://return ( docSeguimiento.getItemValueArray( 'field' ).length < 1 );
+return false}]]></xp:this.rendered>
+						</xp:inputText>
+						<xp:inputText
+							value="#{docSeguimiento.PuestoResponsable}"
+							readonly="#{javascript:return !docSeguimiento.isEditable();}"
+							id="inputText4">
+							<xp:this.rendered><![CDATA[#{javascript://return ( docSeguimiento.getItemValueArray( 'field2' ).length < 1 );
+return false}]]></xp:this.rendered>
+						</xp:inputText>
+
+
+
+
+					</xp:panel>
+				</xp:td>
+
+			</xp:tr>
+			<xp:tr>
+				<xp:td>
+					<xp:label value="Dependencia:"
+						id="dependencia_Label1" for="dependencia1">
+					</xp:label>
+				</xp:td>
+				<xp:td>
+
+					<xp:comboBox id="Dependencia" style="width:301.0px"
+						value="#{docSeguimiento.Dependencia}">
+						<xp:selectItems id="selectItems3">
+							<xp:this.value><![CDATA[#{javascript:""}]]></xp:this.value>
+						</xp:selectItems>
+						<xp:selectItems id="selectItems4">
+							<xp:this.value><![CDATA[#{javascript:@DbColumn(@DbName(), "vDependencias", 1)}]]></xp:this.value>
+						</xp:selectItems>
+
+
+
+					</xp:comboBox>
+				</xp:td>
+			</xp:tr>
+			<xp:tr>
+				<xp:td>
+					<xp:label value="Observaciones:"
+						id="observaciones_Label2" for="observaciones1">
+					</xp:label>
+				</xp:td>
+				<xp:td>
+
+					<xp:inputTextarea id="inputTextarea1"
+						style="width:486.0px;height:150px"
+						value="#{docSeguimiento.Observaciones}">
+					</xp:inputTextarea>
+				</xp:td>
+			</xp:tr>
+
+
+
+
+
+
+			<xp:tr>
+				<xp:td><xp:label value="Comentarios al Completar:" id="label5" for="observaciones1">
+					<xp:this.rendered><![CDATA[#{javascript:currentDocument.getItemValueString("Estado")=="Completado" && 
+currentDocument.getItemValueString("ComentariosCompletado")!="" }]]></xp:this.rendered></xp:label></xp:td>
+				<xp:td>
+					<xp:inputTextarea id="inputTextarea2"
+						style="width:486.0px;height:150px"
+						value="#{docSeguimiento.ComentariosCompletado}">
+					<xp:this.rendered><![CDATA[#{javascript:currentDocument.getItemValueString("Estado")=="Completado" && 
+currentDocument.getItemValueString("ComentariosCompletado")!="" }]]></xp:this.rendered></xp:inputTextarea></xp:td>
+			</xp:tr>
+		</xp:table>
+		<xp:br></xp:br>
+
+
+
+
+
+
+
+
+	</xp:panel>
+	<xp:tabbedPanel id="tabbedPanel1" partialRefresh="false" partialExecute="false">
+			<xp:tabPanel id="tabPanel1" label="Tareas" style="border-radius: 10px;border-style: solid;border-color: rgb(185,222,188);border-width:thin" rendered="#{javascript:!currentDocument.isNewNote()}">
+				<xp:panel rendered="#{javascript:!currentDocument.isNewNote()}">
+					<xp:label value="Tareas" id="label3" style="font-weight:bold;font-size:10pt">
+					</xp:label>
+					<xp:viewPanel id="viewPanel1" pageName="/xpTarea.xsp">
+						<xp:this.facets>
+							<xp:pager partialRefresh="true" layout="Previous Group Next" xp:key="headerPager" id="pager1">
+							</xp:pager>
+						</xp:this.facets>
+						<xp:this.data>
+							<xp:dominoView var="view2" viewName="TareasPorSeguimiento">
+								<xp:this.categoryFilter><![CDATA[#{javascript:docSeguimiento.getItemValueString("IDDocumento")}]]></xp:this.categoryFilter>
+							</xp:dominoView>
+						</xp:this.data>
+						<xp:viewColumn columnName="IDDocumentoPadre" id="viewColumn1" rendered="false">
+							<xp:this.facets>
+								<xp:viewColumnHeader value="I d documento padre" xp:key="header" id="viewColumnHeader1">
+								</xp:viewColumnHeader>
+							</xp:this.facets>
+						</xp:viewColumn>
+						<xp:viewColumn columnName="Estado" id="viewColumn2" displayAs="link" openDocAsReadonly="true">
+							<xp:this.facets>
+								<xp:viewColumnHeader value="Estado" xp:key="header" id="viewColumnHeader2">
+								</xp:viewColumnHeader>
+							</xp:this.facets>
+						</xp:viewColumn>
+						<xp:viewColumn columnName="FechaLimite" id="viewColumn3" displayAs="link" openDocAsReadonly="true">
+							<xp:this.facets>
+								<xp:viewColumnHeader value="Fecha  límite" xp:key="header" id="viewColumnHeader3">
+								</xp:viewColumnHeader>
+							</xp:this.facets>
+							<xp:this.converter>
+								<xp:convertDateTime type="date" dateStyle="long">
+								</xp:convertDateTime>
+							</xp:this.converter>
+						</xp:viewColumn>
+						<xp:viewColumn columnName="ResponsablesAcuerdo" id="viewColumn4">
+							<xp:this.facets>
+								<xp:viewColumnHeader value="Responsable" xp:key="header" id="viewColumnHeader4">
+								</xp:viewColumnHeader>
+							</xp:this.facets>
+						</xp:viewColumn>
+					</xp:viewPanel>
+				</xp:panel>
+			</xp:tabPanel>
+			<xp:tabPanel label="Bitácoras" id="tabPanel2" style="border-radius: 10px;border-style: solid;border-color: rgb(185,222,188);border-width:thin">
+				<xc:ccBitacora>
+					<xc:this.key><![CDATA[#{javascript:docSeguimiento.getItemValueString("IDDocumento")}]]></xc:this.key>
+				</xc:ccBitacora>
+			</xp:tabPanel>
+
+		</xp:tabbedPanel></xp:view>

@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+	<xp:this.data>
+		<xp:dominoDocument var="document1" formName="BusquedaAvanzada"
+			computeWithForm="both">
+		</xp:dominoDocument>
+	</xp:this.data>
+
+	
+	
+				<xp:br></xp:br>
+				
+				<xp:panel>
+					
+					
+					
+					<xp:table>
+						<xp:tr>
+							<xp:td>
+								<xp:button value="Buscar Coincidencias"
+									id="button1">
+									<xp:eventHandler event="onclick"
+										submit="true" refreshMode="complete" immediate="false"
+										save="false" id="eventHandler1">
+										<xp:this.action>
+
+											<xp:actionGroup>
+
+
+
+
+
+
+
+
+
+
+												<xp:executeScript>
+													<xp:this.script><![CDATA[#{javascript:var agent = database.getAgent('(BusquedaAvanzada)');
+
+if(null != agent){
+	var document = currentDocument.getDocument(true);
+	var folder="Consultas\\" + @Name("[CN]",@UserName());
+	sessionScope.folderConsulta=folder;
+	document.replaceItemValue("folderConsulta",folder);
+	if(null != document){
+
+		try{
+			agent.runWithDocumentContext(document);
+		}catch(e){
+			print('Error: ' + e);
+			return;
+		}
+	}
+}
+}]]></xp:this.script>
+												</xp:executeScript>
+												<xp:saveDocument
+													var="document1">
+												</xp:saveDocument>
+
+
+												<xp:openPage
+													name="/vxpResultadoBusqueda.xsp" target="editDocument"
+													documentId="#{javascript:document1.getDocument(true).getUniversalID()}">
+												</xp:openPage>
+											</xp:actionGroup>
+										</xp:this.action>
+									</xp:eventHandler>
+								</xp:button></xp:td>
+							<xp:td></xp:td>
+						</xp:tr>
+						<xp:tr>
+							<xp:td>
+								<xp:label id="label6"
+									value="Tipo de búsqueda:">
+								</xp:label></xp:td>
+							<xp:td></xp:td>
+						</xp:tr>
+					</xp:table>
+					<xp:radioGroup id="radioGroup1"
+						value="#{document1.TipoBusqueda}" style="width:757.0px">
+						<xp:selectItem itemLabel="Ordenes del Día"
+							itemValue="OrdenDia" id="selectItem1">
+						</xp:selectItem>
+						<xp:selectItem itemLabel="Actas"
+							itemValue="Acta" id="selectItem2">
+						</xp:selectItem>
+						<xp:selectItem itemLabel="Temas"
+							itemValue="Tema" id="selectItem3">
+						</xp:selectItem>
+						<xp:selectItem itemLabel="Acuerdos"
+							itemValue="Acuerdo" id="selectItem4">
+						</xp:selectItem>
+						<xp:selectItem itemLabel="Seguimientos"
+							itemValue="Seguimiento" id="selectItem5">
+						</xp:selectItem>
+						<xp:selectItem itemLabel="Comunicados"
+							itemValue="Comunicado" id="selectItem6">
+						</xp:selectItem>
+						<xp:eventHandler event="onclick" submit="true"
+							refreshMode="partial" refreshId="panelContenido">
+						</xp:eventHandler>
+						<xp:selectItem itemLabel="Todo" itemValue="Todo"></xp:selectItem>
+					</xp:radioGroup>
+					
+					</xp:panel>
+				<xp:panel id="panelContenido">
+					<xp:tabbedPanel id="tabbedPanel1">
+						<xp:tabPanel id="tabPanel1" label="Filtros">
+							<xp:this.rendered><![CDATA[#{javascript:document1.getDocument(true).getItemValueString("TipoBusqueda")!=""}]]></xp:this.rendered>
+
+							
+							<xp:br></xp:br><xp:panel id="panelFiltros"
+								style="border-color:rgb(192,192,192);border-style:solid;border-width:thin">
+								<xp:panel id="panelFiltrosGenerales">
+									<xp:this.rendered><![CDATA[#{javascript:document1.getDocument(true).getItemValueString("TipoBusqueda")!=""}]]></xp:this.rendered>
+									<xp:table>
+										<xp:tr>
+											<xp:td
+												style="width:135.0px;height:80.0px">
+												<xp:label
+													value="Texto a buscar:" id="buscar_Label1" for="buscar1">
+												</xp:label>
+												<xp:br></xp:br>
+											</xp:td>
+											<xp:td
+												style="width:623.0px;border-color:rgb(192,192,192);border-style:solid;border-width:thin">
+												<xp:inputText
+													value="#{document1.Buscar}" id="buscar1"
+													style="width:425.0px" autocomplete="off">
+												</xp:inputText>
+												<xp:br></xp:br>
+												<xp:checkBox
+													text="Buscar texto en registros asociados" id="checkBox1"
+													value="#{document1.BuscarTodo}" defaultChecked="true">
+													<xp:this.rendered><![CDATA[#{javascript:document1.getDocument(true).getItemValueString("TipoBusqueda")!="Todo"}]]></xp:this.rendered>
+												</xp:checkBox>
+												<xp:br></xp:br>
+												<xp:checkBox
+													text="Búsqueda Exacta" id="checkBox2" value="#{document1.BusquedaExacta}">
+												</xp:checkBox>
+												<xp:br></xp:br></xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td
+												style="border-color:rgb(192,192,192);border-style:solid;border-width:thin" colspan="2">
+											
+											</xp:td>
+											
+										</xp:tr>
+										<xp:tr>
+											<xp:td>
+												<xp:label
+													value="Herramientas" id="label7" style="font-weight:bold">
+												</xp:label></xp:td>
+											<xp:td></xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td>
+												<xp:label
+													value="Filtrar por Fecha" id="label5">
+												</xp:label>
+											</xp:td>
+											<xp:td>
+												<xp:comboBox
+													id="comboBox1" style="width:425.0px"
+													value="#{document1.TipoFecha}">
+
+
+													<xp:selectItems
+														id="selectItems3">
+														<xp:this.value><![CDATA[#{javascript:""}]]></xp:this.value>
+													</xp:selectItems>
+													<xp:selectItems
+														id="selectItems2">
+														<xp:this.value><![CDATA[#{javascript:var valores;
+
+if(document1.getDocument(true).getItemValueString("TipoBusqueda")=="OrdenDia"){
+	//valores= ["FechaCreacion", "FechaSesion"];
+	valores= ["Fecha Creación|FechaCreacion", "Fecha Sesión|FechasOrden"];
+
+}
+if(document1.getDocument(true).getItemValueString("TipoBusqueda")=="Acta"){
+	//valores = new Array ();
+	valores= ["Fecha Creación|FechaCreacion", "Fecha Sesión|FechasOrden"];
+	//valores[0] = new Array ('FechaCreacion', 'Fecha de Creación'); 
+	//valores[1] = new Array ('FechasOrden', 'Fecha de Sesión'); 
+}
+if(document1.getDocument(true).getItemValueString("TipoBusqueda")=="Tema"){
+
+	//valores= ["FechaCreacion", "FechaSesion"];
+	valores= ["Fecha Creación|FechaCreacion", "Fecha Sesión|FechasOrden"];
+}
+if(document1.getDocument(true).getItemValueString("TipoBusqueda")=="Acuerdo"){
+	//valores= ["Fecha Creación|FechaCreacion"];
+	valores= ["Fecha Creación|FechaCreacion", "Fecha Sesión|FechasOrden"];
+
+}
+if(document1.getDocument(true).getItemValueString("TipoBusqueda")=="Seguimiento"){
+	//valores= ["FechaCreacion", "FechaLimite"];
+	valores= ["Fecha Creación|FechaCreacion", "Fecha Límite|FechaLimite"];
+
+}
+if(document1.getDocument(true).getItemValueString("TipoBusqueda")=="Comunicado"){
+	valores= ["Fecha Creación|FechaCreacion"];
+
+}
+if(document1.getDocument(true).getItemValueString("TipoBusqueda")=="Todo"){
+	valores= ["Fecha Creación|FechaCreacion"];
+
+}
+valores}]]></xp:this.value>
+													</xp:selectItems>
+
+
+													<xp:eventHandler
+														event="onclick" submit="true" refreshMode="partial"
+														refreshId="panelFechas" id="eventHandler2">
+													</xp:eventHandler>
+												</xp:comboBox>
+											</xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td style="width:135.0px"
+												colspan="2">
+
+
+
+												<xp:panel
+													id="panelFechas">
+													<xp:table>
+														<xp:tr>
+															<xp:td
+																style="width:135.0px">
+																<xp:this.rendered><![CDATA[#{javascript:document1.getDocument(true).getItemValueString("TipoFecha")!=""}]]></xp:this.rendered>
+																<xp:label
+																	value="Fecha desde" id="fechaDesde_Label1"
+																	for="fechaDesde1">
+																	<xp:this.rendered><![CDATA[#{javascript:document1.getDocument(true).getItemValueString("TipoFecha")!=""}]]></xp:this.rendered>
+																</xp:label>
+															</xp:td>
+															<xp:td
+																style="width:623.0px">
+
+
+
+
+																<xp:this.rendered><![CDATA[#{javascript:document1.getDocument(true).getItemValueString("TipoFecha")!=""}]]></xp:this.rendered>
+																<xe:djDateTextBox
+																	id="djDateTextBox1" value="#{document1.FechaDesde}">
+																	<xe:this.converter>
+																		<xp:convertDateTime
+																			type="date" dateStyle="short">
+																		</xp:convertDateTime>
+																	</xe:this.converter>
+																	<xe:this.rendered><![CDATA[#{javascript:document1.getDocument(true).getItemValueString("TipoFecha")!=""}]]></xe:this.rendered>
+																</xe:djDateTextBox>
+															</xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td
+																style="width:135.0px">
+																<xp:this.rendered><![CDATA[#{javascript:document1.getDocument(true).getItemValueString("TipoFecha")!=""}]]></xp:this.rendered>
+																<xp:label
+																	value="Fecha hasta" id="fechaHasta_Label1"
+																	for="fechaHasta1">
+																	<xp:this.rendered><![CDATA[#{javascript:document1.getDocument(true).getItemValueString("TipoFecha")!=""}]]></xp:this.rendered>
+																</xp:label>
+															</xp:td>
+															<xp:td
+																style="width:623.0px">
+
+																<xp:this.rendered><![CDATA[#{javascript:document1.getDocument(true).getItemValueString("TipoFecha")!=""}]]></xp:this.rendered>
+																<xe:djDateTextBox
+																	id="djDateTextBox2" value="#{document1.FechaHasta}">
+																	<xe:this.converter>
+																		<xp:convertDateTime
+																			type="date" dateStyle="short">
+																		</xp:convertDateTime>
+																	</xe:this.converter>
+																	<xe:this.rendered><![CDATA[#{javascript:document1.getDocument(true).getItemValueString("TipoFecha")!=""}]]></xe:this.rendered>
+																</xe:djDateTextBox>
+															</xp:td>
+														</xp:tr>
+													</xp:table>
+												</xp:panel>
+											</xp:td>
+
+										</xp:tr>
+
+
+									</xp:table>
+								</xp:panel>
+
+								<xp:panel id="panelFiltroAcuerdo">
+									<xp:this.rendered><![CDATA[#{javascript:document1.getDocument(true).getItemValueString("TipoBusqueda")=="Acuerdo"}]]></xp:this.rendered>
+									<xp:table>
+										<xp:tr>
+											<xp:td
+												style="width:135.0px">
+												<xp:label id="label1"
+													value="Número de Acuerdo">
+												</xp:label>
+											</xp:td>
+											<xp:td>
+												<xp:inputText
+													id="inputText1" style="width:425.0px" value="#{document1.Consecutivo}">
+												</xp:inputText>
+											</xp:td>
+										</xp:tr>
+
+									</xp:table>
+								</xp:panel>
+								<xp:panel id="panelFiltroActa"
+									style="width:px">
+									<xp:this.rendered><![CDATA[#{javascript:document1.getDocument(true).getItemValueString("TipoBusqueda")=="OrdenDia" || document1.getDocument(true).getItemValueString("TipoBusqueda")=="Acta"}]]></xp:this.rendered>
+									<xp:table>
+
+										<xp:tr>
+											<xp:td>
+												<xp:label
+													value="Consecutivo" id="numerOrden_Label1"
+													for="numerOrden1">
+												</xp:label>
+											</xp:td>
+											<xp:td>
+												<xp:inputText
+													value="#{document1.NumerOrden}" id="numerOrden1"
+													style="width:425.0px">
+												</xp:inputText>
+											</xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td>
+												<xp:this.rendered><![CDATA[#{javascript:document1.getDocument(true).getItemValueString("TipoBusqueda")=="Acta"}]]></xp:this.rendered>
+												<xp:label
+													value="Personas" id="label2">
+													<xp:this.rendered><![CDATA[#{javascript:document1.getDocument(true).getItemValueString("TipoBusqueda")=="Acta"}]]></xp:this.rendered>
+												</xp:label>
+												&#160;&#160;&#160;&#160;&#160;
+												<xe:namePicker
+													id="namePicker3" for="dojoTextInvitados"
+													dialogTitle="Seleccione los Nombres">
+													<xe:this.dataProvider>
+														<xe:namePickerAggregator>
+
+															<xe:this.dataProviders>
+																<xe:dominoViewNamePicker
+																	label="Nombre" labelColumn="Nombre" loaded="true"
+																	viewName="vUsuario">
+																</xe:dominoViewNamePicker>
+															</xe:this.dataProviders>
+														</xe:namePickerAggregator>
+													</xe:this.dataProvider>
+													<xe:this.rendered><![CDATA[#{javascript:document1.getDocument(true).getItemValueString("TipoBusqueda")=="Acta"}]]></xe:this.rendered>
+												</xe:namePicker>
+											</xp:td>
+											<xp:td>
+
+												<xp:this.rendered><![CDATA[#{javascript:document1.getDocument(true).getItemValueString("TipoBusqueda")=="Acta"}]]></xp:this.rendered>
+												<xe:djextNameTextBox
+													id="dojoTextInvitados" value="#{document1.Invitados}"
+													multipleSeparator=",">
+													<xe:this.rendered><![CDATA[#{javascript:document1.getDocument(true).getItemValueString("TipoBusqueda")=="Acta"}]]></xe:this.rendered>
+												</xe:djextNameTextBox>
+											</xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td>
+												<xp:label
+													value="Tipo sesion" id="tipoSesion_Label1"
+													for="tipoSesion1">
+												</xp:label>
+											</xp:td>
+											<xp:td>
+												<xp:comboBox
+													id="comboBox2" style="width:425.0px"
+													value="#{document1.TipoSesion}">
+													<xp:selectItems
+														id="selectItems1">
+														<xp:this.value><![CDATA[#{javascript:""}]]></xp:this.value>
+													</xp:selectItems>
+													<xp:selectItem
+														itemLabel="Ordinaria" id="selectItem7">
+													</xp:selectItem>
+													<xp:selectItem
+														itemLabel="Extraordinaria" id="selectItem8">
+													</xp:selectItem>
+
+												</xp:comboBox>
+											</xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td
+												style="width:135.0px">
+												<xp:label
+													value="Estado" id="label4" for="estado1">
+												</xp:label>
+											</xp:td>
+											<xp:td>
+												<xp:comboBox
+													id="comboBox3" value="#{document1.Estado}"
+													style="width:425.0px">
+													<xp:selectItems>
+														<xp:this.value><![CDATA[#{javascript:""}]]></xp:this.value>
+													</xp:selectItems>
+													<xp:selectItem
+														itemLabel="Borrador" itemValue="Borrador"
+														id="selectItem11">
+													</xp:selectItem>
+													<xp:selectItem
+														itemLabel="Generado" itemValue="Generado"
+														id="selectItem12">
+													</xp:selectItem>
+													<xp:selectItem
+														itemLabel="Convocado" itemValue="Convocado">
+													</xp:selectItem>
+													<xp:selectItem
+														itemLabel="Cerrado" itemValue="Cerrado"
+														id="selectItem13">
+													</xp:selectItem>
+
+
+
+													<xp:selectItem
+														itemLabel="En Revisión" itemValue="En Revisión">
+													</xp:selectItem>
+												</xp:comboBox>
+											</xp:td>
+										</xp:tr>
+
+									</xp:table>
+								</xp:panel>
+								<xp:panel id="panelFiltroTema">
+									<xp:this.rendered><![CDATA[#{javascript:document1.getDocument(true).getItemValueString("TipoBusqueda")=="Tema"}]]></xp:this.rendered>
+									<xp:table>
+										<xp:tr>
+											<xp:td>
+												<xp:label
+													value="Título" id="asunto_Label1" for="asunto1">
+												</xp:label>
+											</xp:td>
+											<xp:td>
+												<xp:inputText
+													value="#{document1.Asunto}" id="asunto1"
+													style="width:425.0px">
+												</xp:inputText>
+											</xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td
+												style="width:135.0px">
+												<xp:label
+													value="Consecutivo" id="label3">
+												</xp:label>
+											</xp:td>
+											<xp:td>
+												<xp:inputText
+													value="#{document1.Consecutivo}" id="inputText2"
+													style="width:425.0px">
+												</xp:inputText>
+											</xp:td>
+										</xp:tr>
+
+
+
+									</xp:table>
+								</xp:panel>
+							</xp:panel>
+						</xp:tabPanel>
+
+					</xp:tabbedPanel></xp:panel>
+				
+				
+	</xp:view>

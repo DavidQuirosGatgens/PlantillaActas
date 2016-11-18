@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xc="http://www.ibm.com/xsp/custom"
+	xmlns:xe="http://www.ibm.com/xsp/coreex"
+	pageTitle="#{javascript:database.getTitle()}">
+	<xp:this.data>
+		<xp:dominoDocument formName="ListaValores"
+			var="DocListaValores">
+		</xp:dominoDocument>
+	</xp:this.data>
+
+	<xc:Plantilla>
+		<xp:this.facets>
+			<xp:panel xp:key="facetMiddle">
+				<xe:formTable id="formTable1" labelPosition="above"
+					formTitle="Administración / Usuarios">
+					<xe:this.formDescription><![CDATA[#{javascript:var vParam=database.getView("(Parametros)");
+var docParam=vParam.getFirstDocument();
+if(docParam!=null){
+	return docParam.getItemValueString("Empresa");
+}
+}]]></xe:this.formDescription>
+					<xp:panel>
+
+
+
+
+
+
+
+						<xp:this.readonly><![CDATA[#{javascript:if (context.getUser().getRoles().contains('[Secretaria]')){
+	return false;
+}else{
+	return true;
+}
+}]]></xp:this.readonly>
+						<xe:formRow id="formRow1">
+							<xp:panel>
+								<xp:button id="button1" value="Nuevo">
+									<xp:eventHandler event="onclick"
+										submit="true" refreshMode="complete">
+										<xp:this.action>
+											<xp:openPage
+												name="/xpUsuario.xsp" target="newDocument">
+											</xp:openPage>
+										</xp:this.action>
+									</xp:eventHandler>
+								</xp:button>
+								<xp:button value="Eliminar"
+									id="button2">
+									<xp:eventHandler event="onclick"
+										submit="true" refreshMode="complete">
+										<xp:this.action><![CDATA[#{javascript:
+try {
+	var viewPanel=getComponent("viewPanel1");
+	var docIDArray=viewPanel.getSelectedIds(); 
+	for(i=0;i < docIDArray.length; i++){
+		var docId=docIDArray[i];
+		var doc:NotesDocument=database.getDocumentByID(docId); 
+		if(doc!=null){
+			doc.replaceItemValue("deleteMarked","true");
+			var Acl:NotesAcl=database.getACL();
+			var entry:NotesACLEntry=Acl.getEntry(doc.getItemValueString("Nombre"));
+			if(entry!=null){
+				entry.remove();
+			}
+			doc.save(true,false);
+		}
+	}
+} catch(e) {
+	p("Error = " + e);
+}
+
+}]]></xp:this.action>
+										<xp:this.script><![CDATA[var r = confirm("Esta seguro de eliminar el registro");
+if (r == true) {
+   
+} else {
+    alert("Desea Eliminar el registro");
+}]]></xp:this.script>
+									</xp:eventHandler>
+								</xp:button>
+								<xp:button value="Actualizar Seguridad"
+									id="button3">
+
+									<xp:eventHandler event="onclick"
+										submit="true" refreshMode="complete">
+										<xp:this.action>
+											<xp:executeScript>
+												<xp:this.script><![CDATA[#{javascript:var agent = database.getAgent('(ActualizaSeguridad)');
+if(null != agent){
+		try{
+			agent.run();
+			view.postScript('alert("La seguridad ha sido actualizada.")');
+		}catch(e){
+			print('Error: ' + e);
+			return;
+		}
+		//document.save();
+}
+
+}]]></xp:this.script>
+											</xp:executeScript>
+										</xp:this.action>
+									</xp:eventHandler>
+								</xp:button>
+								<xp:viewPanel rows="30" id="viewPanel1"
+									pageName="/xpUsuario.xsp">
+									<xp:this.facets>
+										<xp:pager partialRefresh="true"
+											layout="Previous Group Next" xp:key="headerPager"
+											id="pager1">
+										</xp:pager>
+									</xp:this.facets>
+									<xp:this.data>
+										<xp:dominoView var="vUsuarios"
+											viewName="vUsuario">
+										</xp:dominoView>
+									</xp:this.data>
+
+									<xp:viewColumn columnName="Nombre"
+										id="viewColumn2" displayAs="link" showCheckbox="true">
+										<xp:viewColumnHeader
+											value="Nombre" id="viewColumnHeader2">
+										</xp:viewColumnHeader>
+									</xp:viewColumn>
+									<xp:viewColumn columnName="Puesto"
+										id="viewColumn3">
+										<xp:viewColumnHeader
+											value="Puesto" id="viewColumnHeader3">
+										</xp:viewColumnHeader>
+									</xp:viewColumn>
+									<xp:viewColumn columnName="IDPuesto"
+										id="viewColumn4">
+										<xp:viewColumnHeader
+											value="IDPuesto" id="viewColumnHeader4">
+										</xp:viewColumnHeader>
+									</xp:viewColumn>
+									<xp:viewColumn id="viewColumn1"
+										columnName="EsAprobadorPrincipal">
+										<xp:this.facets>
+											<xp:viewColumnHeader
+												xp:key="header" id="viewColumnHeader1"
+												value="Aprobador  principal">
+											</xp:viewColumnHeader>
+										</xp:this.facets>
+									</xp:viewColumn>
+								</xp:viewPanel>
+							</xp:panel>
+
+						</xe:formRow>
+					</xp:panel>
+
+
+				</xe:formTable>
+				<xp:br></xp:br>
+			</xp:panel>
+
+
+
+
+			<xc:Menu xp:key="facetLeft"></xc:Menu>
+		</xp:this.facets>
+	</xc:Plantilla>
+</xp:view>

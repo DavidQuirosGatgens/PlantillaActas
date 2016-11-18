@@ -1,0 +1,122 @@
+BODY
+{
+    FONT-SIZE: 8pt;
+    FONT-FAMILY: Tahoma, Arial, Helvetica sans-serif
+}
+A, A:link, A:active, A:visited
+{
+    COLOR: midnightblue;
+    TEXT-DECORATION: none;
+    FONT-WEIGHT: bold;
+}
+A:hover
+{
+    COLOR: crimson;
+    TEXT-DECORATION: underline;
+}
+TD.SEL_TAB DIV A, TD.SEL_TAB DIV A:link, TD.SEL_TAB DIV A:active, 
+TD.SEL_TAB  DIV A:visited{
+	COLOR: #000000;
+}
+TD.UNSEL_TAB DIV A, TD.UNSEL_TAB DIV A:link, TD.UNSEL_TAB DIV A:active, 
+TD.UNSEL_TAB  DIV A:visited{
+	COLOR: buttonshadow;
+}
+TD.SEL_TAB{
+    HEIGHT: 20px;
+    BORDER-RIGHT: buttonshadow 5px solid;
+    BORDER-LEFT: buttonshadow 5px solid;
+    BACKGROUND-COLOR: buttonshadow;
+}
+TD.UNSEL_TAB{
+    BORDER-RIGHT: #FFFFFF 5px solid;
+    BORDER-TOP: #FFFFFF 1px solid;
+    BORDER-LEFT: #FFFFFF 5px solid;
+    BACKGROUND-COLOR: buttonface;
+    HEIGHT: 12px;
+}
+TD.GREY{
+    COLOR: #000000;
+    BACKGROUND-COLOR: buttonface;
+    BORDER-LEFT: buttonface 5px solid;
+}
+TABLE.UNDERLINE TR TD{
+    BORDER-BOTTOM: buttonface 1px solid;
+}
+TABLE
+{
+    BORDER: none;
+}
+TR
+{
+    BORDER: none;
+}
+TD
+{
+    BORDER: none;
+    FONT-SIZE: 8pt;
+    FONT-FAMILY: Tahoma, Arial, Helvetica sans-serif;
+}
+OPTION
+{
+    BORDER: #000000 1px solid;
+    COLOR: black;
+    BACKGROUND-COLOR: white
+}
+SELECT
+{
+    BORDER: #000000 1px solid;
+    WIDTH: 95%;
+    COLOR: #000000;
+    FONT-SIZE: 8pt;
+    FONT-FAMILY: Tahoma, Arial, Helvetica sans-serif
+}
+
+select.listHigh{
+	min-height: 150px;
+	margin: 5px 0px
+}
+
+TEXTAREA
+{
+    BORDER: #000000 1px solid;
+    WIDTH: 95%;
+    COLOR: #000000;
+    FONT-SIZE: 8pt;
+    FONT-FAMILY: Tahoma, Arial, Helvetica sans-serif;
+    min-height: 150px
+}
+INPUT
+{
+    BORDER: #000000 1px solid;
+    WIDTH: 95%;
+    COLOR: #000000;
+    FONT-SIZE: 8pt;
+    FONT-FAMILY: Tahoma, Arial, Helvetica sans-serif
+}
+INPUT.BUTTON{
+    MARGIN-BOTTOM: 5px;   
+}
+.CB
+{
+    BORDER-RIGHT: medium none;
+    BORDER-TOP: medium none;
+    BORDER-LEFT: medium none;
+    WIDTH: 20px;
+    COLOR: crimson;
+    BORDER-BOTTOM: medium none
+}
+.SW_ATT
+{
+    WIDTH: 70%
+}
+.SW_ATT_SIZE
+{
+    WIDTH: 28%;
+    BORDER-TOP-STYLE: none;
+    BORDER-RIGHT-STYLE: none;
+    BORDER-LEFT-STYLE: none;
+    BORDER-BOTTOM-STYLE: none
+}
+
+

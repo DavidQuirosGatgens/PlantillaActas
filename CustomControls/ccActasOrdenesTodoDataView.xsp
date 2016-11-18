@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:xe="http://www.ibm.com/xsp/coreex">
+	<xp:panel>
+		
+		
+		<xp:button value="Eliminar" id="button2">
+			
+		<xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+			<xp:this.action>
+				<xp:deleteSelectedDocuments
+					message="¿Está seguro que desea eliminar el(los) documento(s)?"
+					view="viewPanel1">
+				</xp:deleteSelectedDocuments>
+			</xp:this.action></xp:eventHandler></xp:button>
+	</xp:panel>
+	<xe:dataView id="dataView1" collapsibleDetail="true"
+		columnTitles="true" var="rowHandle" pageName="/xpActa.xsp"
+		openDocAsReadonly="true">
+		<xe:this.summaryColumn>
+			<xe:viewSummaryColumn columnName="$5"
+				columnTitle="Número">
+			</xe:viewSummaryColumn>
+		</xe:this.summaryColumn>
+		<xe:this.extraColumns>
+			<xe:viewExtraColumn columnName="FechaCreacion"
+				columnTitle="Fecha">
+			</xe:viewExtraColumn>
+		</xe:this.extraColumns>
+		<xp:this.facets>
+			<xp:pager layout="Previous Group Next" partialRefresh="true"
+				id="pager2" xp:key="pagerBottomRight">
+			</xp:pager>
+			<xp:pager layout="Previous Group Next" partialRefresh="true"
+				id="pager1" xp:key="pagerTop">
+			</xp:pager>
+			<xe:pagerAddRows id="pagerAddRows1" xp:key="pagerBottom"
+				for="dataView1" partialRefresh="true" refreshPage="true">
+			</xe:pagerAddRows>
+			<xp:panel xp:key="detail">
+				<xp:text escape="true" id="computedField1">
+					<xp:this.value><![CDATA[#{javascript:rowHandle.getDocument().getItemValueString("TipoSesion")}]]></xp:this.value>
+				</xp:text>
+				<xp:table>
+					<xp:tr>
+						<xp:td style="height:20.0px;width:30.0px"></xp:td>
+						<xp:td><xe:dataView id="dataViewTemas" collapsibleDetail="true" var="rowTemas" openDocAsReadonly="true" columnTitles="true" pageName="/xpTema.xsp">
+					<xe:this.summaryColumn>
+						<xe:viewSummaryColumn columnName="Titulo" columnTitle="Título" style="font-size:9pt;color:rgb(0,0,128);font-weight:bold">
+						</xe:viewSummaryColumn>
+					</xe:this.summaryColumn>
+					<xp:this.facets>
+						<xp:table xp:key="detail">
+							<xp:tr>
+								<xp:td style="height:20.0px;width:30.0px"></xp:td>
+								<xp:td><xp:panel>
+
+							<xp:button value="Crear Acuerdo" id="button1" rendered="false">
+							<xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+								<xp:this.action>
+									<xp:createResponse
+										name="/xpAcuerdo.xsp"
+										parentId="#{javascript:rowTemas.getDocument().getUniversalID()}">
+									</xp:createResponse>
+								</xp:this.action></xp:eventHandler></xp:button>
+							<xp:br></xp:br>
+							<xe:dataView id="dataView2" var="rowAcuerdos" collapsibleDetail="true" columnTitles="true" openDocAsReadonly="true" pageName="/xpAcuerdo.xsp">
+								<xp:this.facets>
+									<xp:table xp:key="detail">
+										<xp:tr>
+											<xp:td style="height:20.0px;width:30.0px"></xp:td>
+											<xp:td><xp:panel>
+										<xp:button value="Crear Seguimiento" id="button3" rendered="false">
+										<xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+											<xp:this.action>
+												<xp:createResponse
+													name="/xpSeguimiento.xsp"
+													parentId="#{javascript:rowAcuerdos.getDocument().getUniversalID()}">
+												</xp:createResponse>
+											</xp:this.action></xp:eventHandler></xp:button>
+										<xp:button value="Crear Comunicado" id="button4" rendered="false">
+										<xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+											<xp:this.action>
+												<xp:createResponse
+													name="/xpComunicado.xsp"
+													parentId="#{javascript:rowAcuerdos.getDocument().getUniversalID()}">
+												</xp:createResponse>
+											</xp:this.action></xp:eventHandler></xp:button>
+										<xp:br></xp:br>
+										<xe:dataView id="dataView3" collapsibleDetail="false" columnTitles="true" var="rowHijosAcuerdos" openDocAsReadonly="true">
+											<xe:this.data>
+												<xp:dominoView var="viewHijosAcuerdo" viewName="vChildrensAcuerdo_ByID">
+													<xp:this.categoryFilter><![CDATA[#{javascript:rowAcuerdos.getDocument().getItemValueString("IDAcuerdo")}]]></xp:this.categoryFilter>
+												</xp:dominoView>
+											</xe:this.data>
+											<xe:this.summaryColumn>
+												<xe:viewSummaryColumn columnName="$1" columnTitle="Documento" style="font-size:8pt;text-decoration:underline;color:rgb(0,0,128)">
+												</xe:viewSummaryColumn>
+											</xe:this.summaryColumn>
+										<xe:this.pageName><![CDATA[#{javascript:if(rowHijosAcuerdos.getDocument().getItemValueString("form")=="Seguimiento"){
+	return "/xpSeguimiento.xsp";
+}else{
+	return "/xpComunicado.xsp";
+}
+}]]></xe:this.pageName></xe:dataView>
+									</xp:panel></xp:td>
+										</xp:tr>
+									</xp:table>
+									
+								</xp:this.facets>
+								<xe:this.data>
+									<xp:dominoView var="viewAcuerdos" viewName="vAcuerdos_ByTema">
+										<xp:this.categoryFilter><![CDATA[#{javascript:rowTemas.getDocument().getItemValueString("IDdocTema")}]]></xp:this.categoryFilter>
+									</xp:dominoView>
+								</xe:this.data>
+								<xe:this.summaryColumn>
+									<xe:viewSummaryColumn columnName="$1" columnTitle="Descripción Acuerdo" style="font-size:9pt;color:rgb(0,0,128)">
+									</xe:viewSummaryColumn>
+								</xe:this.summaryColumn>
+							</xe:dataView>
+						</xp:panel></xp:td>
+							</xp:tr>
+						</xp:table>
+						
+					</xp:this.facets>
+					<xe:this.data>
+						<xp:dominoView var="vTemas" viewName="vTemasAsignados_ByActa">
+							<xp:this.categoryFilter><![CDATA[#{javascript:rowHandle.getDocument().getItemValueString("IDdocActa")}]]></xp:this.categoryFilter>
+						</xp:dominoView>
+					</xe:this.data>
+				</xe:dataView></xp:td>
+					</xp:tr>
+				</xp:table></xp:panel>
+
+		</xp:this.facets>
+		<xe:this.data>
+			<xp:dominoView var="vOrdenes" viewName="vActasOrdenes"
+				search="#{javascript:param.searchValue}">
+			</xp:dominoView>
+		</xe:this.data>
+	</xe:dataView>
+	<xe:pagerSaveState id="pagerSaveState1" for="dataView1" globalRows="false">
+	</xe:pagerSaveState>
+	
+	<xp:br></xp:br>
+	
+</xp:view>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xc="http://www.ibm.com/xsp/custom"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+
+
+
+
+
+
+
+
+
+
+	<xp:this.data>
+		<xp:dominoDocument var="document1" formName="Anexo"
+			computeWithForm="both">
+		</xp:dominoDocument>
+	</xp:this.data>
+	
+	<xp:panel>
+		<xp:label value="Agregar Archivo: " id="label1" style="font-weight:bold"></xp:label>
+		<xp:br></xp:br>
+		<xp:br></xp:br>
+		<xp:fileUpload id="fileUpload1" value="#{document1.Archivos}"></xp:fileUpload>
+		<xp:br></xp:br><xp:fileUpload id="fileUpload2" value="#{document1.Archivos}"></xp:fileUpload><xp:br></xp:br><xp:fileUpload id="fileUpload3" value="#{document1.Archivos}"></xp:fileUpload>
+		<xp:br></xp:br>
+		<xp:fileDownload rows="30" id="fileDownload1" displayLastModified="false"></xp:fileDownload>
+		<xp:br></xp:br></xp:panel>
+	<xp:panel>
+		<xp:button id="button1" value="Guardar">
+			<xp:eventHandler event="onclick" submit="true"
+				refreshMode="complete" immediate="false" save="true">
+				<xp:this.action>
+
+
+					<xp:actionGroup>
+						<xp:actionGroup>
+
+
+
+
+							<xp:saveDocument var="document1"></xp:saveDocument>
+						</xp:actionGroup>
+						<xp:openPage name="$$PreviousPage"
+							target="openDocument">
+						</xp:openPage>
+					</xp:actionGroup>
+				</xp:this.action>
+			</xp:eventHandler>
+		</xp:button>
+	<xp:button id="button2" value="Salir">
+		<xp:eventHandler event="onclick" submit="true" refreshMode="complete" immediate="true" save="false">
+			<xp:this.action>
+				<xp:openPage name="$$PreviousPage"></xp:openPage>
+			</xp:this.action>
+		</xp:eventHandler>
+	</xp:button></xp:panel></xp:view>

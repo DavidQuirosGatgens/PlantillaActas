@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='utf-8'?>
+<note class='form' xmlns='http://www.lotus.com/dxl' version='9.0' maintenanceversion='1.0'
+ replicaid='0625806D0062AD0E'>
+<noteinfo noteid='316' unid='4931C43592AE3E6806257D730059DB8C' sequence='44'>
+<created><datetime>20141016T102129,08-06</datetime></created>
+<modified><datetime>20161118T102904,17-06</datetime></modified>
+<revised><datetime>20161118T102904,16-06</datetime></revised>
+<lastaccessed><datetime>20161118T102904,17-06</datetime></lastaccessed>
+<addedtofile><datetime>20161116T115752,29-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Johan Arroyo/O=CV3</name><name>CN=CV3DEV01/OU=DEV/O=CV3</name><name
+>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=CV3JOHAN/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name
+>CN=CV3JOHAN/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=SJODOMDES/OU=SVR/O=Recope</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localJohan/OU=DEV/O=CV3</name><name
+>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=localCristhian/OU=DEV/O=CV3</name></updatedby>
+<wassignedby><name>CN=localCristhian/OU=DEV/O=CV3</name></wassignedby>
+<item name='$Comment' sign='true'><text/></item>
+<item name='$HTMLCode' sign='true'>
+<rawitemdata type='1'>
+X/8QAAIADwAHAAAAAAAAAA==
+</rawitemdata></item>
+<item name='$TITLE'><text>frmListaValores</text></item>
+<item name='$Info' sign='true'>
+<rawitemdata type='1'>
+hhgBAIAAAAAAgAAAAQABAP///wAQAAAA
+</rawitemdata></item>
+<item name='$DesignerVersion' sign='true'><text>8.5.3</text></item>
+<item name='$$ScriptName' summary='false' sign='true'><text>ListaValores</text></item>
+<item name='key' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='values' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='Author' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='$Fields'><textlist><text>Author</text><text>values</text><text
+>key</text></textlist></item>
+<item name='$Body' sign='true'>
+<rawitemdata type='1'>
+gQKC/1oAAQAAAAAAAAAAAKAFAACgBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAABAAAAAJSHAAAAAAAAAAAAAAAAAQAAAAQAAACDBAEAhf8IAAEAAArdBgAAiv/+/1AA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB4AHgAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAIr/KACKAAAFADACAAAAAAAAAgEAAAoAAAAAAAAAAAMAAAAAAGtl
+eQBiDgEAhAAAAAAAAAAAAN4GAACK/4X/CAABAAAKgQKDBAEAhf8IAAEAAArdBgAAiv/+/1AAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB4AHgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAIr/KgCKAAEFDkACAAAAAAAAAgEAAAoAAAAAAAAAAAYAAAAAAHZhbHVl
+c2IOAQCEAAAAAAAAAAAA3gYAAIr/hf8IAAEAAAqBAoMEAQCF/wgAAQAACt0GAACK//7/UAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHgAeAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAiv9GAIwBAAcAAAIAAAAAAAACAQAAChwAAAAAAAAABgAAAAAAHAAAABoA
+AQAPAFtBZG1pbmlzdHJhZG9yXQADAEF1dGhvct4GAACK/4X/CAABAAAK
+</rawitemdata></item>
+<item name='$Flags'><text>w</text></item></note>
+

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xc="http://www.ibm.com/xsp/custom"
+	xmlns:xe="http://www.ibm.com/xsp/coreex"
+	pageTitle="#{javascript:database.getTitle()}">
+
+
+	<xc:Plantilla>
+		<xp:this.facets>
+			<xe:formTable id="formTable1" labelPosition="above"
+				xp:key="facetMiddle" formTitle="Administración / Puesto">
+				<xp:panel>
+
+
+
+					<xe:formRow id="formRow3">
+						<xp:panel>
+
+
+							<xc:ccPuesto></xc:ccPuesto>
+						</xp:panel>
+					</xe:formRow>
+
+
+				</xp:panel>
+
+
+			</xe:formTable>
+
+			<xc:Menu xp:key="facetLeft"></xc:Menu>
+		</xp:this.facets>
+	</xc:Plantilla>
+</xp:view>

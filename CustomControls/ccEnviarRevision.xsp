@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+
+	<xp:button value="Enviar a Revisión" id="button14"
+		style="text-align:right">
+
+		<xp:this.rendered><![CDATA[#{javascript:
+currentDocument.isEditable() && !currentDocument.isNewNote() 
+&& (currentDocument.getItemValueString("Estado").equals("Borrador")) && context.getUser().getRoles().contains('[Secretaria]')
+}]]></xp:this.rendered>
+
+		<xp:eventHandler event="ondblclick" submit="true"
+			refreshMode="complete">
+			<xp:this.action><![CDATA[#{javascript:function CreaDocumentoActa(IdOrden)
+{
+		
+	var db:NotesDatabase=session.CurrentDatabase()
+    
+    var documento:NotesDocument = db.createDocument();
+
+	documento.Form = "Acta"	
+	documento.Replaceitemvalue("NumeroActa","0011")	
+	documento.Replaceitemvalue("FechaActa", @Now().toString())
+	documento.Replaceitemvalue("IDdocOrden",IdOrden)
+	
+	documento.save()	
+    
+	
+}
+}]]></xp:this.action>
+		</xp:eventHandler>
+		<xp:eventHandler event="onclick" submit="true"
+			refreshMode="complete">
+			<xp:this.action>
+
+
+				<xp:actionGroup>
+
+
+
+
+
+
+
+
+
+					<xp:executeScript>
+						<xp:this.script><![CDATA[#{javascript:currentDocument.setValue("ComentariosTX","");
+var c = getComponent("dialogComentariosGen");
+//currentDocument.setValue("ComentariosWF","");
+c.show();}]]></xp:this.script>
+					</xp:executeScript>
+
+				</xp:actionGroup>
+			</xp:this.action>
+			<xp:this.script><![CDATA[
+var r = confirm("Esta seguro de Enviar a Revisión?");
+if (r == true) {
+    return true;
+} else {
+    return false;
+}]]></xp:this.script>
+		</xp:eventHandler>
+	</xp:button>
+	<xe:dialog id="dialogComentariosGen" title="Enviar a Revisión" tooltip="Enviar a Revisión">
+		<xe:dialogButtonBar id="dialogButtonBar3">
+			
+			<xp:button value="Aceptar" id="button3">
+				<xp:eventHandler event="onclick" submit="true"
+					refreshMode="complete">
+					<xp:this.action>
+
+
+						<xp:actionGroup>
+
+
+
+
+
+
+
+
+
+
+
+							<xp:actionGroup>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<xp:this.condition><![CDATA[#{javascript:if(currentDocument.getDocument(true).getItemValueString("Notificados")==""){
+	view.postScript("alert('Debe seleccionar los invitados');");
+	return false;
+}else{
+	if(@IsMember("[Invitado]",currentDocument.getDocument(true).getItemValue("Notificados"))){
+		if(currentDocument.getDocument(true).getItemValueString("InvitadosMiembros")==""){
+			view.postScript("alert('Debe seleccionar los invitados');");
+			return false;
+		}
+	}
+}
+return true;
+}]]></xp:this.condition>
+								<xp:executeScript>
+									<xp:this.script><![CDATA[#{javascript:
+var agent = database.getAgent('(SaveOrdenDia)');
+if(null != agent){
+	var document:NotesDocument = document1.getDocument(true);
+	if(null != document){
+		try{
+			document.replaceItemValue("AccionSave","Enviar a Revisión");
+			agent.runWithDocumentContext(document);
+			document1.replaceItemValue("Estado","En Revisión");
+			var anexo:NotesEmbeddedObject;
+			for(var i = 0; i < @Attachments(); i++) {
+				anexo=document.getAttachment(document.@AttachmentNames()[i]); 
+				anexo.remove();
+			}
+			document.removeItem("$FILE");
+			document.save();
+			viewStateBean.restoreState=true;
+		}catch(e){
+			print('Error: ' + e);
+			return;
+		}
+		//document.save();
+	}
+}
+view.postScript('alert("Se ha generado el Acta.")');
+var c = getComponent("dialogComentariosGen")
+c.hide()
+}]]></xp:this.script>
+								</xp:executeScript>
+								<xp:openPage>
+									<xp:this.name><![CDATA[#{javascript://redirecciona pagina anterior
+if(sessionScope.RedirectOrdenDia!=""){
+	var dir=sessionScope.RedirectOrdenDia;
+	sessionScope.RedirectOrdenDia=""
+	return dir
+}else{
+	context.redirectToHome();
+}
+}]]></xp:this.name>
+								</xp:openPage>
+							</xp:actionGroup>
+						</xp:actionGroup>
+					</xp:this.action>
+					<xp:this.script><![CDATA[var msg="";
+if(!validaCampoTexto(dojo.byId("#{id:txComentariosWF}")))msg= msg + "Comentarios.\n";
+
+
+if(msg!=""){
+	alert("Debe incluir los siguientes Datos: \n" + msg);
+	return false;
+}
+
+
+]]></xp:this.script>
+				</xp:eventHandler>
+			</xp:button>
+			<xp:button value="Cancelar" id="button2">
+				<xp:eventHandler event="onclick" submit="true" refreshMode="partial" refreshId="dialogComentariosGen">
+					<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogComentarios}')]]></xp:this.script>
+					<xp:this.action><![CDATA[#{javascript:var c = getComponent("dialogComentariosGen")
+c.hide()
+}]]></xp:this.action>
+				</xp:eventHandler></xp:button>
+		</xe:dialogButtonBar>
+		
+		<xe:dialogContent id="dialogContent5">
+			<xp:panel id="PanelRevisión">
+
+				<xp:table>
+
+					<xp:tr>
+						<xp:td>
+							<xp:label value="Comentario" id="label5"></xp:label>
+							<xp:br></xp:br>
+						</xp:td>
+						<xp:td>
+							<xp:inputTextarea id="txComentariosWF"
+								style="width:568.0px;height:63.0px"
+								value="#{document1.ComentariosTX}">
+							</xp:inputTextarea>
+						</xp:td>
+					</xp:tr>
+					<xp:tr>
+						<xp:td>Notificar a:</xp:td>
+						<xp:td>
+
+							<xp:checkBoxGroup id="Notificados"
+								layout="pageDirection" value="#{document1.Notificados}">
+								<xp:selectItem
+									itemLabel="Junta Directiva" itemValue="[JuntaDirectiva]"
+									id="selectItem1">
+								</xp:selectItem>
+								<xp:selectItem itemLabel="Invitados"
+									itemValue="[Invitado]" id="selectItem2">
+								</xp:selectItem>
+								<xp:eventHandler event="onclick"
+									submit="true" refreshMode="partial" refreshId="PanelRevisión">
+								</xp:eventHandler></xp:checkBoxGroup>
+							
+							
+						</xp:td>
+					</xp:tr>
+					<xp:tr>
+						<xp:td>
+
+							<xp:label id="label1"
+								value="Invitados Miembros:">
+							<xp:this.rendered><![CDATA[#{javascript:if(@IsMember("[Invitado]",currentDocument.getDocument(true).getItemValue("Notificados"))){
+	return true;
+}else{
+	return false;
+}}]]></xp:this.rendered></xp:label>
+							<xe:namePicker id="nameInvitados"
+								for="inputInvitados" dialogTitle="Seleccione los Nombres">
+								<xe:this.dataProvider>
+									<xe:namePickerAggregator>
+
+										<xe:this.dataProviders>
+											<xe:dominoViewNamePicker
+												label="Nombre" labelColumn="Nombre" loaded="true"
+												viewName="vUsuario">
+											</xe:dominoViewNamePicker>
+										</xe:this.dataProviders>
+									</xe:namePickerAggregator>
+								</xe:this.dataProvider>
+							<xe:this.rendered><![CDATA[#{javascript:if(@IsMember("[Invitado]",currentDocument.getDocument(true).getItemValue("Notificados"))){
+	return true;
+}else{
+	return false;
+}}]]></xe:this.rendered></xe:namePicker>
+						</xp:td>
+						<xp:td>
+							
+							<xe:djextNameTextBox id="inputInvitados"
+								value="#{document1.InvitadosMiembros}" multipleSeparator=",">
+								<xe:this.rendered><![CDATA[#{javascript:if(@IsMember("[Invitado]",currentDocument.getDocument(true).getItemValue("Notificados"))){
+	return true;
+}else{
+	return false;
+}}]]></xe:this.rendered>
+							</xe:djextNameTextBox></xp:td>
+					</xp:tr>
+				</xp:table>
+			</xp:panel>
+		</xe:dialogContent>
+		</xe:dialog></xp:view>

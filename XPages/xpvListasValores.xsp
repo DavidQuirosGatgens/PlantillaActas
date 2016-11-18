@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xc="http://www.ibm.com/xsp/custom"
+	xmlns:xe="http://www.ibm.com/xsp/coreex"
+	pageTitle="#{javascript:database.getTitle()}">
+	<xp:this.data>
+		<xp:dominoDocument formName="ListaValores"
+			var="DocListaValores">
+		</xp:dominoDocument>
+	</xp:this.data>
+
+	<xc:Plantilla>
+		<xp:this.facets>
+			<xe:formTable id="formTable1" xp:key="facetMiddle"
+				formTitle="Administración / Lista de Valores">
+				<xe:formRow id="formRow1">
+					<xp:viewPanel rows="30" id="viewPanel1"
+						pageName="/xpListasValores.xsp">
+						<xp:this.facets>
+							<xp:pager partialRefresh="true"
+								layout="Previous Group Next" xp:key="headerPager" id="pager1">
+							</xp:pager>
+						</xp:this.facets>
+						<xp:this.data>
+							<xp:dominoView var="view1"
+								viewName="vListaValores">
+							</xp:dominoView>
+						</xp:this.data>
+						<xp:viewColumn columnName="key" id="viewColumn1"
+							style="width:161.0px">
+							<xp:viewColumnHeader value="Llave"
+								id="viewColumnHeader1">
+							</xp:viewColumnHeader>
+						</xp:viewColumn>
+						<xp:viewColumn columnName="values"
+							id="viewColumn2" style="width:232.0px" displayAs="link"
+							openDocAsReadonly="true">
+							<xp:viewColumnHeader value="valores"
+								id="viewColumnHeader2">
+							</xp:viewColumnHeader>
+						</xp:viewColumn>
+					</xp:viewPanel>
+				</xe:formRow>
+			</xe:formTable>
+
+
+			<xc:Menu xp:key="facetLeft"></xc:Menu>
+		</xp:this.facets>
+	</xc:Plantilla>
+</xp:view>

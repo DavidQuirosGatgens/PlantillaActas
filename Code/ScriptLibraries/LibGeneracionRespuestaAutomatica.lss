@@ -1,0 +1,428 @@
+'++LotusScript Development Environment:2:5:(Options):0:74
+%REM
+	Library LibGeneracionRespuestaAutomatica
+	Created Oct 7, 2014 by Milton Villegas/CV3 
+	Description: Generación de las respuestas automáticas y envío a los clientes al haber recibido su correo
+	parametrizado según cada buzón definido
+	CRI-15923.Mejoras al Sistema SAC	
+		
+%END REM
+Option Public
+Option Declare
+Use "LibDeclaracionesComunes"
+Use "LibBitacora"
+
+
+'++LotusScript Development Environment:2:5:(Forward):0:1
+Declare Sub Initialize
+Declare Sub ReemplazaEtiquetasCuerpoMensaje(mailBodyBuzon As NotesRichTextItem, rtrange As NotesRichTextRange,_
+	docGestion As NotesDocument)
+Declare Sub IdentificaEtiquetasAsignadasAsunto(docRespuesta As NotesDocument,mailTitle As String, docGestion As NotesDocument)
+Declare Sub GenerarNotificacionConEtiquetas(mailTo As String, _
+	mailToCC As String, mailToBcc As String, mailTitle As String, mailFrom As String,_ 
+	mailBodyBuzon As NotesRichTextItem, attachments As NotesRichTextItem, _
+	tipoNotificacion As String, docGestion As NotesDocument)
+Declare Private Sub RegistrarError(errorMessage As String)
+Declare Sub IdentificaEtiquetasAsignadasCuerpo(docRespuesta As NotesDocument, _
+	mailBodyBuzon As NotesRichTextItem, docGestion As NotesDocument)
+Declare Function validaRemitenteValido(enviadoPor As String) As String
+
+'++LotusScript Development Environment:2:5:(Declarations):0:2
+
+'++LotusScript Development Environment:2:2:Initialize:1:10
+Sub Initialize
+	
+	
+	
+End Sub
+
+
+
+
+'++LotusScript Development Environment:2:2:ReemplazaEtiquetasCuerpoMensaje:2:8
+Sub ReemplazaEtiquetasCuerpoMensaje(mailBodyBuzon As NotesRichTextItem, rtrange As NotesRichTextRange,_
+	docGestion As NotesDocument)
+	On Error GoTo ERRORHANDLER
+		
+	Dim parrafo, etiqueta, valor, letra, letraSig As String
+	Dim posicion, posicionSig As Long
+	Dim cierraEtiqueta As Integer
+	Dim itemCampo As NotesItem
+		
+	parrafo = rtrange.Textparagraph		
+	posicion=1
+	While posicion<=Len(parrafo)
+		letra = Mid(parrafo,posicion,1)
+		letraSig = Mid(parrafo,posicion+1,1)
+		etiqueta = ""
+		valor =""
+		If (letra="<" And letraSig="%") Then
+			posicion = posicion + 2
+			etiqueta = etiqueta + Mid(parrafo,posicion,1)			
+			posicionSig = posicion+ 1
+			cierraEtiqueta=0
+			While posicionSig<Len(parrafo)And cierraEtiqueta<>1					
+				letra = Mid(parrafo,posicionSig,1)
+				letraSig = Mid(parrafo,posicionSig+1,1)
+				If (letra="%" And letraSig=">") Then
+					cierraEtiqueta = 1					
+					If docGestion.Hasitem(etiqueta)Then						
+						Set itemCampo = docGestion.Getfirstitem(etiqueta)
+						valor = itemCampo.Text								
+						Call rtrange.Findandreplace("<%" + etiqueta + "%>", valor, 16)
+						Set rtrange = mailBodyBuzon.CreateRange 'vuelve a cargar el parrafo con la data actualizada						
+						parrafo = rtrange.Textparagraph											
+					End If						
+				Else
+					etiqueta = etiqueta + Mid(parrafo,posicionSig,1)
+				End If					
+				posicionSig = posicionSig + 1			
+			Wend	
+			posicion = posicionSig
+		Else
+			posicion = posicion + 1
+		End If 	
+	Wend
+GETOUT:
+	Exit Sub
+	
+ERRORHANDLER:
+	Call RegistrarError("Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+	GoTo GETOUT
+End Sub 
+
+'++LotusScript Development Environment:2:2:IdentificaEtiquetasAsignadasAsunto:1:8
+Sub IdentificaEtiquetasAsignadasAsunto(docRespuesta As NotesDocument,mailTitle As String, docGestion As NotesDocument)
+
+	Dim asunto As String
+	On Error GoTo ERRORHANDLER
+	Dim etiqueta, valor, letra, letraSig As String
+	Dim posicion, posicionSig As Long
+	Dim cierraEtiqueta As Integer
+	Dim itemCampo As NotesItem
+	
+	asunto = mailTitle		
+	posicion=1
+	While posicion<=Len(asunto)
+		letra = Mid(asunto,posicion,1)
+		letraSig = Mid(asunto,posicion+1,1)
+		etiqueta = ""
+		valor =""
+		If (letra="<" And letraSig="%") Then
+			posicion = posicion + 2
+			etiqueta = etiqueta + Mid(asunto,posicion,1)			
+			posicionSig = posicion+ 1
+			cierraEtiqueta=0
+			While posicionSig<Len(asunto)And cierraEtiqueta<>1					
+				letra = Mid(asunto,posicionSig,1)
+				letraSig = Mid(asunto,posicionSig+1,1)
+				If (letra="%" And letraSig=">") Then
+					cierraEtiqueta = 1					
+					If docGestion.Hasitem(etiqueta)Then						
+						Set itemCampo = docGestion.Getfirstitem(etiqueta)
+						valor = itemCampo.Text							
+						asunto = Replace(asunto,"<%"+etiqueta+"%>",valor)													
+					End If						
+				Else
+					etiqueta = etiqueta + Mid(asunto,posicionSig,1)
+				End If					
+				posicionSig = posicionSig + 1			
+			Wend	
+			posicion = posicionSig
+		Else
+			posicion = posicion + 1
+		End If 	
+	Wend
+	
+	docRespuesta.Subject= asunto	
+GETOUT:
+	Exit Sub
+	
+ERRORHANDLER:
+	Call RegistrarError("Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+	GoTo GETOUT
+	
+	
+End Sub
+
+'++LotusScript Development Environment:2:2:GenerarNotificacionConEtiquetas:11:8
+
+%REM
+	Sub GenerarNotificacionConEtiquetas
+	Description: Prepara correo en respuesta automatica al correo que se recibe
+	segun orden de gestión recibida
+%END REM
+
+Sub GenerarNotificacionConEtiquetas(mailTo As String, _
+	mailToCC As String, mailToBcc As String, mailTitle As String, mailFrom As String,_ 
+	mailBodyBuzon As NotesRichTextItem, attachments As NotesRichTextItem, _
+	tipoNotificacion As String, docGestion As NotesDocument)
+ 
+	On Error GoTo ErrorHandler
+	
+
+	Dim MailDoc As NotesDocument
+	Dim rtitem As NotesRichTextItem, body As NotesRichTextItem
+	Dim correos As Variant
+	Dim usuarioVerificado As Boolean
+	Dim usuarioAVerificar As String
+	Dim nombreUsuarioVerificado As String
+	
+	
+	' ************************************************************
+	If dbMail.IsOpen Then
+		''' Se crea el documento para la notificación
+		Set MailDoc= New NotesDocument( dbMail )
+		MailDoc.Form="Memo"	
+	
+		MailDoc.ReplyTo=  mailFrom
+		MailDoc.From=   mailFrom
+		
+		MailDoc.CopyTo= Split(mailToCC , SEPARADOR_MAILS)
+		MailDoc.BCC =  Split(mailToBcc, SEPARADOR_MAILS)
+		MailDoc.SendTo= Split(mailTo, SEPARADOR_MAILS)
+		
+		MailDoc.Recipients = mailTo  		
+		
+		MailDoc.PostedDate= MailDoc.Created
+		MailDoc.Importance="1"
+		MailDoc.ReturnReceipt = "1"
+		
+		Call IdentificaEtiquetasAsignadasAsunto(MailDoc,mailTitle, docGestion)
+		
+		Call IdentificaEtiquetasAsignadasCuerpo(MailDoc, mailBodyBuzon, docGestion)
+			
+		If Not attachments Is Nothing Then Call MailDoc.Copyitem(attachments, "Attachments")
+		
+		'Guarda correo
+		Call MailDoc.ComputeWithForm( False, False )	
+		Call MailDoc.Save(True,False)
+		
+	End If
+	
+GETOUT:
+	Exit Sub
+	
+ErrorHandler:
+	Call RegistrarError("Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+	GoTo GETOUT
+	
+End Sub
+
+
+
+
+
+
+
+
+'++LotusScript Development Environment:2:2:EnviarRespuestaAutomatica:0:8
+%REM
+	Sub EnviarRespuestaAutomatica
+	Description: Comments for Sub
+
+Sub EnviarRespuestaAutomatica(doc As NotesDocument, docBuzon As NotesDocument)
+	On Error GoTo ERRORHANDLER
+	
+	Dim remitente As String
+	Dim enviarFrom As String
+	stop
+	'
+	REM Set docBuzon = vBuzon.GetDocumentByKey(CStr(doc.IdentificadorBuzon(0)),True)
+	If Not(docBuzon Is Nothing) Then		
+		If docBuzon.EstadoCorreoAtencion(0)="1" Then  'se puede enviar la respuesta automatica			
+			remitente = validaRemitenteValido(doc.EnviadoPor(0))
+			If remitente<>"invalido" Then
+				Dim cuerpoRespuesta As NotesRichTextItem	
+				Set cuerpoRespuesta = docBuzon.GetFirstItem( "CuerpoCorreoAutomatico" )	
+				enviarFrom= getDocValueString(docBuzon, "DireccionExterna")
+				If Not InStr(enviarFrom, doc.Getfirstitem("EnviadoA").Text) Then
+					REM	VERIFICAR QUE HACER SI LA DIRECCIÖN NO ES LA QUE ESTA CONFIGURADA 
+				End If 
+								
+				
+				Call GeneraRespuestaAutomatica(remitente, "", "", getDocValueString(docBuzon, "Asunto"), _
+				enviarFrom, cuerpoRespuesta, Nothing, "", doc)	
+							
+				REM mensajeLog= "Respuesta automática enviada para el documento ID= " & doc.Universalid
+				REM Call bitacora.AgregarLogInfoBasico(GetThreadInfo(1), mensajeLog)
+			Else
+				doc.indiDireccionInternetInvalida="1"
+				Call doc.Save(True, False)		
+				
+				mensajeLog= "Dirección de correo remitente inválida. Dirección:" & doc.EnviadoPor(0) & _ 
+				" Documento ID= " & doc.Universalid 
+				Call bitacora.AgregarLogError(GetThreadInfo(1) & mensajeLog)
+				End If			
+		Else
+			REM mensajeLog= "El buzón de correo asociado a esta gestión no tiene activo el reenvío de respuesta automática." 
+			REM Call bitacora.AgregarLogInfoBasico(GetThreadInfo(1), mensajeLog)				
+			
+		End If
+	Else
+		
+		REM mensajeLog= "No existe buzón de correo asociado a esta gestión." 
+		REM Call bitacora.AgregarLogInfoBasico(GetThreadInfo(1), mensajeLog)				
+	End If
+	
+	
+GETOUT:
+	Exit Sub
+	
+ERRORHANDLER:
+	Call RegistrarError("Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+	GoTo GETOUT
+End Sub
+
+%END REM
+
+'++LotusScript Development Environment:2:2:RegistrarError:2:8
+
+Private Sub RegistrarError(errorMessage As String)
+	
+	Call AgregarLogError(errorMessage )
+End Sub
+
+
+'++LotusScript Development Environment:2:2:IdentificaEtiquetasAsignadasCuerpo:2:8
+Sub IdentificaEtiquetasAsignadasCuerpo(docRespuesta As NotesDocument, _
+	mailBodyBuzon As NotesRichTextItem, docGestion As NotesDocument)
+	On Error GoTo ERRORHANDLER
+	
+	Dim rtnav As NotesRichTextNavigator
+	Dim rtrange As NotesRichTextRange
+	Dim totalParrafos As Long
+	
+
+	'identifica cuantos parrafos tiene el mensaje
+	'----------------------------------------------------------------
+	Set rtnav = mailBodyBuzon.CreateNavigator
+	Set rtrange = mailBodyBuzon.CreateRange  'delimita el parrafo
+	totalParrafos=0
+	If rtnav.FindFirstElement(RTELEM_TYPE_TEXTPARAGRAPH) Then				
+		Do					
+			Call rtrange.Setbegin(rtnav) 
+			Call rtrange.Setend(rtnav)							
+			totalParrafos=totalParrafos+1				
+		Loop While rtnav.FindNextElement(RTELEM_TYPE_TEXTPARAGRAPH)
+	End If
+	
+	'procesa cada parrafo
+	'----------------------------------------------------------------	 			
+	If rtnav.FindFirstElement(RTELEM_TYPE_TEXTPARAGRAPH) Then	
+		
+		Dim x, parrafoActual As Long
+
+		parrafoActual=1
+		
+		While parrafoActual<=totalParrafos			
+			If parrafoActual = 1 Then  'procesa el primera parrafo
+				Call rtrange.Setbegin(rtnav) 
+				Call rtrange.Setend(rtnav)		
+				Call ReemplazaEtiquetasCuerpoMensaje(mailBodyBuzon, rtrange, docGestion)
+			Else  
+				'procesa los siguientes parrafos, por cada actualizacion del texto
+				'se inicializa el objeto NAV, por lo que se debe estar iniciando en cada ronda para procesar
+				'el parrafo que sigue 
+				x=1	
+				Set rtnav = mailBodyBuzon.CreateNavigator		
+				While x <=parrafoActual
+					If x=1 Then
+						rtnav.FindFirstElement(RTELEM_TYPE_TEXTPARAGRAPH)
+					Else
+						rtnav.FindNextElement(RTELEM_TYPE_TEXTPARAGRAPH)
+					End If
+					x = x + 1
+				Wend				
+				Call rtrange.Setbegin(rtnav) 
+				Call rtrange.Setend(rtnav)		
+				Call ReemplazaEtiquetasCuerpoMensaje(mailBodyBuzon, rtrange, docGestion)
+			End If 		
+			parrafoActual = parrafoActual + 1
+		Wend
+		
+	End If
+	
+	Call docRespuesta.Copyitem(mailBodyBuzon, "Body")
+GETOUT:
+	Exit Sub
+	
+ERRORHANDLER:
+	Call RegistrarError("Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+	GoTo GETOUT
+End Sub
+
+
+
+
+
+'++LotusScript Development Environment:2:1:validaRemitenteValido:1:8
+Function validaRemitenteValido(enviadoPor As String) As String
+	On Error GoTo ERRORHANDLER
+stop
+	Dim pos, posfinal, totalposiciones, posicionSig, cierraEtiqueta, i As Integer	
+	Dim direccionInternet, letra As String
+	
+	'extraer la dirección de internet
+	'---------------------------------------------------------------------------------
+	direccionInternet=""
+	pos = InStr(enviadoPor,"@")	
+	If pos<>0 Then  'contiene una dirección de internet
+		pos = InStr(enviadoPor,"<")'tiene el nombre + dirección de internet 
+		If pos<>0 Then  
+			posfinal = InStr(enviadoPor,">")			
+			posicionSig = pos + 1
+			cierraEtiqueta = 0
+			While posicionSig<Len(enviadoPor)And cierraEtiqueta<>1					
+				letra = Mid(enviadoPor,posicionSig,1)				
+				If (letra=">") Then
+					cierraEtiqueta = 1				
+				Else
+					direccionInternet = direccionInternet + Mid(enviadoPor,posicionSig,1)
+				End If					
+				posicionSig = posicionSig + 1			
+			Wend	
+		Else  'tiene solamente dirección de internet
+			direccionInternet = enviadoPor
+		End If
+	End If
+	
+	'validar la dirección de internet (no posea caracteres especiales)
+	'---------------------------------------------------------------------------------
+	If direccionInternet<>"" Then
+		Dim numASC,noAtChar As Integer
+		Dim CheckSMTPAddressChar As Boolean
+			
+		CheckSMTPAddressChar = True 		
+		For i = 1 To Len( direccionInternet)
+			letra = Mid( direccionInternet, i, 1)		
+			If letra = " " Then letra = "<Space>"		 		
+			numASC = Asc(letra)
+			Select Case numASC
+			Case 65 To 90  	'65 = A, 90 = Z 
+			Case 97 To 122  '97 = a, 122 = z
+			Case 48 To 58  	'48 = 0, 58 = 9
+			Case 45   		' 45 = -
+			Case 46    		' 46 = .
+			Case 64   		' 64 = @
+				noAtChar = noAtChar + 1  
+				If noAtChar > 1 Then CheckSMTPAddressChar = False   'valida que no hay mas de un @
+			Case 95    '57 = _  
+			Case Else
+				CheckSMTPAddressChar = False
+			End Select		
+		Next
+	End If 
+	
+	If CheckSMTPAddressChar Then
+		validaRemitenteValido = direccionInternet
+	Else
+		validaRemitenteValido = "invalido"
+	End If
+GETOUT:
+	Exit Function
+	
+ERRORHANDLER:
+	Call RegError("Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+	GoTo GETOUT		
+End Function

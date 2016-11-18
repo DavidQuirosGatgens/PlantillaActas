@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+	<xp:this.data>
+		<xp:dominoDocument var="docUsuario" formName="Usuarios"
+			computeWithForm="both">
+		</xp:dominoDocument>
+	</xp:this.data>
+
+	<xp:this.resources>
+		<xp:script src="/GeneralSSJS.jss" clientSide="false"></xp:script>
+		<xp:script src="/ClientSideValidationV1.js" clientSide="true"></xp:script>
+	</xp:this.resources>
+	<xp:table>
+		<xp:tr>
+			<xp:td colspan="3">
+
+
+
+				<xp:button id="button1" value="Salvar">
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="complete" immediate="false" save="false"
+						id="eventHandler1">
+
+						<xp:this.script><![CDATA[var msg="";
+if(!validaCampoTexto(dojo.byId("#{id:nombre1}")))msg= msg + "Nombre.\n";
+if(!validaCampoTexto(dojo.byId("#{id:correo1}")))msg= msg + "Correo.\n";
+//if(!validaComboBox(dojo.byId("#{id:puesto1}")))msg= msg + "Puesto.\n";
+//if(!validaComboBox(dojo.byId("#{id:dependencia1}")))msg= msg + "Dependencia.\n";
+
+if(msg!=""){
+	alert("Debe incluir los siguientes Datos: \n" + msg);
+	return false;
+}]]></xp:this.script>
+						<xp:this.action>
+							<xp:actionGroup>
+
+
+
+								<xp:this.condition><![CDATA[#{javascript:if(currentDocument.getDocument(true).getItemValueString("Puesto")==""){
+	view.postScript("alert('Debe seleccionar  el Puesto');");
+	return false;
+}
+if(currentDocument.getDocument(true).getItemValueString("Dependencia")==""){
+	view.postScript("alert('Debe seleccionar  la dependencia');");
+	return false;
+}
+if(currentDocument.getDocument(true).getItemValueString("Roles")==""){
+	view.postScript("alert('Debe seleccionar los Roles');");
+	return false;
+}
+return true;
+}]]></xp:this.condition>
+								<xp:executeScript>
+									<xp:this.script><![CDATA[#{javascript:var agent = database.getAgent('(Seguridad)');
+if(null != agent){
+	var document = docUsuario.getDocument(true);
+	if(null != document){
+		try{
+			agent.runWithDocumentContext(document);
+		}catch(e){
+			print('Error: ' + e);
+			return;
+		}
+		//document.save();
+	}
+}
+
+}]]></xp:this.script>
+								</xp:executeScript>
+								<xp:saveDocument var="docUsuario"></xp:saveDocument>
+								<xp:openPage name="$$PreviousPage"></xp:openPage>
+
+
+							</xp:actionGroup>
+						</xp:this.action>
+					</xp:eventHandler>
+				</xp:button>
+				<xp:button value="Salir" id="button2">
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="complete" id="eventHandler3">
+						<xp:this.action>
+							<xp:openPage name="$$PreviousPage"></xp:openPage>
+						</xp:this.action>
+					</xp:eventHandler>
+				</xp:button>
+			</xp:td>
+
+
+		</xp:tr>
+		<xp:tr>
+			<xp:td>
+				<xp:label value="Nombre ID" id="nombre_Label1"
+					for="nombre1">
+				</xp:label>
+			</xp:td>
+			<xp:td>
+				<xe:namePicker id="namePicker1" for="usuarioLotus"
+					dialogTitle="Seleccione el usuario">
+					<xe:this.dataProvider>
+						<xe:dominoNABNamePicker addressBookSel="db-name"
+							groups="true" nameList="peopleByLastName" people="true">
+							<xe:this.addressBookDb><![CDATA[#{javascript:database.getServer()+ "!!names.nsf"}]]></xe:this.addressBookDb>
+						</xe:dominoNABNamePicker>
+					</xe:this.dataProvider>
+					<xe:this.dojoAttributes>
+						<xp:dojoAttribute name="maxRowCount"
+							value="10000">
+						</xp:dojoAttribute>
+					</xe:this.dojoAttributes>
+				</xe:namePicker>
+			</xp:td>
+			<xp:td>
+				<xp:inputText value="#{docUsuario.Nombre}" id="nombre1"
+					style="width:300px">
+				</xp:inputText>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td><xp:label value="Usuario Lotus" id="label2" for="nombre1">
+				</xp:label></xp:td>
+			<xp:td></xp:td>
+			<xp:td>
+				<xe:djextNameTextBox id="usuarioLotus" value="#{docUsuario.UsuarioLotus}">
+					<xp:eventHandler event="onChange" submit="true"
+						refreshMode="complete">
+						<xe:this.action><![CDATA[#{javascript:try{
+
+	getComponent("nombre1").setValue(getComponent("usuarioLotus").getValue());
+
+	
+	}catch(e){
+		print('Error: ' + e);
+		return "";
+}}]]></xe:this.action>
+					</xp:eventHandler></xe:djextNameTextBox></xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td>
+				<xp:label id="label1" value="Correo"></xp:label>
+			</xp:td>
+			<xp:td></xp:td>
+			<xp:td>
+				<xp:inputText value="#{docUsuario.Correo}"
+					id="correo1">
+				</xp:inputText>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td>
+				<xp:label value="Puesto:" id="puesto_Label1"
+					for="puesto1">
+				</xp:label>
+			</xp:td>
+			<xp:td></xp:td>
+			<xp:td>
+
+				<xp:comboBox id="puesto1" style="width:301.0px"
+					value="#{docUsuario.Puesto}">
+					<xp:selectItems id="selectItems1">
+						<xp:this.value><![CDATA[#{javascript:""}]]></xp:this.value>
+					</xp:selectItems>
+					<xp:selectItems id="selectItems2">
+						<xp:this.value><![CDATA[#{javascript:@DbColumn(@DbName(), "vPuestos", 2)}]]></xp:this.value>
+					</xp:selectItems>
+					<xp:eventHandler event="onchange" submit="true"
+						refreshMode="partial" id="eventHandler2" refreshId="iDPuesto1">
+						<xp:this.action><![CDATA[#{javascript:currentDocument.setValue("IDPuesto","dddd")
+try{
+	currentDocument.setValue("IDPuesto","inicia")
+	var viewClientes=database.getView("vPuestos_ByName");
+	var docCurUsuario=docUsuario.getDocument(true);
+	if(viewClientes!=null){
+		if(!docCurUsuario.getItemValueString('Puesto').equals("")){
+			var docCliente:NotesDocument=viewClientes.getDocumentByKey(docCurUsuario.getItemValueString('Puesto'));
+			if (docCliente!=null){
+				currentDocument.setValue("IDPuesto",docCliente.getItemValueInteger("IDPuesto").toString())
+			}else{
+				currentDocument.setValue("IDPuesto","bbbb")
+			}
+		}else{
+			currentDocument.setValue("IDPuesto","ccc")
+		}
+	}
+	}catch(e){
+		print('Error: ' + e);
+		currentDocument.setValue("IDPuesto","aaa")
+		return "";
+}
+}]]></xp:this.action>
+					</xp:eventHandler>
+
+
+				</xp:comboBox>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td>
+				<xp:label value="Id puesto:" id="iDPuesto_Label1"
+					for="iDPuesto1">
+				</xp:label>
+			</xp:td>
+			<xp:td></xp:td>
+			<xp:td>
+				<xp:inputText value="#{docUsuario.IDPuesto}"
+					id="iDPuesto1" readonly="true">
+				</xp:inputText>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td>
+				<xp:label value="Dependencia:" id="dependencia_Label1"
+					for="dependencia1">
+				</xp:label>
+			</xp:td>
+			<xp:td></xp:td>
+			<xp:td>
+				<xp:comboBox id="dependencia1" style="width:301.0px"
+					value="#{docUsuario.Dependencia}">
+					<xp:selectItems id="selectItems3">
+						<xp:this.value><![CDATA[#{javascript:""}]]></xp:this.value>
+					</xp:selectItems>
+					<xp:selectItems id="selectItems4">
+						<xp:this.value><![CDATA[#{javascript:@DbColumn(@DbName(), "vDependencias", 1)}]]></xp:this.value>
+					</xp:selectItems>
+
+
+
+				</xp:comboBox>
+			</xp:td>
+		</xp:tr>
+
+
+		<xp:tr>
+			<xp:td>
+				<xp:label value="Roles:" id="roles_Label1"
+					for="roles1">
+				</xp:label>
+			</xp:td>
+			<xp:td></xp:td>
+			<td>
+				<xp:checkBoxGroup id="roles1" layout="pageDirection"
+					value="#{docUsuario.Roles}">
+					<xp:selectItem itemLabel="ADMIN" itemValue="ADMIN"
+						id="selectItem3">
+					</xp:selectItem>
+					<xp:selectItem itemLabel="Junta Directiva"
+						itemValue="JuntaDirectiva" id="selectItem4">
+					</xp:selectItem>
+					<xp:selectItem itemLabel="Secretaria"
+						itemValue="Secretaria" id="selectItem5">
+					</xp:selectItem>
+					<xp:selectItem itemLabel="Invitado"
+						itemValue="Invitado" id="selectItem1">
+					</xp:selectItem>
+				</xp:checkBoxGroup>
+			</td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td></xp:td>
+			<xp:td></xp:td>
+			<xp:td></xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td></xp:td>
+			<xp:td></xp:td>
+			<xp:td>
+				<xp:messages layout="table" style="color:red"
+					id="messages1">
+				</xp:messages>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td></xp:td>
+			<xp:td></xp:td>
+			<xp:td id="td1">
+
+
+			</xp:td>
+		</xp:tr>
+	</xp:table>
+</xp:view>

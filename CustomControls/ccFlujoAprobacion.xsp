@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex"><xp:this.resources>
+		<xp:script src="/ClientSideValidationV1.js" clientSide="true"></xp:script>
+	</xp:this.resources><xp:this.data>
+		<xp:dominoDocument var="curDocument" formName="OrdenDelDia"></xp:dominoDocument>
+	</xp:this.data><xp:this.afterPageLoad>
+		<xp:changeDocumentMode mode="edit" var="curDocument"></xp:changeDocumentMode>
+	</xp:this.afterPageLoad>
+	<xp:button value="Aprobar" id="button1">
+		<xp:this.rendered><![CDATA[#{javascript:if(document1.getDocument(true).getItemValueString("Estado")=="Borrador") return false;
+var puedeAprobar:boolean=false;
+var vistaDocumentosAprobados:NotesView=database.getView("(vDocsAprobaciones_DocumentoAprobado)");
+var vistaAprobacion:NotesView=database.getView("(vDocsAprobaciones)");
+var usuarioActual:NotesName=session.getUserNameObject();
+var docAprobacionAnterior:NotesDocument;
+var docAprobacion:NotesDocument;
+
+
+//Verifica si el documento padre se encuentra aprobado
+docAprobacion=vistaDocumentosAprobados.getDocumentByKey(curDocument.getDocument(true).getItemValueString("IdDocumento"));
+if(docAprobacion==null){
+	if(curDocument.getDocument(true).getItemValueString("TipoAprobacion")=="Secuencial"){
+	//Si el aprobador es secuencial obtiene el aprobador de turno.
+		var indiceAprobador=curDocument.getDocument(true).getItemValueInteger("IndexAprobadorActual");
+		if(curDocument.getDocument(true).getItemValue("AprobadoresTodos")[indiceAprobador]==usuarioActual.getAbbreviated()){
+			puedeAprobar=true;
+		}
+	}else{
+		//Si el aprobador es paralelo obtiene los aprobadores disponibles, eso si el actual no ha aprobado ya
+		if(@IsMember(usuarioActual.getAbbreviated(),curDocument.getDocument(true).getItemValue("AprobadoresTodos"))){
+			//Verifica si el aprobador ya aprobo el documento
+			docAprobacionAnterior=vistaAprobacion.getDocumentByKey(curDocument.getDocument(true).getItemValueString("IdDocumento") + usuarioActual.getCommon());
+			if(docAprobacionAnterior== null){
+				puedeAprobar=true;
+			}
+		}
+	}
+}else{
+	return false;
+}
+return context.getUser().getRoles().contains('[ADMIN]') || puedeAprobar
+
+
+}]]></xp:this.rendered>
+		<xp:eventHandler event="onclick" submit="true"
+			refreshMode="complete">
+			<xp:this.action><![CDATA[#{javascript:viewScope.AccionWF="Aprobar";
+var c = getComponent("dialogComentarios");
+currentDocument.setValue("ComentariosWF","");;
+c.show();
+}]]></xp:this.action>
+		</xp:eventHandler>
+	</xp:button>
+	<xp:button value="Devolver" id="button5">
+					
+					<xp:this.rendered><![CDATA[#{javascript:if(document1.getDocument(true).getItemValueString("Estado")=="Borrador") return false;
+var puedeAprobar:boolean=false;
+var vistaDocumentosAprobados:NotesView=database.getView("(vDocsAprobaciones_DocumentoAprobado)");
+var vistaAprobacion:NotesView=database.getView("(vDocsAprobaciones)");
+var usuarioActual:NotesName=session.getUserNameObject();
+var docAprobacionAnterior:NotesDocument;
+var docAprobacion:NotesDocument;
+
+
+//Verifica si el documento padre se encuentra aprobado
+docAprobacion=vistaDocumentosAprobados.getDocumentByKey(curDocument.getDocument(true).getItemValueString("IdDocumento"));
+if(docAprobacion==null){
+	if(curDocument.getDocument(true).getItemValueString("TipoAprobacion")=="Secuencial"){
+	//Si el aprobador es secuencial obtiene el aprobador de turno.
+		var indiceAprobador=curDocument.getDocument(true).getItemValueInteger("IndexAprobadorActual");
+		if(curDocument.getDocument(true).getItemValue("AprobadoresTodos")[indiceAprobador]==usuarioActual.getAbbreviated()){
+			puedeAprobar=true;
+		}
+	}else{
+		//Si el aprobador es paralelo obtiene los aprobadores disponibles, eso si el actual no ha aprobado ya
+		if(@IsMember(usuarioActual.getAbbreviated(),curDocument.getDocument(true).getItemValue("AprobadoresTodos"))){
+			//Verifica si el aprobador ya aprobo el documento
+			docAprobacionAnterior=vistaAprobacion.getDocumentByKey(curDocument.getDocument(true).getItemValueString("IdDocumento") + usuarioActual.getCommon());
+			if(docAprobacionAnterior== null){
+				puedeAprobar=true;
+			}
+		}
+	}
+}else{
+	return false;
+}
+return context.getUser().getRoles().contains('[ADMIN]') || puedeAprobar
+
+}]]></xp:this.rendered><xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+						<xp:this.action><![CDATA[#{javascript:viewScope.AccionWF="Devolver"
+	var c = getComponent("dialogComentarios");
+	currentDocument.setValue("ComentariosWF","");
+c.show();
+}]]></xp:this.action>
+					</xp:eventHandler></xp:button>
+	
+	&#160;
+	
+	<xe:dialog id="dialogComentarios" title="Comentarios">
+		<xe:dialogButtonBar id="dialogButtonBar3">
+
+			<xp:button value="Aceptar" id="button3">
+				<xp:eventHandler event="onclick" submit="true"
+					refreshMode="complete">
+					<xp:this.action>
+
+						<xp:actionGroup>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+							<xp:executeScript>
+								<xp:this.script><![CDATA[#{javascript:print('########################Debug: 1');
+var agent = database.getAgent('(ProcesoFlujo2)');
+var docAprob:NotesDocument;
+print('########################ACCION WF: ' + viewScope.AccionWF);
+docAprob=database.createDocument();
+docAprob.replaceItemValue("form","AprobacionDocumento");
+docAprob.replaceItemValue("IDDocumentoAsociado",compositeData.IDDocumentoAsociado);
+docAprob.replaceItemValue("Comentarios",curDocument.getItemValueString("ComentariosWF"));
+print('########################Debug: 2');
+
+docAprob.computeWithForm(false,false);
+if(viewScope.AccionWF=="Aprobar"){
+	//se llama al Procesar Flujo
+	print('########################Debug: 3');
+	if(null != agent){
+		print('########################Debug: 4');
+		try{
+			print('########################Debug: 5');
+			docAprob.replaceItemValue("AccionFlujo","Aprobar");
+			agent.runWithDocumentContext(docAprob);
+			print('########################Debug: 6');
+			
+		}catch(e){
+			print('Error: ' + e);
+			return false;
+		}
+	}
+}else if (viewScope.AccionWF=="Devolver"){
+	print('########################Debug: 7');
+	//se llama al Procesar Flujo
+	if(null != agent){
+		print('########################Debug: 8');
+		try{
+			print('########################Debug: 9');
+			docAprob.replaceItemValue("AccionFlujo","Devolver a Edición");
+			agent.runWithDocumentContext(docAprob);
+			print('########################Debug: 10');
+		}catch(e){
+			print('Error: ' + e);
+			return false;
+		}
+	}
+} 
+}]]></xp:this.script>
+							</xp:executeScript>
+							<xp:openPage
+								name="#{javascript:compositeData.redirectTo}">
+							</xp:openPage>
+						</xp:actionGroup>
+					</xp:this.action>
+					<xp:this.script><![CDATA[var msg="";
+if(!validaCampoTexto(dojo.byId("#{id:txComentariosWF}")))msg= msg + "Comentarios.\n";
+
+
+
+if(msg!=""){
+	alert("Debe incluir los siguientes Datos: \n" + msg);
+	return false;
+}
+
+
+]]></xp:this.script>
+				</xp:eventHandler>
+			</xp:button>
+			<xp:button value="Cancelar" id="button2">
+				<xp:eventHandler event="onclick" submit="false">
+					<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogComentarios}')]]></xp:this.script>
+				</xp:eventHandler>
+			</xp:button>
+		</xe:dialogButtonBar>
+
+		<xe:dialogContent id="dialogContent5">
+			<xp:panel>
+				<xp:table>
+
+					<xp:tr>
+						<xp:td>
+							<xp:label value="Comentario" id="label5"></xp:label>
+							<xp:br></xp:br>
+
+						</xp:td>
+						<xp:td>
+							<xp:inputTextarea id="txComentariosWF"
+								style="width:568.0px;height:63.0px" value="#{curDocument.ComentariosWF}">
+							</xp:inputTextarea>
+						</xp:td>
+					</xp:tr>
+				</xp:table>
+			</xp:panel>
+		</xe:dialogContent>
+	</xe:dialog>
+</xp:view>

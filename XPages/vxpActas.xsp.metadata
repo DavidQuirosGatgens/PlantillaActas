@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><note class="form" maintenanceversion="1.0" replicaid="0625806D0062AD0E" version="9.0" xmlns="http://www.lotus.com/dxl">
+<noteinfo noteid="456" sequence="67" unid="42C415F7C84F866B06257CA6005845D1">
+<created><datetime>20140325T100410,41-06</datetime></created>
+<modified><datetime>20161118T102902,79-06</datetime></modified>
+<revised><datetime>20161118T102902,78-06</datetime></revised>
+<lastaccessed><datetime>20161118T102902,79-06</datetime></lastaccessed>
+<addedtofile><datetime>20161116T115753,75-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Franklin Gomez/O=CV3</name><name>CN=CV3JOHAN/O=CV3</name><name>CN=CV3DEV01/OU=DEV/O=CV3</name><name>CN=CV3JOHAN/O=CV3</name><name>CN=Johan Arroyo/O=CV3</name><name>CN=CV3DEV01/OU=DEV/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=CV3JOHAN/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=CV3JOHAN/O=CV3</name><name>CN=Johan Arroyo/O=CV3</name><name>CN=CV3JOHAN/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=SJODOMDES/OU=SVR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localJohan/OU=DEV/O=CV3</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localCristhian/OU=DEV/O=CV3</name></updatedby>
+<wassignedby><name>CN=localCristhian/OU=DEV/O=CV3</name></wassignedby>
+<item name="$Flags"><text>gC~4K</text></item>
+<item name="$TITLE"><text>vxpActas.xsp</text></item>
+
+
+
+<item name="$FileNames" sign="true"><text>vxpActas.xsp</text></item>
+<item name="$DesignerVersion" sign="true"><text>8.5</text></item>
+
+
+
+</note>

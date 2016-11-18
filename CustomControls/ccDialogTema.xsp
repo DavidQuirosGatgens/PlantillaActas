@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xc="http://www.ibm.com/xsp/custom" dojoParseOnLoad="true"
+	dojoTheme="true">
+	<xp:this.data>
+
+		<xp:dominoView var="view1" viewName="vTemasDialog"></xp:dominoView>
+		<xp:dominoView var="view2"
+			startKeys="#{javascript:sessionScope.typethis}">
+			<xp:this.viewName><![CDATA[#{javascript:"vTemasDialog"}]]></xp:this.viewName>
+		</xp:dominoView>
+	</xp:this.data>
+	<xp:this.navigationRules>
+
+	</xp:this.navigationRules>
+	<xp:this.resources>
+		<xp:script src="/printtoconsole.jss" clientSide="false"></xp:script>
+		<xp:script src="/GeneralSSJS.jss" clientSide="false"></xp:script>
+	</xp:this.resources>
+
+	<xp:panel id="testpanel1" style="width:653.0px">
+
+
+
+		<xp:table>
+
+			<xp:tr>
+				<xp:td>
+					<xp:label value="Sesión Referencia" id="label1">
+					</xp:label>
+				</xp:td>
+				<xp:td>
+					<xc:viewpicklist rowsPerPage="10" searchBar="false"
+						searchButtonText="Search" selectColumn="3" datasrc="view2"
+						dialogID="dialog2" dialogWidth="800px" dialogTitle="Tema"
+						typeAheadBar="true" select="Column" onReturn="Set Document Value"
+						selectField="appid" fieldName="inputText12"
+						tableClass="tablecellgreen" searchVar="sessionScope.searchthis1"
+						typeAheadVar="sessionScope.typethis" rowClass="odd, even"
+						headerClass="headerclass" searchButtonClass="button2"
+						buttonImage="./add.png" pagerStyleFirst="navbutton1"
+						pagerStyleCurrent="navbutton4" pagerStyleLast="navbutton3"
+						pagerStyleNext="navbutton2" pagerStylePrevious="navbutton2"
+						searchBarClass="headerclass"
+						bottomBarClass="bottomround headerclass"
+						cancelButtonClass="button2 floatthisright"
+						cancelButtonText="Cancel" type="Single Value"
+						finishButtonText="Finish"
+						finishButtonClass="button2 floatthisright"
+						picklistButtonClass="button" picklistButtonText="..."
+						varName="document1.ArticuloReferencia" refreshID="testpanel1"
+						multiSelectButtonAddText="add"
+						multiSelectButtonRemoveText="remove" selectWith="Button"
+						openDialogWith="Button" ssjsSelectFunction="ObtieneDatosTema">
+						<xc:this.viewColumn>
+							<xp:value>0</xp:value>
+							<xp:value>1</xp:value>
+							<xp:value>2</xp:value>
+						</xc:this.viewColumn>
+						<xc:this.rendered><![CDATA[#{javascript:currentDocument.isEditable() && esEditorDeCampos}]]></xc:this.rendered>
+					</xc:viewpicklist>
+				</xp:td>
+				<xp:td>
+					<xp:inputText id="inputText1"
+						value="#{document1.SesionReferencia}" style="width:133.0px">
+					</xp:inputText>
+					<xp:br></xp:br>
+					<xp:link escape="true"
+						text="Abrir documento referenciado" id="link3">
+						<xp:this.rendered><![CDATA[#{javascript:!currentDocument.isNewNote() && document1.getItemValueString("IDTemaReferencia")!=""}]]></xp:this.rendered>
+						<xp:eventHandler event="onclick" submit="true"
+							refreshMode="complete" id="eventHandler5">
+							<xp:this.action>
+								<xp:openPage name="/xpTema.xsp"
+									target="openDocument">
+									<xp:this.documentId><![CDATA[#{javascript:document1.getItemValueString("IDTemaReferencia")}]]></xp:this.documentId>
+								</xp:openPage>
+							</xp:this.action>
+						</xp:eventHandler>
+					</xp:link>
+					</xp:td>
+			</xp:tr>
+			<xp:tr>
+				<xp:td>
+					<xp:label value="Tema Referencia" id="label2">
+					</xp:label>
+				</xp:td>
+				<xp:td></xp:td>
+				<xp:td>
+					<xp:inputText id="inputText4"
+						value="#{document1.ArticuloReferencia}" style="width:133.0px">
+					</xp:inputText>
+				</xp:td>
+			</xp:tr>
+			<xp:tr>
+				<xp:td>
+					<xp:label value="Comentarios Referencia:"
+						id="label4">
+
+					</xp:label>
+				</xp:td>
+				<xp:td></xp:td>
+				<xp:td>
+					<xp:inputTextarea id="inputTextarea2"
+						style="width:487.0px;height:83.0px"
+						value="#{document1.ComentariosReferencia}">
+
+					</xp:inputTextarea>
+				</xp:td>
+			</xp:tr>
+		</xp:table>
+	</xp:panel>
+
+
+	&#160;&#160;
+</xp:view>

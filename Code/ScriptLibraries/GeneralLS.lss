@@ -1,0 +1,1370 @@
+'++LotusScript Development Environment:2:5:(Options):0:74
+Option Public
+Use "OpenLogFunctionsLS"
+
+
+'++LotusScript Development Environment:2:5:(Forward):0:1
+Declare Sub Initialize
+Declare Sub ActualizarSeguridad
+Declare Private Function SingleElementArray(x As Variant) As Variant
+Declare Sub EnviaMimeMsg(xFrom, xSendTo, xCopyTo, xSubject, xBodyHTML, xBodyTEXT, urlBD)
+Declare Private Sub CopyAttachmentToMail()
+Declare Public Function evaluateString(doc As NotesDocument, ByVal formula As String, default As String) As String
+Declare Public Sub CreateBitacora(User As NotesName,Action As String,Detalle As String,IdAsociado As String)
+Declare Public Sub newLogDEbug(Cat As String,msg As String)
+Declare Sub CrearACLEntry (PersonaACL As String, Acceso As Integer,  Roles As Variant)
+Declare Public Sub prueba
+Declare Function min(a,b)
+Declare Function AppendDocAttachmentsToRTF(docAttach As NotesDocument, rtfStore As NotesRichTextItem) As Integer 
+Declare Function TraeParametro(xParametro As String)
+Declare Public Function Elements(arr As Variant) As Integer
+Declare Sub CopyAttachments(db As NotesDatabase, docSource As NotesDocument, docTarget As NotesDocument)
+Declare Sub fPutInFolder(db As NotesDatabase, doc As NotesDocument, folderName As String, createOnFail As Integer )
+Declare Sub AddToArray( iArray As Variant, newValue As String ) 
+Declare Function ReplaceSubstring(source As Variant, pReplace As Variant, replacewith As Variant) As Variant
+Declare Sub ObtenerPersonas(docNew As NotesDocument)
+Declare Function fAppendItemValue( doc As NotesDocument, campo As String, valor As Variant) As NotesItem
+Declare Public Function evaluarRegla(doc As NotesDocument, ByVal regla As String, default As Integer) As Integer
+Declare Public Function isMember(valor As Variant, array As Variant) As Integer
+Declare Function max(a,b)
+Declare Sub CreaRol(nombreRol As String)
+Declare Sub GenerarComunicado(MailDocOrig As NotesDocument,sendTo As Variant,copyTo As Variant)
+Declare public Function GetDocumentoByID(id As String) As NotesDocument
+Declare Sub BuscaRol(nombreRol As String)
+Declare Public Function evaluateArrayString(doc As NotesDocument,  ByVal formula As String) As Variant
+Declare Function CopyAttachments2(sourceDoc As NotesDocument,targetItem As NotesRichTextItem)
+Declare Sub enviaCorreo(doc As NotesDocument,sendTo As Variant,copyTo As Variant,subject As variant,bodystr As variant,fromStr As String)
+Declare Function ObtenerConsecutivo(vistaConsecutivos As String, formConsecutivos As String,  idConsecutivo As String) As String
+Declare Function CopiarAnexosAMail(docAttach As NotesDocument, rtfStore As NotesRichTextItem) As Integer 
+
+'++LotusScript Development Environment:2:5:(Declarations):0:10
+Dim session As NotesSession
+Dim db As NotesDatabase
+Dim acl As NotesACL
+Dim dbMail As NotesDatabase
+Dim vTodosDocumentos As NotesView
+
+'++LotusScript Development Environment:2:2:Initialize:1:10
+Sub Initialize
+	Set session=New NotesSession
+	Set db=session.Currentdatabase
+REM	Set dbMail = New NotesDatabase("", "Recope\Actas_Notificaciones.nsf" )	
+	
+	
+	Set dbMail = New NotesDatabase("", "mail.box" )	
+	
+	If Not dbMail.IsOpen Then
+		Set dbMail = New NotesDatabase( "", "mail1.box" )
+		If Not dbMail.IsOpen Then
+			Set dbMail = New NotesDatabase( "", "mail2.box" )
+			If Not dbMail.IsOpen Then
+				Set dbMail = New NotesDatabase( "", "mail3.box" )
+				If Not dbMail.IsOpen Then
+					Set dbMail = New NotesDatabase( "", "mail4.box" )
+				End If
+			End If
+		End If
+	End If	
+				
+	
+
+	Set vTodosDocumentos=db.Getview("(IdDocumentos)")
+End Sub
+
+'++LotusScript Development Environment:2:2:ActualizarSeguridad:1:8
+Sub ActualizarSeguridad
+	On Error GoTo ErrorHandler
+	Dim acl As NotesACL
+	Dim entry As NotesACLEntry
+	Dim entrytmp As NotesACLEntry
+	Dim view As NotesView
+	Dim doc As NotesDocument
+	
+	Set acl = db.ACL
+	
+	' Reviso seguridad y agrego los que no se encuentran
+	Set view = db.GetView("(vUsuario_Common)")
+	Set doc = view.GetFirstDocument
+	While Not (doc Is Nothing)
+		Call ObtenerPersonas(doc)
+		Call CrearACLEntry(doc.UsuarioLotus(0), 3, doc.Roles)
+		Set doc = view.GetNextDocument(doc)
+	Wend
+	%REM
+	NotesACLEntry.Level =====================
+	ACLLEVEL_NOACCESS (0)	No access
+	ACLLEVEL_DEPOSITOR (1)	Depositor access
+	ACLLEVEL_READER (2)	Reader access
+	ACLLEVEL_AUTHOR (3)	Author access
+	ACLLEVEL_EDITOR (4)	Editor access
+	ACLLEVEL_DESIGNER (5)	Designer access
+	ACLLEVEL_MANAGER (6)	Manager access
+	NotesACLEntry.UserType =================
+	ACLTYPE_UNSPECIFIED (0)
+	ACLTYPE_PERSON (1)
+	ACLTYPE_SERVER (2)
+	ACLTYPE_MIXED_GROUP (3)
+	ACLTYPE_PERSON_GROUP (4)
+	ACLTYPE_SERVER_GROUP (5)
+	%END REM	
+	' Elimino los que no estan
+
+	
+	Set entry = acl.GetFirstEntry
+	While Not (entry Is Nothing)
+		Set entryTmp = entry
+		Set entry = acl.GetNextEntry(entry)
+		'reviso si no es default, o si no es un server o un server group o un manager
+		If entrytmp.Name <> "-Default-" And entrytmp.UserType <> 2 And entrytmp.UserType <> 5 And _
+		entryTmp.Level <> 6 And entryTmp.Level <> 5 And entryTmp.Level <> 0 Then
+			Set doc = view.GetDocumentByKey(entryTmp.name, True)
+			If doc Is Nothing Then
+				Call entryTmp.Remove
+			End If			
+		End If
+	Wend
+	
+	' Salvo el ACL		
+	Call acl.Save
+	Exit Sub
+ErrorHandler:
+	Call LogError   
+	Exit Sub
+End Sub
+
+'++LotusScript Development Environment:2:1:SingleElementArray:1:8
+Private Function SingleElementArray(x As Variant) As Variant
+	Dim LittleArray(0 To 0) As Variant
+	LittleArray(0) = x
+	SingleElementArray = LittleArray
+End Function
+
+
+'++LotusScript Development Environment:2:2:EnviaMimeMsg:1:8
+Sub EnviaMimeMsg(xFrom, xSendTo, xCopyTo, xSubject, xBodyHTML, xBodyTEXT, urlBD)
+	Dim body As NotesMIMEEntity
+	Dim mh As NotesMIMEHeader
+	Dim mc As NotesMIMEEntity
+	Dim stream As NotesStream 
+	Dim MailDoc As NotesDocument
+	Dim dbMail As NotesDatabase
+	Dim ViewPar As NotesView
+	Dim DocPar As NotesDocument
+	Dim AttachNames As Variant
+	Dim xTmp As String
+	Dim xBanner As String
+	Dim Recipient As Variant
+	Dim xImagen As String
+	Dim ErrorAlExtraerDoc As String
+	On Error GoTo GoError
+	
+	Select Case Session.Platform
+		Case "Windows/32","Windows/16","MS-DOS","Windows/64"
+			Let tempDir$ = Environ("TEMP") & "\"
+		Case "Linux","UNIX"
+			Let tempDir$ = "/tmp/"
+	End Select
+	ErrorAlExtraerDoc = ""
+	xBanner = ""
+	Set ViewPar=db.GetView("(ParametrosGenerales)")
+	Set DocPar = ViewPar.GetFirstDocument
+	
+	eval = Evaluate("@attachmentnames",DocPar)
+	ForAll a In eval
+		Set attch = DocPar.GetAttachment(a)
+		If (attch.source <> "logo.gif") And (attch.source <> "BBLogo.gif") Then
+			Call attch.ExtractFile(tempDir$ & attch.source)
+			If ErrorAlExtraerDoc = "" Then
+				xBanner =  tempDir$ & attch.source
+			End If
+			Exit ForAll
+		End If
+	End ForAll
+	
+	If xBanner <> "" Then
+		xImagen = Dir$(xBanner, 0)
+	End If 
+	session.convertMIME = False 
+	
+	Set dbMail = New NotesDatabase( "", "mail.box" )
+	
+	If Not dbMail.IsOpen Then
+		Set dbMail = New NotesDatabase( "", "mail1.box" )
+		If Not dbMail.IsOpen Then
+			Set dbMail = New NotesDatabase( "", "mail2.box" )
+			If Not dbMail.IsOpen Then
+				Set dbMail = New NotesDatabase( "", "mail3.box" )
+				If Not dbMail.IsOpen Then
+					Set dbMail = New NotesDatabase( "", "mail4.box" )
+				End If
+			End If
+		End If
+	End If	
+	
+	Set MailDoc= New NotesDocument( dbMail )
+	MailDoc.Form="Memo"
+	MailDoc.From=xFrom
+	MailDoc.SendTo=xSendTo
+	MailDoc.CopyTo= xCopyTo
+	Recipient = MailDoc.SendTo
+	ForAll CopiaA In MailDoc.CopyTo
+		Call AddToArray(Recipient, CopiaA)
+	End ForAll
+	MailDoc.Recipients=Recipient
+	MailDoc.PostedDate=Now
+	MailDoc.Importance="1"
+	MailDoc.Subject=xSubject
+	
+	'Creacion de Encabezado Mime
+	session.ConvertMIME = False 
+	Set body = MailDoc.CreateMIMEEntity 
+	Set mh = body.CreateHeader("Content-Type")
+	Call mh.SetHeaderVal("multipart/related") 
+	
+	Set stream = session.createStream()
+	
+	' Envio de correo en formato Texto
+	
+	If xBodyTEXT<>"" Then
+		Set mc = body.createChildEntity()
+		Set stream = session.createStream()
+		Call stream.WriteText(xBodyTEXT)
+		Call mc.setContentFromText(stream, {text/plain}, ENC_NONE)
+		Call Stream.close
+	End If 
+	
+	'Referecia de imagen
+	
+	If xBodyHTML <> "" Then
+		xImagen= ""
+		If xImagen <> "" Then
+			
+			xUrl = urlBD
+			
+			Set mime = body.createChildEntity()
+			Call stream.WriteText(	|<a href="| + xUrl + |"><img src=cid:image.jpg></a>|)		
+			
+			Call mime.EncodeContent(ENC_NONE)
+			Call stream.WriteText("<br>" & xBodyHTML)
+			Call mime.setContentFromText(stream, {text/html;charset="iso-8859-1"}, ENC_NONE)
+			Call stream.close
+			
+			Set mime = body.CreateChildEntity 
+			Call  stream.Open(xBanner) 
+			Call mime.SetContentFromBytes(stream, "image/jpeg",ENC_IDENTITY_BINARY)
+			Call stream.Close
+			
+			Call mime.EncodeContent(ENC_BASE64)
+			Set header = mime.CreateHeader("Content-ID")
+			Call header.SetHeaderVal("<image.jpg>")
+			
+			Kill xBanner
+		Else
+			Set mime = body.CreateChildEntity 	
+			Call mime.EncodeContent(ENC_NONE)
+			Call stream.WriteText("<br>" & xBodyHTML)
+			Call mime.setContentFromText(stream, {text/html;charset="iso-8859-1"}, ENC_NONE)
+			Call stream.close			
+		End If 
+	End If 
+	
+	
+	'Envia el Correo
+	success = MailDoc.ComputeWithForm( False, False )
+	
+	Call MailDoc.save(True,False)
+	
+	session.ConvertMIME = True 
+	Exit Sub
+	
+GoError:
+	Call LogError 
+	ErrorAlExtraerDoc = "Error"
+	Resume Next
+End Sub
+
+
+'++LotusScript Development Environment:2:2:CopyAttachmentToMail:5:8
+%REM
+	Sub CopyAttachmentToMail
+	Description: Comments for Sub
+%END REM
+Private Sub CopyAttachmentToMail()
+	On Error GoTo GoError
+	
+	Exit sub	
+GoError:  
+	Call LogError
+	MessageBox "Error (" & Err() & "): " & Error()  & " . En línea: " & Erl()
+
+End Sub
+
+'++LotusScript Development Environment:2:1:evaluateString:5:8
+'************************************************************************************************************************************
+'* evaluarString: evalua una fórmula y devuelve el String que genera, si la fórmula no devulve un String devuleve
+'* 		el valor default.
+'************************************************************************************************************************************
+Public Function evaluateString(doc As NotesDocument, ByVal formula As String, default As String) As String
+	Dim retVal As Variant	
+	On Error GoTo ErrorHandler
+	retVal = Evaluate(formula, doc)		
+	If IsArray(retVal) Then
+		evaluateString = CStr(retVal(0))
+	End If
+	Exit Function
+ErrorHandler:
+	Call LogError
+	evaluateString = default 
+	Exit Function
+End Function
+
+
+'++LotusScript Development Environment:2:2:CreateBitacora:5:8
+%REM
+	Sub CreateBitacora
+	Description: Comments for Sub
+%END REM
+Public Sub CreateBitacora(User As NotesName,Action As String,Detalle As String,IdAsociado As String)
+	On Error GoTo GoError
+	Dim docBitacora As NotesDocument
+	Set docBitacora=db.Createdocument()
+	docBitacora.form="Bitacora"
+	Call docBitacora.Computewithform(false, false)
+	docBitacora.IDDocBitacora=IdAsociado
+	docBitacora.IDDocumento=docBitacora.Universalid
+	docBitacora.Usuario=user.Abbreviated
+	docBitacora.Hora=docBitacora.Created
+	docBitacora.Accion=Action
+	docBitacora.Detalle=Detalle
+	Call docBitacora.Save(true, false)
+	Exit sub	
+GoError:  
+	Call LogError
+	Call newLogDEbug("CreateBitacora","Error CreateBitacora (" & Err() & "): " & Error()  & " . En línea: " & Erl())
+	MessageBox "Error CreateBitacora (" & Err() & "): " & Error()  & " . En línea: " & Erl()
+
+End Sub
+
+'++LotusScript Development Environment:2:2:newLogDEbug:5:8
+%REM
+	Sub CreateLOG
+	Description: Comments for Sub
+%END REM
+Public Sub newLogDEbug(Cat As String,msg As String)
+	On Error GoTo GoError
+	Dim s As new NotesSession
+	Dim docLog As NotesDocument
+	Set docLog=s.Currentdatabase.Createdocument()
+	docLog.form="LOG_Debug"
+	docLog.msg=msg
+	docLog.categoria=Cat
+	Call docLog.Save(true, false)
+	Exit sub	
+GoError: 
+	Call LogError 
+
+End Sub
+
+'++LotusScript Development Environment:2:2:CrearACLEntry:1:8
+Sub CrearACLEntry (PersonaACL As String, Acceso As Integer,  Roles As Variant)
+	Dim i As Integer
+	
+	
+	On Error GoTo GoError
+	
+	Dim entry As NotesACLEntry
+	
+	Set entry = acl.GetEntry(PersonaACL)
+	If entry Is Nothing Then
+		Set entry = acl.CreateACLEntry(PersonaACL, Acceso)
+	Else
+		If Acceso >= 0 Then
+			If entry.Level <> 6 And entry.Level <> 5 And entry.Level <> 0 Then
+				entry.Level = Acceso
+			End If
+		End If
+	End If
+	
+	If Acceso = 2 Then
+		entry.CanCreateDocuments = False
+	End If
+	
+	If Acceso <>6 Then
+		entry.CanDeleteDocuments = False
+	End If
+	entry.IsPublicWriter = True
+	entry.IsPublicReader = True
+	entry.UserType = 1
+	
+	ForAll rol In entry.Roles
+		If CStr(rol) <> "" Then
+			Call entry.DisableRole(CStr(rol))
+		End If
+	End ForAll
+	
+	Call acl.Save
+	
+	For i = 0 To UBound(Roles)
+		If roles(i) <> "" Then
+			If roles(i) = "ADMIN" Or roles(i) = "Secretaria" Then
+				entry.CanDeleteDocuments = true
+				entry.Level = 4
+			End If
+			buscaRol(CStr(roles(i)))
+			entry.EnableRole(Roles(i))
+		End If
+	Next
+	
+	Call acl.Save
+	
+	Exit Sub
+GoError:
+	Call LogError   
+	Exit Sub
+End Sub
+
+
+'++LotusScript Development Environment:2:2:prueba:5:8
+%REM
+	Sub prueba
+	Description: Comments for Sub
+%END REM
+Public Sub prueba
+	On Error GoTo GoError
+	Dim session As New NotesSession 
+	Dim db As NotesDatabase 
+	Dim dc As NotesDocumentCollection 
+	Dim doc As NotesDocument 
+	Dim rtfBody As Variant 
+	Dim Count As Integer 
+	Set db= session.currentdatabase 
+	Set dc = db.unprocesseddocuments 
+	Set doc = dc.getfirstdocument 
+	While Not doc Is Nothing 
+		Set rtfBody = doc.getfirstitem("Body") 
+		If rtfBody.Type = RICHTEXT Then 
+			'Count =AppendDocAttachmentsToRTF(doc,rtfBody) 
+		End If 
+		Call doc.save(True,False) 
+		Set doc =dc.getnextdocument(doc) 
+	Wend
+	Exit sub	
+GoError:  
+	MessageBox "Error (" & Err() & "): " & Error()  & " . En línea: " & Erl()
+
+End Sub
+
+'++LotusScript Development Environment:2:1:min:1:8
+Function min(a,b)
+	If a < b Then
+		min = a
+	Else
+		min = b
+	End If
+End Function
+
+
+'++LotusScript Development Environment:2:1:AppendDocAttachmentsToRTF:5:8
+%REM
+	Function AppendDocAttachmentsToRTF
+	Description: Comments for Function
+%END REM
+Function AppendDocAttachmentsToRTF(docAttach As NotesDocument, rtfStore As NotesRichTextItem) As Integer 
+	On Error GoTo GoError
+	' Author : C.Saravanan, Cybernet Software Systems Pvt. Ltd., India. 
+	' Purpose : To append the embedded attachments in a document into a richtext field. 
+	' Parameters: ' 1.docAttach - document from which the embedded attachments are stored. 
+	' 2. rtfStore - Richtext field to which the attachments will be stored. 
+	' Returns: ' The number of attachments appended to the richtext field. 
+	Const PARAM_FILE = "$File" 
+	Dim objAttach As NotesEmbeddedObject 
+	Dim strFilePath As String 
+	Dim varAttachNames As Variant 
+	Dim intAttachCount As Integer 
+	intAttachCount = 0 ' Exception handling 
+	If docAttach Is Nothing Then GoTo Exit_Function 
+	If docAttach.HasEmbedded Then ' The document really has embedded objects... 
+		Set varAttachNames = docAttach.GetFirstItem(PARAM_FILE) 
+		While Not varAttachNames Is Nothing 
+			ForAll Attach In varAttachNames.Values ' for all attachments in the current attach object 
+				' getting the attachment object using the attachment name 
+				Set objAttach = docAttach.GetAttachment(Attach) ' exception handling 
+				If objAttach Is Nothing Then GoTo Exit_Function 
+				If objAttach.Type = EMBED_ATTACHMENT Then ' The attachment object type is embedded attachment 
+					strFilePath = CurDrive() + "" + objAttach.Name
+					'strFilePath = "C:\Users\CV3\Desktop\"   + objAttach.Name   
+					''Call objAttach.ExtractFile( strFilePath) 
+					'strFilePath = "C:\Users\CV3\Desktop\Actas.docx"
+					'Call rtfStore.EmbedObject(EMBED_ATTACHMENT, "", strFilePath) 
+					'= rtitem.EmbedObject ( EMBED_ATTACHMENT, "", "C:\Users\CV3\Desktop\Actas2.docx")
+					Set object = rtfStore.EmbedObject ( EMBED_ATTACHMENT, "", "C:\Users\CV3\Desktop\Actas.docx")
+					''Kill(strFilePath) 
+					intAttachCount = intAttachCount + 1 
+				End If 
+				objAttach.Remove 
+			End ForAll '
+			
+			
+			Call varAttachNames.Remove 
+			Set varAttachNames =docAttach.GetFirstItem(PARAM_FILE) 
+		Wend 
+	End If 
+	
+	
+Exit_Function: 
+	AppendDocAttachmentsToRTF =intAttachCount
+	
+	Exit function	
+GoError:  
+	Call LogError
+	MessageBox "Error (" & Err() & "): " & Error()  & " . En línea: " & Erl()
+
+End Function
+
+
+'++LotusScript Development Environment:2:1:TraeParametro:1:8
+Function TraeParametro(xParametro As String)
+	Dim ViewPar As NotesView
+	Dim DocPar As NotesDocument
+	Dim item As NotesItem
+	Set ViewPar=db.GetView("(Parametros)")
+	Set DocPar = ViewPar.GetFirstDocument
+	Dim xLlave As String
+	If Not DocPar Is Nothing Then
+		xLlave = Trim(xParametro)
+		If DocPar.HasItem(xLlave) Then
+			Set item = DocPar.GetFirstItem(xLlave)
+			If Not item Is Nothing Then
+				TraeParametro = item.Text
+				Exit Function
+			End If
+		End If
+	End If
+	TraeParametro = "" 
+End Function
+
+
+
+'++LotusScript Development Environment:2:1:Elements:1:8
+Public Function Elements(arr As Variant) As Integer
+	If IsArray(arr) Then
+		Elements = UBound(arr) - LBound(arr) +1
+	Else
+		Elements = 0
+	End If
+End Function
+
+
+'++LotusScript Development Environment:2:2:CopyAttachments:1:8
+Sub CopyAttachments(db As NotesDatabase, docSource As NotesDocument, docTarget As NotesDocument)
+	On Error GoTo GoError
+	Dim docTemp As NotesDocument 
+	
+	'Remove all attachments from existing document
+	'Call docTarget.RemoveItem ("$FILE")
+	
+	'Create a temporary document and use CopyAllItems from the current document
+	'because I know that will include the attachment
+	Set docTemp = db.CreateDocument
+	Call docSource.CopyAllItems (docTemp)
+	
+	'Clear all items not named $File from the temp docSource, so that all that's left is the attachment
+
+	
+	
+	ForAll item In docTemp.Items
+		'If Not (UCase(item.Name) = "$FILE") And Not (item.Type = 1048) Then
+		If  (item.Type <> 1084) and  (item.Type <> 1)     Then
+			'If (item.Type = 4) or (item.Type = 1280) Or (item.Type = 1076) Or (item.Type = 1074) Or (item.Type = 1075) Or (item.Type = 1024)  Or (item.Type = 768)     Then	
+			docTemp.RemoveItem (item.Name)
+		End If  
+	End ForAll
+
+
+	ForAll item2 In docTemp.Items
+		Call newLogDEbug("CopyAttachments","campo:" & item2.Name & item2.Type)
+	End ForAll
+
+	
+	'Now, docTemp only has the attachments left on it
+	'CopyAllItems will copy the attachment, so use it to copy to docTarget
+	Call docTemp.CopyAllItems (docTarget)
+	Call docTarget.Save (True, False)
+
+	
+	Exit Sub	
+GoError:  
+	Call LogError
+	MessageBox "Error (" & Err() & "): " & Error()  & " . En línea: " & Erl()
+End Sub
+
+'++LotusScript Development Environment:2:2:fPutInFolder:14:8
+'************************************************************************************************************************************************
+'*fPutInFolder:
+'*		Esta función es similar al método NotesDocumento.PutInFolder, es decir pone un documento en un folder, 
+'*		pero con la diferencia de que si el documento es un documento 'hijo' (si es response, response to response o 
+'*		conflicto de réplica) entonces busca al documento padre de mayor nivel y lo agrega al folder. Esto es porque si  se 
+'*		intenta agregar un documento hijo en un folder, se presenta un error. 
+'*		Nota: cuando se agrega un documento padre a un folder, se agrega también toda su descendencia.
+'*Argumentos: 
+'*		db: base de datos que se está usando.
+'*		doc: Documento a poner en el forlder.
+'*		folderName: nombre  del folder en el cual se pondrá el documento.
+'*		createOnFail: crea el folder si no existe.
+'************************************************************************************************************************************************
+Sub fPutInFolder(db As NotesDatabase, doc As NotesDocument, folderName As String, createOnFail As Integer )
+	Dim docTmp As NotesDocument
+	On Error GoTo ErrorHandler		
+	Set docTmp = doc
+	If docTmp Is Nothing Or Trim(folderName) = "" Then Exit Sub		
+	While docTmp.ParentDocumentUNID <> "" 
+		Set docTmp = db.GetDocumentByUNID(docTmp.ParentDocumentUNID)
+	Wend
+	Call docTmp.PutInFolder(folderName, createOnFail)
+	Exit Sub
+ErrorHandler:
+	'***Escala el error***
+	Error Err(), Error() & ". Error " & Err() & ". " &  "En WFUtilidadesLibrary.fPutInFolder. Linea:" & Erl() & " <- "
+End Sub
+
+'++LotusScript Development Environment:2:2:AddToArray:1:8
+Sub AddToArray( iArray As Variant, newValue As String ) 
+	
+	On Error GoTo HandleError
+	
+	If IsEmpty(iArray) Then
+		ReDim iArray(0) As String
+	End If
+	
+	
+	If ( UBound(iArray) = LBound(iArray) ) And iArray(UBound(iArray)) = "" Then ' raises error 200 if not initialized
+		' if we are a new array with nothing in it then do not increase size
+IsInitialized:
+		iArray(LBound(iArray)) = newValue
+	Else
+		Dim newSize As Integer
+		newSize = UBound(iArray)+1
+		ReDim Preserve iArray(newSize) 
+		iArray(newSize) = newValue
+		'AddToArray = iArray
+	End If
+	
+	Exit Sub
+	
+HandleError:
+	If Err = 200 Then ' uninitialized dynamic array
+		'( it's actually an array, but does not have a single value in it
+		ReDim iArray( 0 To 0 )
+		Resume IsInitialized
+	Else 
+		Print Err & " " & Error
+		Error Err, Error
+		Exit Sub
+	End If
+	Call LogError
+	
+End Sub ' add to array
+
+'++LotusScript Development Environment:2:1:ReplaceSubstring:2:8
+
+Function ReplaceSubstring(source As Variant, pReplace As Variant, replacewith As Variant) As Variant
+	Dim tTo As Variant, tFrom As Variant
+	Dim i%, j%
+	
+	' If the search string and replacement are not arrays, make them one element arrays; this makes the
+	' subsequent code simpler.
+	If IsArray(pReplace) Then
+		tFrom = pReplace
+	Else
+		tFrom = SingleElementArray(pReplace)
+	End If
+	If IsArray(replacewith) Then
+		tTo = replacewith
+	Else
+		tTo = SingleElementArray(replacewith)
+	End If
+	' If the main input is an array, recursively process each element and return the results as an array.
+	If IsArray(source) Then
+		ReDim result(LBound(source) To UBound(source)) As Variant
+		For i% = LBound(source) To UBound(source)
+			result(i%) = ReplaceSubstring(source(i%), tFrom, tTo)
+		Next
+		ReplaceSubstring = result
+	Else
+		Dim res$, src$
+		src$ = source
+		For i% = 1 To Len(src$)
+			' Scan the list of search strings to see whether any of them is present at position i% in the source string.
+			For j% = LBound(tFrom) To UBound(tFrom)
+				If tFrom(j%) = Mid$(src$, i%, Len(tFrom(j%))) Then
+					Exit For
+				End If
+			Next
+			' If a match was found, replace it in the output with the corresponding "replacewith" entry.
+			If j% <= UBound(tFrom) Then
+				res$ = res$ + tTo(min(UBound(tTo), j%))
+				i% = i% + max(0, Len(tFrom(j%)) - 1)
+				' shift the input pointer past the end of the matching string so we don't match another string in the middle of it.
+			Else
+				' Otherwise, copy over the one character at position i%.
+				res$ = res$ + Mid$(src$, i%, 1)
+			End If
+		Next
+		ReplaceSubstring = res$
+	End If
+End Function
+
+
+'++LotusScript Development Environment:2:2:ObtenerPersonas:1:8
+Sub ObtenerPersonas(docNew As NotesDocument)
+	On Error GoTo GoError
+	Dim directorios As Variant	
+	Dim listaNames As Variant
+	Dim itemResultado As NotesItem
+	Dim itemFuente As NotesItem
+	
+	Dim dbNames As NotesDatabase
+	Dim viewNamesPeople As NotesView
+	Dim viewNamesGroups As NotesView
+	Dim nameTmp As NotesName
+	
+	Dim doc As NotesDocument
+	
+	'Campo donde se adjuntaran los resultados, debe de ser multivaluado.
+	docNew.Personas = ""
+	docNew.TipoUsuario = ""
+	Set itemResultado = New NotesItem (docNew, "Miembros", "" )
+	Set itemFuente = New NotesItem (docNew, "UsuarioLotus", "" )
+	
+	listaNames = session.AddressBooks 'obtener lista de elementos de acl
+	ForAll dbtmp In listaNames
+		If dbtmp.Server <> "" Then'obtengo solo el name sque esta en el server
+			Set dbNames = dbtmp
+			Exit ForAll
+		End If
+	End ForAll
+	
+	Call dbNames.Open("","")
+	Set viewNamesPeople = dbNames.GetView("$VIMPeople") 'vista de personas de la BD de Names del server
+	
+	Set nameTmp = session.CreateName(itemFuente.Text)
+	Set doc = viewNamesPeople.GetDocumentByKey(nameTmp.Abbreviated)
+	If doc Is Nothing Then
+		' Es un grupo
+		Dim grupos() As String
+		Dim cont As Integer
+		Dim sizetmp As Integer
+		Dim docGrupo As NotesDocument
+		Dim itemMembers As NotesItem
+		
+		
+		Set viewNamesGroups = dbNames.GetView("Groups") 'vista de grupos de la BD de Names del server
+		sizetmp = 0
+		cont = 0
+		
+		ReDim grupos(sizetmp)
+		grupos(sizetmp)  = itemFuente.Text
+		
+		While sizetmp >= cont
+			Set docGrupo = viewNamesGroups.GetDocumentByKey(grupos(cont))
+			If Not docGrupo Is Nothing Then
+				
+				Set itemMembers = docGrupo.GetFirstItem("Members")
+				ForAll mem In itemMembers.Values
+					Set nameTmp = session.CreateName(mem)
+					Set doc = viewNamesPeople.GetDocumentByKey(nameTmp.Abbreviated)
+					If doc Is Nothing Then
+						'es otra vez un grupo
+						sizetmp = sizetmp + 1
+						ReDim Preserve grupos (sizetmp)
+						grupos(sizetmp) = mem
+					Else
+						' es una persona
+						itemResultado.AppendToTextList(mem)
+					End If
+				End ForAll
+			End If 
+			cont = cont + 1
+		Wend
+		docNew.TipoUsuario = 4
+	Else
+		' No es un grupo
+		itemResultado.AppendToTextList(itemFuente.Text)
+		docNew.TipoUsuario = 1
+	End If
+	Exit Sub
+GoError:
+	Call LogError   
+	Exit Sub
+End Sub
+
+
+
+
+
+'++LotusScript Development Environment:2:1:fAppendItemValue:1:8
+Function fAppendItemValue( doc As NotesDocument, campo As String, valor As Variant) As NotesItem
+	Dim item As NotesItem
+	Dim nuevoValor As Integer
+	Dim i As Integer
+	Dim j As Integer
+	
+	On Error GoTo  ErrorHandler
+	
+	If doc Is Nothing Then Exit Function
+	Set item = doc.GetFirstItem(campo)
+	nuevoValor = False
+	If item Is Nothing Then
+		nuevoValor = True
+	Else
+		If TypeName(item.Values(0)) = "STRING" Then
+			If item.Values(0) = "" Then
+				nuevoValor = True
+			End If
+		End If		
+	End If
+	
+	If nuevoValor Then
+		Set item = doc.ReplaceItemValue(campo, valor)
+	Else
+		i = Elements(item.Values) 
+		ReDim Preserve arrayCampo(i) 	
+		For j = 0 To i - 1
+			arrayCampo(j) = item.Values(j)			
+		Next
+		arrayCampo(i) = valor
+		Set item = doc.ReplaceItemValue(campo, arrayCampo)
+	End If
+	Set fAppendItemValue = item
+	
+	Exit Function
+ErrorHandler:
+	Call LogError
+	Print 	"-> fAppendItemValue. Error:" & Err() & ". Linea:" & Erl() & ". "  &  Error()
+	Exit Function
+End Function
+
+
+'++LotusScript Development Environment:2:1:evaluarRegla:6:8
+'************************************************************************************************************************************
+'* evaluarRegla: evalua una regla, la cual debe ser una expresión booleana, si la regla es incorrecta o está 
+'*		vacía devuelve el valor default
+'* 
+'************************************************************************************************************************************
+Public Function evaluarRegla(doc As NotesDocument, ByVal regla As String, default As Integer) As Integer
+	Dim retVal As Variant
+	regla = Trim(regla)
+	If regla = "" Then
+		evaluarRegla = default And True	'Asigna valor de tipo booleano.
+		Exit Function
+	End If
+	If UCase(Left(regla, 3)) <> "@IF" Then
+		regla = "@If(" & regla & "; @True; @False)"
+	End If
+	On Error GoTo ErrorHandler
+	retVal = Evaluate(regla, doc)		
+	If IsArray(retVal) Then
+		If IsNumeric(retVal(0)) Then
+			evaluarRegla = retVal(0)
+		End If
+	End If
+	Exit Function
+ErrorHandler:
+	evaluarRegla = default And True
+	Call LogError
+	Exit Function
+End Function
+
+'++LotusScript Development Environment:2:1:isMember:4:8
+'************************************************************************************************************************************
+'* isMember: indica si el valor se encuentra dentro del array indicado
+'************************************************************************************************************************************
+Public Function isMember(valor As Variant, array As Variant) As Integer
+	If IsArray(array) Then
+		isMember = Not IsNull(ArrayGetIndex(array, valor, 0)) 
+	Else
+		If CStr(valor) = CStr(array) And CStr(array) <> "" Then 
+			isMember = True
+		Else
+			isMember = False
+		End If
+	End If
+End Function
+
+
+'++LotusScript Development Environment:2:1:max:1:8
+Function max(a,b)
+	If a < b Then
+		max = b
+	Else
+		max = a
+	End If
+End Function
+
+'++LotusScript Development Environment:2:2:CreaRol:1:8
+Sub CreaRol(nombreRol As String)
+	
+	Call acl.AddRole( nombreRol )
+	
+End Sub
+
+'++LotusScript Development Environment:2:2:GenerarComunicado:7:8
+%REM
+	sub enviaCorreo
+	Description: Envia un correo y anexa el registro de reporte
+	Created 27/06/2012 by Johan Arroyo Porras
+	Parameters: reqReporte(documento de reporte),  archivo(dirección del archivo en disco), esError(bandera que indica si hay un error)
+%END REM
+Sub GenerarComunicado(MailDocOrig As NotesDocument,sendTo As Variant,copyTo As Variant)
+	Dim Recipient As Variant
+	'Dim MailDoc As NotesDocument
+	Dim rt As NotesRichTextItem
+	Dim EmbObj As Variant
+	Dim vUsuarios As NotesView
+	Dim docUser As NotesDocument
+	Dim itemUser As NotesName
+	Dim xUrl As String
+	Dim header As NotesMIMEHeader
+	Dim body As NotesMIMEEntity
+	Dim mh As NotesMIMEHeader
+	Dim mc As NotesMIMEEntity
+	Dim stream As NotesStream 
+	Dim rtfBody As NotesRichTextItem 
+	Dim docAcuerdo As NotesDocument
+	Dim SubjectAnterior As String
+	Dim docTema As NotesDocument
+
+	On Error GoTo goerror
+	Set vUsuarios=db.Getview("(vUsuario_Common)")
+	Dim MailDoc As NotesDocument
+	Set MailDoc=dbMail.Createdocument()
+	Call MailDocOrig.Copyallitems(MailDoc)
+	MailDoc.From=fromStr
+
+	If IsArray(sendTo) Then
+		ForAll user In sendTo
+			Set itemUser =New NotesName(user)
+			Set docUser=vUsuarios.Getdocumentbykey(itemUser.Canonical, True)
+			If Not docUser Is Nothing Then
+				Call fAppendItemValue(MailDoc, "SendTo", docUser.correo(0))
+			Else
+				Call fAppendItemValue(MailDoc, "SendTo", user)
+			End If
+		End ForAll
+	Else
+		Set itemUser =New NotesName(sendTo)
+		Set docUser=vUsuarios.Getdocumentbykey(itemUser.Canonical, True)
+		If Not docUser Is Nothing Then
+			Call fAppendItemValue(MailDoc, "SendTo", docUser.correo(0))
+		Else
+			Call fAppendItemValue(MailDoc, "SendTo", sendTo)
+		End If
+	End If
+	
+	'MailDoc.SendTo=sendTo
+	If IsArray(copyTo) Then
+		ForAll user In copyTo
+			Set itemUser =New NotesName(user)
+			Set docUser=vUsuarios.Getdocumentbykey(itemUser.Canonical, True)
+			If Not docUser Is Nothing Then
+				Call fAppendItemValue(MailDoc, "CopyTo", docUser.correo(0))
+			Else
+				Call fAppendItemValue(MailDoc, "CopyTo", user)
+			End If
+		End ForAll
+	Else
+		Set itemUser =New NotesName(copyTo)
+		Set docUser=vUsuarios.Getdocumentbykey(itemUser.Canonical, True)
+		If Not docUser Is Nothing Then
+			Call fAppendItemValue(MailDoc, "CopyTo", docUser.correo(0))
+		Else
+			Call fAppendItemValue(MailDoc, "CopyTo", copyTo)
+		End If
+	End If
+	MailDoc.Form="Memo"	
+	Recipient = MailDoc.SendTo
+	'MailDoc.Recipients=Recipient
+	Set item = New NotesItem( MailDoc, "Recipients", MailDoc.sendto, NAMES )
+	MailDoc.PostedDate=Now
+	MailDoc.Importance="1"
+	MailDoc.ReplyTo= MailDoc.SendTo
+	MailDoc.From=TraeParametro("EmisorNotificaciones")
+
+	MessageBox "Genera Comunicado"
+	'Se obtiene el documento de acuerdo
+	Dim vAcuerdo As NotesView
+	Set vAcuerdo=db.Getview("vAcuerdos_ByUNID")
+	Set docAcuerdo=vAcuerdo.Getdocumentbykey(MailDoc.IDAcuerdo(0), true)
+	
+	If Not docAcuerdo Is Nothing Then
+
+		SubjectAnterior=Maildoc.Subject(0)
+		Maildoc.Subject="Comunicado de Acuerdo-" + docAcuerdo.NumeroAcuerdo(0)+" "+ docAcuerdo.Descripcion(0) + "-" + Maildoc.Subject(0)
+		Call newLogDEbug("enviaCorreo",Implode(MailDoc.sendTo))
+		Call  MailDoc.ComputeWithForm( True, False )
+		If MailDoc.Hasitem("Body") Then
+			Set rtfBody = MailDoc.Getfirstitem("Body")
+		Else
+			Set rtfBody=MailDoc.Createrichtextitem("Body")
+		End If
+		
+		Call rtfBody.AppendText(MailDoc.Detalle(0))
+
+		REM Call CopiarAnexosAMail(MailDocOrig,rtfBody)
+		
+		If MailDocOrig.AdjuntarTema(0)="Si" Then
+			Set docTema=GetDocumentoByID(docAcuerdo.IDdocTema(0))
+			If Not docTema Is Nothing Then
+				Call CopiarAnexosAMail(docTema,rtfBody)
+			End If
+		End If
+		Call rtfBody.Addnewline(1)
+		Call rtfBody.Addnewline(1)
+	
+		
+		
+		Dim richStyle As NotesRichTextStyle
+		Set richStyle = session.CreateRichTextStyle
+		richStyle.PassThruHTML = True
+		Call rtfBody.AppendStyle(richStyle)
+
+		xUrl =  TraeParametro("URLBD") + "/0/" + CStr(MailDocOrig.UniversalID) 
+		'Call rtfBody.AppendText(|<a href=| + xUrl + |>Link al documento</a>|)
+		Call rtfBody.Appendtext("Link al Documento: " & xUrl)
+
+
+		Call MailDoc.Save(True,False)
+		Maildoc.Subject=SubjectAnterior
+	Else
+	End If
+	
+	Exit Sub
+goerror:
+	Call LogError
+	Print "Error (" & Err() & "): " & Error()  & " - enviaCorreo. En línea: " & Erl()
+	Exit Sub
+End Sub
+
+
+'++LotusScript Development Environment:2:1:GetDocumentoByID:5:8
+%REM
+	Function GetParentDocument
+	Description: Comments for Function
+%END REM
+public Function GetDocumentoByID(id As String) As NotesDocument
+	On Error GoTo GoError
+	Call vTodosDocumentos.Refresh()
+	Set GetDocumentoByID=vTodosDocumentos.Getdocumentbykey(id, true)
+	Exit Function	
+GoError:  
+	Call LogError
+
+End Function
+
+'++LotusScript Development Environment:2:2:BuscaRol:1:8
+Sub BuscaRol(nombreRol As String)
+	Dim existeRol As String
+	existeRol = "0"
+	
+	ForAll r In acl.Roles
+		If (r = "["+nombreRol+"]" ) Then
+			existeRol = "1"
+			Exit ForAll
+		End If
+	End ForAll
+	If existeRol = "0" Then
+		CreaRol(nombreRol)
+	End If
+End Sub
+
+
+
+
+'++LotusScript Development Environment:2:1:evaluateArrayString:4:8
+'************************************************************************************************************************************
+'* evaluateArrayString: evalua una fórmula y devuelve un arreglo de strings que genera.
+'************************************************************************************************************************************
+Public Function evaluateArrayString(doc As NotesDocument,  ByVal formula As String) As Variant
+	On Error GoTo ErrorHandler
+	retVal = Evaluate(formula, doc)		
+	If IsArray(retVal) Then
+		For i = LBound(retVal) To UBound(retVal)
+			retVal(i) = CStr(retVal(i))
+		Next			
+		evaluateArrayString = retVal
+	End If
+	Exit Function
+ErrorHandler:
+	Call LogError
+	Exit Function
+End Function
+
+
+'++LotusScript Development Environment:2:1:CopyAttachments2:1:8
+Function CopyAttachments2(sourceDoc As NotesDocument,targetItem As NotesRichTextItem)
+
+	' If the source document has no attachments, there is nothing to do
+	If (Not sourceDoc.HasEmbedded) Then Exit Function
+
+	' Get photo attachment from source document
+	Dim sourceItem As NotesRichTextItem
+	Set sourceItem = sourceDoc.GetFirstItem("Photo")
+	If (sourceItem Is Nothing) Then Exit Function
+	If (sourceItem.Type <> RICHTEXT) Then Exit Function
+	If (IsEmpty(sourceItem.Embeddedobjects)) Then Exit Function
+
+	' Copy photos from source document to target field only when they don't already exist in target field
+	Dim tempItem As NotesRichTextItem
+	Set tempItem = sourceItem.Copyitemtodocument(sourceDoc,"Body")
+	ForAll attachObj In tempItem.EmbeddedObjects
+
+		If (attachObj.Type = EMBED_ATTACHMENT) Then
+
+			' Check to see if an attachment of this name already exists in the target field
+			Dim targetObj As NotesEmbeddedObject
+			Set targetObj = targetItem.Getembeddedobject(attachObj.Source)
+
+			' Delete attachment from temporary field if it already exists in target field
+			If (Not targetObj Is Nothing) Then Call attachObj.Remove()
+
+		End If
+
+	End ForAll
+	If (Not IsEmpty(tempItem.Embeddedobjects)) Then
+		Call targetItem.Appendrtitem(tempItem)
+	End If
+
+	' Clean up
+	Call tempItem.Remove()
+
+End Function
+
+'++LotusScript Development Environment:2:2:enviaCorreo:1:8
+Sub enviaCorreo(doc As NotesDocument,sendTo As Variant,copyTo As Variant,subject As variant,bodystr As variant,fromStr As String)
+	Dim Recipient As Variant
+	Dim MailDoc As NotesDocument
+	Dim rt As NotesRichTextItem
+	Dim EmbObj As Variant
+	Dim vUsuarios As NotesView
+	Dim docUser As NotesDocument
+	Dim itemUser As NotesName
+	Dim xUrl As String
+	Dim header As NotesMIMEHeader
+	Dim body As NotesMIMEEntity
+	Dim mh As NotesMIMEHeader
+	Dim mc As NotesMIMEEntity
+	Dim stream As NotesStream 
+	On Error GoTo goerror
+	
+	Set vUsuarios=db.Getview("(vUsuario_Common)")
+	Set MailDoc= New NotesDocument( dbMail )
+	MailDoc.Form="Memo"
+	MailDoc.From=fromStr
+	'Dim usr As New NotesName(reqReporte.Usuario(0))
+	If IsArray(sendTo) Then
+		ForAll user In sendTo
+			Set itemUser =New NotesName(user)
+			Set docUser=vUsuarios.Getdocumentbykey(itemUser.Canonical, True)
+			If Not docUser Is Nothing Then
+				Call fAppendItemValue(MailDoc, "SendTo", docUser.correo(0))
+			Else
+				Call fAppendItemValue(MailDoc, "SendTo", user)
+			End If
+		End ForAll
+	Else
+		Set itemUser =New NotesName(sendTo)
+		Set docUser=vUsuarios.Getdocumentbykey(itemUser.Canonical, True)
+		If Not docUser Is Nothing Then
+			Call fAppendItemValue(MailDoc, "SendTo", docUser.correo(0))
+		Else
+			Call fAppendItemValue(MailDoc, "SendTo", sendTo)
+		End If
+	End If
+	
+	'MailDoc.SendTo=sendTo
+	If IsArray(copyTo) Then
+		ForAll user In copyTo
+			Set itemUser =New NotesName(user)
+			Set docUser=vUsuarios.Getdocumentbykey(itemUser.Canonical, True)
+			If Not docUser Is Nothing Then
+				Call fAppendItemValue(MailDoc, "CopyTo", docUser.correo(0))
+			Else
+				Call fAppendItemValue(MailDoc, "CopyTo", user)
+			End If
+		End ForAll
+	Else
+		Set itemUser =New NotesName(copyTo)
+		Set docUser=vUsuarios.Getdocumentbykey(itemUser.Canonical, True)
+		If Not docUser Is Nothing Then
+			Call fAppendItemValue(MailDoc, "CopyTo", docUser.correo(0))
+		Else
+			Call fAppendItemValue(MailDoc, "CopyTo", copyTo)
+		End If
+	End If
+	MailDoc.Subject=subject
+	Recipient = MailDoc.SendTo
+	MailDoc.Recipients=Recipient
+	MailDoc.PostedDate=Now
+	MailDoc.Importance="1"
+	xUrl =  TraeParametro("URLBD") + "/0/" + CStr(doc.UniversalID) 
+	Set stream = session.CreateStream
+	session.ConvertMIME = False ' Do not convert MIME to rich text
+	Set body = MailDoc.CreateMIMEEntity
+	Set header = body.CreateHeader("Subject")
+	If IsArray(bodystr) Then
+		ForAll lineaBody In bodystr
+			Call stream.WriteText(|<BR>|)
+			Call stream.WriteText(lineaBody)
+		End ForAll
+	Else
+		Call stream.WriteText(|<BR>|)
+		Call stream.WriteText(bodystr)
+		Call stream.WriteText(|<BR>|)
+	End If
+
+	Call stream.WriteText(|<p>|)
+	Call stream.WriteText(|<BR>|)
+	Call stream.WriteText(|<a href=| + xUrl + |>Link al documento</a>|)
+	Call body.SetContentFromText(stream, "text/html;charset=UTF-8", ENC_NONE)  
+	session.ConvertMIME = True ' Restore conversion
+	Call  MailDoc.ComputeWithForm( False, False )
+	'Call MailDoc.Send(true)
+	Call MailDoc.Save(true, false)
+	
+
+	
+	Exit Sub
+goerror:
+	Call LogError
+	Print "Error (" & Err() & "): " & Error()  & " - enviaCorreo. En línea: " & Erl()
+	Exit Sub
+End Sub
+
+'++LotusScript Development Environment:2:1:ObtenerConsecutivo:1:8
+Function ObtenerConsecutivo(vistaConsecutivos As String, formConsecutivos As String,  idConsecutivo As String) As String
+	REM Funcion para obtener el siguiente consecutivo para asignar a un documento.
+	REM PARAMETROS
+	REM servidorBD = Servidor en donde está la base de datos del consecutivo.
+	REM bdConsecutivos = Base de datos en donde está el consecutivo.
+	REM vistaConsecutivos = Vista para localizar el consecutivo de los documentos.
+	REM formConsecutivos = Formulario que contiene el consecutivo.
+	REM idConsecutivo = Identificador del consecutivo.  En algunos casos será el año, en otros algún caso en particular como un usuario, alguna tarea en particuar, etc.
+	On Error GoTo ManejoError
+	Dim session As New NotesSession
+	Dim baseDatos As NotesDatabase
+	Dim vConsecutivos As NotesView
+	Dim docConsecutivo As NotesDocument
+	Dim fechaHora As NotesDateTime
+	Dim consecutivoDocumento As Single
+	Dim consecutivoDocumento2 As Single
+	Dim consec As String
+	Dim unique As Variant
+	
+	Set baseDatos = 	session.CurrentDatabase
+	Set vConsecutivos = baseDatos.GetView(vistaConsecutivos)
+	Set fechaHora = New NotesDateTime("Today")
+	fechaHora.SetNow
+	REM Obtiene el consecutivo a asignar a este documento.
+	REM Si el documento de consecutivos no existe, lo crea (usualmente será al inicio de cada año).
+	Set docConsecutivo = vConsecutivos.GetDocumentByKey(idConsecutivo,True)
+	If docConsecutivo Is Nothing Then
+		Set docConsecutivo = New NotesDocument(baseDatos)
+		docConsecutivo.Form = formConsecutivos
+		docConsecutivo.Field1 = 1
+		docConsecutivo.Field2 = 5
+		docConsecutivo.Field3 = 1
+		docConsecutivo.CodiDocu =idConsecutivo
+		docConsecutivo.UsarConsecutivoGeneral="false"
+		
+		consecutivoDocumento = docConsecutivo.Field1(0)
+		Call docConsecutivo.ComputeWithForm(False, False)
+		Call docConsecutivo.Save(True,False)
+	Else
+		Do
+			Set docConsecutivo = vConsecutivos.GetDocumentByKey(idConsecutivo,True)
+			consecutivoDocumento = docConsecutivo.Field1(0)
+			consecutivoDocumento = consecutivoDocumento + 1
+			docConsecutivo.Field1 = consecutivoDocumento
+			If docConsecutivo.UsarConsecutivoGeneral(0)="true" Then
+				consecutivoDocumento2 = docConsecutivo.Field3(0)
+				consecutivoDocumento2 = consecutivoDocumento2 + 1
+				docConsecutivo.Field3 = consecutivoDocumento2
+			End If
+
+		Loop Until docConsecutivo.Save(False,False)
+	End If
+	consec=CStr(consecutivoDocumento)
+	For j% = 1 To docConsecutivo.Field2(0)
+		If Len(consec)< docConsecutivo.Field2(0) Then
+			consec="0" & consec
+		Else
+			exit for
+		End If
+	Next
+	unique=Evaluate("@Left(@Unique;4)")
+	'ObtenerConsecutivo = idConsecutivo + Right(("0000000" & CStr(consecutivoDocumento)),7) & unique(0)
+	If docConsecutivo.llaveConsecutivo(0)<>"" Then
+		ObtenerConsecutivo = docConsecutivo.llaveConsecutivo(0) & "-" & consec  
+	Else
+		ObtenerConsecutivo =   consec  
+	End If
+	If docConsecutivo.IncluirAnno(0)="true" Then
+			ObtenerConsecutivo = ObtenerConsecutivo & "-" & Trim(Str(Year(Today)))
+	End If
+	If docConsecutivo.UsarConsecutivoGeneral(0)="true" Then
+		ObtenerConsecutivo = ObtenerConsecutivo & "-" & consecutivoDocumento2
+	End if
+	Exit Function
+ManejoError:
+	Call LogError
+End Function
+
+
+
+'++LotusScript Development Environment:2:1:CopiarAnexosAMail:1:8
+Function CopiarAnexosAMail(docAttach As NotesDocument, rtfStore As NotesRichTextItem) As Integer 
+	On Error GoTo GoError
+	Const PARAM_FILE = "$File" 
+	Dim objAttach As NotesEmbeddedObject 
+	Dim strFilePath As String 
+	Dim varAttachNames As Variant 
+	Dim intAttachCount As Integer 
+	intAttachCount = 0 ' Exception handling 
+	If docAttach Is Nothing Then GoTo Exit_Function 
+	If docAttach.HasEmbedded Then ' The document really has embedded objects... 
+		Set varAttachNames = docAttach.GetFirstItem(PARAM_FILE) 
+		'While Not varAttachNames Is Nothing 
+		ForAll Attach In varAttachNames.Values ' for all attachments in the current attach object 
+			' getting the attachment object using the attachment name 
+			Set objAttach = docAttach.GetAttachment(Attach) ' exception handling 
+			If objAttach Is Nothing Then GoTo Exit_Function 
+			If objAttach.Type = EMBED_ATTACHMENT Then ' The attachment object type is embedded attachment
+				If docAttach.SwAttName_1(0)<>"" and docAttach.SwAttType_1(0)="WORD" Then
+					strFilePath = CurDrive()  + "\" + docAttach.SwAttName_1(0) + " " + docAttach.NumerOrden(0) + ".doc"
+				Else
+					'CurDir$(drive)
+					strFilePath = CurDrive()  + "\" + docAttach.NumerOrden(0)  + " " +objAttach.Name
+				End If   
+				'strFilePath ="C:\Users\Johan\Desktop\IDs\" + objAttach.Name 
+				Call objAttach.ExtractFile( strFilePath) 
+				Call rtfStore.EmbedObject(EMBED_ATTACHMENT, "", strFilePath) 
+				Kill(strFilePath) 
+				intAttachCount = intAttachCount + 1 
+			End If 
+			'objAttach.Remove 
+		End ForAll '
+		'Call varAttachNames.Remove 
+		'Set varAttachNames =docAttach.GetFirstItem(PARAM_FILE) 
+		'Wend 
+	End If 
+	
+	
+Exit_Function: 
+	CopiarAnexosAMail =intAttachCount
+	
+	Exit Function	
+GoError:  
+	Call LogError
+	MessageBox "Error (" & Err() & "): " & Error()  & " . En línea: " & Erl()
+
+End Function

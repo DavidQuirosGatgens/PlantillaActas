@@ -1,0 +1,1204 @@
+'++LotusScript Development Environment:2:5:(Options):0:74
+%REM
+	Library UtilidadesGenericas
+	Created Sep 17, 2014 by Milton Villegas/CV3 
+	Description: Librería de utilidades generica de LotusScript
+%END REM
+Option Public
+Option Declare
+ 
+
+'++LotusScript Development Environment:2:5:(Forward):0:1
+Declare Sub Initialize
+Declare Sub Terminate
+Declare Public Function getDocValueString(doc As NotesDocument, fieldName As String) As String
+Declare Function CrearFechaHora0(dia As Integer, mes As Integer, anno As Integer) As NotesDateTime
+Declare Function evaluarReglaFormula(doc As NotesDocument, ByVal regla As String, default As Integer) As Integer
+Declare Public Function evaluateString(doc As NotesDocument, ByVal formula As String, default As String) As String
+Declare Public Function getDocValueDateTime(doc As NotesDocument, fieldName As String) As NotesDateTime
+Declare Function FuncAlfaNumerico(ByVal texto As String, maxLen As Integer)  As String
+Declare Function fMin(a,b)
+Declare Function AddLeadingZero(Value As Variant) As String
+Declare Function fAlfaNumerico(ByVal texto As String, maxLen As Integer)  As String
+Declare Function ExtraerFechaActual() As NotesDateTime
+Declare Public Function fEvaluateString(doc As NotesDocument, ByVal formula As String, default As String) As String
+Declare Public Sub AddToVariantArray( iArray As Variant, newValue As Variant ) 
+Declare Public Function Num_Elements(arr As Variant) As Integer
+Declare Function fAhora() As Variant
+Declare Function fGetFieldInteger(doc As NotesDocument, campo As String) As Integer
+Declare Function CrearFecha(dia As Integer, mes As Integer, anno As Integer) As NotesDateTime
+Declare Function fUnique(c)
+Declare Public Function getParamValue(paramDocName As String, paramFieldName As String) As String
+Declare Function fGetUrlVariable(docContext As NotesDocument, varName As String) As String
+Declare Function fExplode(s$, div$) As Variant
+Declare Public Function getDocValueString_ErrMsg(doc As NotesDocument, fieldName As String) As String
+Declare Sub AddToArray( iArray As Variant, newValue As String ) 
+Declare Function fMax(a,b)
+Declare Function fRepeat(s, ByVal count As Integer)
+Declare Function fPartition( Slot_Array As Variant, Lower As Integer, Upper As Integer ) As Integer
+Declare Public Function fEvaluarRegla(doc As NotesDocument, ByVal regla As String, default As Integer) As Integer
+Declare Sub fQuickSort(Slot_Array As Variant, Lower As Integer, Upper As Integer )
+Declare Function AddArrayToArray(Array As Variant, AddArray As Variant) As Variant
+Declare Function fServerUrl() As String	
+Declare Public Function fIsMember(valor As Variant, array As Variant) As Integer
+Declare Public Function getDocValueLong(doc As NotesDocument, fieldName As String) As Long
+Declare Function CrearFechaCompleta(dia As Integer, mes As Integer, anno As Integer, hora As Integer, minutos As Integer, segundos As Integer) As NotesDateTime
+Declare Public Function getDocValueInteger(doc As NotesDocument, fieldName As String) As Integer
+Declare Function FunctExplode(s$, div$) As Variant
+Declare Sub RegError(errorMessage As String)
+Declare Function FunctAppendItemValue( doc As NotesDocument, campo As String, valor As Variant) As NotesItem
+Declare Public Function getDocValuesToArray(doc As NotesDocument, fieldName As String) As Variant
+Declare Function isAlreadyEmptyArray(array As Variant) As Boolean
+Declare Function fGetFieldDouble(doc As NotesDocument, campo As String) As Double
+Declare Function fGetFieldString(doc As NotesDocument, campo As String) As String
+Declare Public Function fElements(arr As Variant) As Integer
+Declare Public Function isMemberOfArray(Value As String, arr As Variant) As Boolean
+
+'++LotusScript Development Environment:2:5:(Declarations):0:10
+Const LNAME= "UtilidadesGenericas"
+
+
+Dim sessionActual As NotesSession
+Dim dbActual As NotesDatabase
+Dim fechaHoy As NotesDateTime
+Dim fechaHoyHoraCero As NotesDateTime
+
+
+Dim mesActual As Integer
+Dim diaActual As Integer
+Dim annoActual As Integer
+
+Dim	horaActual As Integer
+Dim	minutoActual As Integer	
+Dim	segundoActual As Integer
+
+Const SEPARADOR_MAILS= ","
+
+
+
+
+
+
+
+
+
+'++LotusScript Development Environment:2:2:Initialize:1:10
+Sub Initialize
+	
+	Set sessionActual = New NotesSession
+	Set dbActual= sessionActual.Currentdatabase
+	
+	Set fechaHoy= ExtraerFechaActual()
+	mesActual= Month(fechaHoy.Dateonly) 
+	diaActual = day(fechaHoy.Dateonly)
+	annoActual = year(fechaHoy.Dateonly)
+	
+	horaActual= Hour(fechaHoy.Timeonly)
+	minutoActual= Minute(fechaHoy.Timeonly)	
+	segundoActual= Second(fechaHoy.Timeonly)
+	
+	Set fechaHoyHoraCero= CrearFechaHora0(diaActual, mesActual, annoActual)
+			
+End Sub
+
+
+
+'++LotusScript Development Environment:2:2:Terminate:1:10
+Sub Terminate
+	
+End Sub
+
+
+
+'++LotusScript Development Environment:2:1:getDocValueString:6:8
+%REM
+	Function getDocValueString
+	Description: Devuelve un string vacío si no tiene valor, 
+o si el campo no existe o hay error.
+%END REM
+Public Function getDocValueString(doc As NotesDocument, fieldName As String) As String
+	On Error GoTo catch
+	getDocValueString = ""
+		
+	If doc Is Nothing Then		
+		Exit Function
+	End If
+	
+	Dim item As NotesItem
+	Set item = doc.Getfirstitem(fieldName)
+	If item Is Nothing Then
+		Exit Function
+	End If
+	
+	getDocValueString = CStr(item.Values(0))
+	Exit Function
+catch:
+	Call RegError( "Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+	
+	getDocValueString = ""
+	Err = 0
+	Exit Function
+End Function
+
+
+'++LotusScript Development Environment:2:1:CrearFechaHora0:5:8
+%REM
+	Function CrearFechaHora0
+	Description: Comments for Function
+%END REM
+Function CrearFechaHora0(dia As Integer, mes As Integer, anno As Integer) As NotesDateTime
+	On Error GoTo ERRORHANDLER
+	
+	Set CrearFechaHora0= New NotesDateTime("01/01/" + CStr(anno) + " 00:00:00") 
+	Call CrearFechaHora0.Adjustday(dia-1, True)	
+	Call CrearFechaHora0.Adjustmonth(mes-1, True)
+	
+GETOUT:
+	Exit Function
+	
+ERRORHANDLER:
+	Call RegError( "Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+	Set CrearFechaHora0= Nothing
+	GoTo GETOUT
+End Function
+
+'++LotusScript Development Environment:2:1:evaluarReglaFormula:6:8
+'************************************************************************************************************************************
+'* evaluarRegla: evalua una regla, la cual debe ser una expresión booleana, si la regla es incorrecta o está 
+'*		vacía devuelve el valor default
+'* 
+'************************************************************************************************************************************
+Function evaluarReglaFormula(doc As NotesDocument, ByVal regla As String, default As Integer) As Integer
+	Dim retVal As Variant
+	regla = Trim(regla)
+	If regla = "" Then
+		evaluarReglaFormula = default And True	'Asigna valor de tipo booleano.
+		Exit Function
+	End If
+	If UCase(Left(regla, 3)) <> "@IF" Then
+		regla = "@If(" & regla & "; @True; @False)"
+	End If
+	On Error GoTo ErrorHandler
+	retVal = Evaluate(regla, doc)		
+	If IsArray(retVal) Then
+		If IsNumeric(retVal(0)) Then
+			evaluarReglaFormula = retVal(0)
+		End If
+	End If
+	Exit Function
+ErrorHandler:
+	evaluarReglaFormula = default And True
+	Exit Function
+End Function
+
+'++LotusScript Development Environment:2:1:evaluateString:5:8
+'************************************************************************************************************************************
+'* evaluarString: evalua una fórmula y devuelve el String que genera, si la fórmula no devulve un String devuleve
+'* 		el valor default.
+'************************************************************************************************************************************
+Public Function evaluateString(doc As NotesDocument, ByVal formula As String, default As String) As String
+	Dim retVal As Variant	
+	On Error GoTo ErrorHandler
+	retVal = Evaluate(formula, doc)		
+	If IsArray(retVal) Then
+		evaluateString = CStr(retVal(0))
+	End If
+	Exit Function
+ErrorHandler:
+	evaluateString = default 
+	Exit Function
+End Function
+
+'++LotusScript Development Environment:2:1:getDocValueDateTime:5:8
+%REM
+	Function getDocValueDateTime
+	Description: Obtiene el valor NotesDateTime de un campo en un documento dado
+%END REM
+Public Function getDocValueDateTime(doc As NotesDocument, fieldName As String) As NotesDateTime
+	On Error GoTo ERRORHANDLER
+	Set getDocValueDateTime = Nothing
+	
+	If doc Is Nothing Then		
+		Exit Function
+	End If
+	
+	Dim item As NotesItem
+	Set item = doc.Getfirstitem(fieldName)
+	If item Is Nothing Then
+		Exit Function
+	End If
+	
+	If IsDate(item.Values(0)) Then
+		Set getDocValueDateTime = New NotesDateTime(item.Datetimevalue.Lslocaltime )
+	End If
+
+	Exit Function
+	
+	GETOUT:
+	Exit Function
+	
+	ERRORHANDLER:
+	Call RegError( "Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+	
+		GoTo GETOUT
+End Function
+
+
+
+'++LotusScript Development Environment:2:1:FuncAlfaNumerico:6:8
+'************************************************************************************************************************************
+'* AlfaNumerico: elimina de un String los valores que nos son números o letras del 'alfabeto inglés'. Además 
+'*		recorta el tamaño del String al indicado en el argumento maxLen.
+'* Por ejemplo: alfaNumerico("áéíóÁÉñ/+-*~$%#@_  123456", 10 ) devuelve "aeioAEn_12"
+ '************************************************************************************************************************************
+Function FuncAlfaNumerico(ByVal texto As String, maxLen As Integer)  As String
+	Const CARACTERES_PERMITIDOS =  "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"
+	Dim expresionFormula As String
+	Dim evaluateResultado As Variant
+	Dim textoResultado As String
+	Dim i As Long
+	Dim c As String * 1
+	
+	expresionFormula = "@Ascii("""+ texto +""")"
+	evaluateResultado = Evaluate(expresionFormula)
+	If IsArray(evaluateResultado) Then
+		texto = evaluateResultado ( 0 )
+	End If
+	For i = 1 To Len(texto)
+		c = Mid(texto, i, 1)
+		If 	InStr ( 1 ,  CARACTERES_PERMITIDOS , c , 0  ) > 0  Then
+			textoResultado = textoResultado + c	
+		End If
+	Next
+	textoResultado = Left(textoResultado, maxLen)	
+	FuncAlfaNumerico = textoResultado
+End Function
+
+'++LotusScript Development Environment:2:1:fMin:1:8
+Function fMin(a,b)
+	If a < b Then
+		fMin = a
+	Else
+		fMin = b
+	End If
+End Function
+
+'++LotusScript Development Environment:2:1:AddLeadingZero:7:8
+%REM
+	Function AddLeadingZero
+	Description: Agrega un 0 a la izquierda en valores 
+	menores que 10. Utilizado principalmente para 
+	formateo de fechas.
+%END REM
+Function AddLeadingZero(Value As Variant) As String
+	
+	On Error GoTo catch
+	Const Modulo = "AddLeadingZero"
+	
+	Dim resp As String
+	
+	If value < 10 Then
+		resp = "0" + CStr(value)
+	Else
+		resp = CStr(value)
+	End If
+	AddLeadingZero = resp
+	
+	Exit Function
+catch: 
+	Error Err(), "-> " + Error() + ". En LibUtilidades.fGetUrlVariable, en línea " + Str(Erl())
+End Function
+
+'++LotusScript Development Environment:2:1:fAlfaNumerico:6:8
+'************************************************************************************************************************************
+'* AlfaNumerico: elimina de un String los valores que nos son números o letras del 'alfabeto inglés'. Además 
+'*		recorta el tamaño del String al indicado en el argumento maxLen.
+'* Por ejemplo: alfaNumerico("áéíóÁÉñ/+-*~$%#@_  123456", 10 ) devuelve "aeioAEn_12"
+ '************************************************************************************************************************************
+Function fAlfaNumerico(ByVal texto As String, maxLen As Integer)  As String
+	Const CARACTERES_PERMITIDOS =  "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"
+	Dim expresionFormula As String
+	Dim evaluateResultado As Variant
+	Dim textoResultado As String
+	Dim i As Long
+	Dim c As String * 1
+	
+	expresionFormula = "@Ascii("""+ texto +""")"
+	evaluateResultado = Evaluate(expresionFormula)
+	If IsArray(evaluateResultado) Then
+		texto = evaluateResultado ( 0 )
+	End If
+	For i = 1 To Len(texto)
+		c = Mid(texto, i, 1)
+		If 	InStr ( 1 ,  CARACTERES_PERMITIDOS , c , 0  ) > 0  Then
+			textoResultado = textoResultado + c	
+		End If
+	Next
+	textoResultado = Left(textoResultado, maxLen)	
+	fAlfaNumerico = textoResultado
+End Function
+
+'++LotusScript Development Environment:2:1:ExtraerFechaActual:6:8
+%REM
+	Function ExtraerFechaActual_DateOnly
+	Description: Obtiene la fecha del servidor del momento del llamado. No contiene hora.
+	
+%END REM 
+Function ExtraerFechaActual() As NotesDateTime
+	On Error GoTo ERRORHANDLER
+	
+	On Error GoTo ERRORHANDLER
+	Const FNAME = "ExtrarFechaActual"
+	
+	Dim fechaStr As String
+	Dim docFecha As NotesDocument
+	Set docFecha = dbActual.Createdocument()
+	docFecha.SaveOptions = "0"
+	
+	Set ExtraerFechaActual = New NotesDateTime( CStr(docFecha.Created) )
+	
+	
+	
+	GETOUT:
+	Exit Function
+	
+	ERRORHANDLER:
+	Call RegError("Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+		GoTo GETOUT
+End Function
+
+'++LotusScript Development Environment:2:1:fEvaluateString:5:8
+'************************************************************************************************************************************
+'* evaluarString: evalua una fórmula y devuelve el String que genera, si la fórmula no devulve un String devuleve
+'* 		el valor default.
+'************************************************************************************************************************************
+Public Function fEvaluateString(doc As NotesDocument, ByVal formula As String, default As String) As String
+	Dim retVal As Variant	
+	On Error GoTo ErrorHandler
+	retVal = Evaluate(formula, doc)		
+	If IsArray(retVal) Then
+		fEvaluateString = CStr(retVal(0))
+	End If
+	Exit Function
+ErrorHandler:
+	fEvaluateString = default 
+	Exit Function
+End Function
+
+'++LotusScript Development Environment:2:2:AddToVariantArray:2:8
+
+Public Sub AddToVariantArray( iArray As Variant, newValue As Variant ) 
+	
+	On Error GoTo HandleError
+	
+	If IsEmpty(iArray) Then
+		ReDim iArray(0) As String
+	End If
+	
+	
+	If ( UBound(iArray) = LBound(iArray) ) And iArray(UBound(iArray)) = "" Then ' raises error 200 if not initialized
+' if we are a new array with nothing in it then do not increase size
+IsInitialized:
+		iArray(LBound(iArray)) = newValue
+	Else
+		Dim newSize As Integer
+		newSize = UBound(iArray)+1
+		ReDim Preserve iArray(newSize) 
+		iArray(newSize) = newValue
+'AddToArray = iArray
+	End If
+	
+	Exit Sub
+	
+HandleError:
+	If Err = 200 Then ' uninitialized dynamic array
+'( it's actually an array, but does not have a single value in it
+		ReDim iArray( 0 To 0 )
+		Resume IsInitialized
+	Else 
+		Call RegError(  Err & " " & Error )
+		Error Err, Error
+		Exit Sub
+	End If
+	
+End Sub
+
+'++LotusScript Development Environment:2:1:Num_Elements:1:8
+Public Function Num_Elements(arr As Variant) As Integer
+	If IsArray(arr) Then
+		Num_Elements = UBound(arr) - LBound(arr) +1
+	Else
+		Num_Elements = 0
+	End If
+End Function
+
+'++LotusScript Development Environment:2:1:fAhora:1:8
+Function fAhora() As Variant
+	Dim session As New NotesSession
+	Dim db As NotesDatabase
+	Dim doc As NotesDocument
+	Dim retVal As Variant
+	Dim vNow As Variant
+	Set db = session.CurrentDatabase
+	'Set doc = db.CreateDocument
+	'retVal = doc.Created	
+	vNow = Evaluate(|@Now([ServerTime])|)
+	fAhora = vNow(0)
+	'Set doc = Nothing	
+End Function
+
+
+'++LotusScript Development Environment:2:1:fGetFieldInteger:2:8
+'fGetFieldInteger: devuelve el valor de un campo como entero.
+Function fGetFieldInteger(doc As NotesDocument, campo As String) As Integer
+	Dim itemTmp As NotesItem
+	Dim retVal As Integer
+	Dim nvar As Variant
+	On Error GoTo ErrorHandler
+	
+	Set itemTmp = doc.GetFirstItem(campo)
+	If itemTmp Is Nothing  Then
+		retVal = 0
+	Else
+		nvar = itemTmp.Values(0)
+		If IsNumeric(nvar) Then
+			retVal = CInt(nvar)
+		Else
+			retVal = 0
+		End If	
+	End If
+	fGetFieldInteger = retVal
+	Exit Function
+ErrorHandler:
+	fGetFieldInteger = 0
+	Exit Function
+End Function
+
+'++LotusScript Development Environment:2:1:CrearFecha:7:8
+%REM
+	Function CrearFecha
+	Description: Esta función en la cual se crea una fecha en 01/01/YYYY de forma que luego
+	se ajuste los meses y dias para llegar a la fecha que se necesita
+	De forma que se evite los problemas de configuraciones regionales diferentes que pueden tener los servidores
+%END REM
+Function CrearFecha(dia As Integer, mes As Integer, anno As Integer) As NotesDateTime
+	On Error GoTo ERRORHANDLER
+  
+	Set CrearFecha= New NotesDateTime("01/01/" + CStr(anno)) 
+	Call CrearFecha.Adjustday(dia-1, True)	
+	Call CrearFecha.Adjustmonth(mes-1, True)
+	
+GETOUT:
+	Exit Function
+	
+ERRORHANDLER:
+	Call RegError( "Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+	Set CrearFecha= Nothing
+	GoTo GETOUT
+End Function
+
+
+
+
+'++LotusScript Development Environment:2:1:fUnique:1:8
+Function fUnique(c)
+' Given an array, this function scans it for duplicate entries, returning a
+' possibly smaller array with no duplications.  Resembles the Notes macro
+' function @Unique.
+	If IsArray(c) Then
+		Dim i%, k%, bot%, top%, otop%, atmp
+		bot% = LBound(c)
+		top% = LBound(c)
+		otop% = UBound(c)
+		
+' Dimension an array to the maximum size we might need (if we find no duplications).
+		ReDim result(bot% To otop%)
+		result(bot%) = c(bot%)
+		For i% = bot%+1 To otop%
+			atmp = c(i%)
+    ' (the element we are about to add to the result array)
+			For k% = bot% To top%
+' scan the result array for elements that match this one.
+				If atmp = c(k%) Then
+					Exit For
+				End If
+			Next
+			
+' If we got all the way thru the loop, then no duplicate was found, so add this new element.
+			If k% > top% Then
+				result(k%) = atmp
+				top% = k%
+			End If
+		Next
+' Adjust result array size to trim off any elements that were unused because of duplications.
+		ReDim Preserve result(bot% To top%)
+		fUnique = result
+	Else
+' we were passed a scalar; return that same value.
+		fUnique = c
+	End If
+End Function
+
+'++LotusScript Development Environment:2:1:getParamValue:5:8
+%REM
+	Function getParamValue
+	Description: Comments for Function
+%END REM
+Public Function getParamValue(paramDocName As String, paramFieldName As String) As String
+	
+	On Error GoTo catch
+	Const Modulo = "getParamValue"
+	
+	Dim ses As New NotesSession
+	Dim db As NotesDatabase
+	Set db = ses.Currentdatabase
+	
+	Dim viewParams As NotesView
+	Set viewParams = db.Getview("PUID")
+	
+	Dim paramsDoc As NotesDocument
+	Set paramsDoc = viewParams.Getdocumentbykey(paramDocName, True)
+	If Not paramsDoc Is Nothing Then
+		getParamValue = CStr(paramsDoc.Getitemvalue(paramFieldName)(0))
+	End If
+	
+	Exit Function
+catch:
+	Call RegError( "Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+		
+End Function
+
+
+'++LotusScript Development Environment:2:1:fGetUrlVariable:1:8
+Function fGetUrlVariable(docContext As NotesDocument, varName As String) As String
+	'fGetUrlVariable: Esta función es para obtener el valor de una variable indicada en el url de una llamada web
+	' a un agente.
+	'docContext: documento de contexto que se genera en un agente llamado por web, y a través de la propiedad
+	'	DocumentContext del objeto NotesSession.
+	Dim item As NotesItem
+	Dim url As String
+	Dim formula As String
+	Dim eval As Variant
+	On Error GoTo ErrorHandler
+	
+	Set item = docContext.GetFirstItem("Query_String_Decoded")
+	If item Is Nothing Then Exit Function
+	url = item.Values(0)		
+	formula = |@Trim(@Middle("| + url +  |" + "&"; "| + varName + |="; "&"));|
+	eval = Evaluate(formula, docContext)
+	fGetUrlVariable = eval(0)
+	
+	Exit Function
+ErrorHandler:
+	Error Err(), "-> " + Error() + ". En LibUtilidades.fGetUrlVariable, en línea " + Str(Erl()) 
+End Function
+
+'++LotusScript Development Environment:2:1:fExplode:1:8
+Function fExplode(s$, div$) As Variant
+	ReDim result(0 To 0) As String
+	Dim i%, pos%, oldpos%
+	oldpos = 1
+	pos = InStr(s, div)
+	Do Until pos = 0
+		ReDim Preserve result(0 To i+1)
+		result(i) = Mid$(s, oldpos, pos-oldpos)
+		i = i + 1
+		oldpos = pos + 1
+		pos = InStr(pos+1, s, div)
+	Loop
+	result(i) = Mid$(s, oldpos, 32000)
+	fExplode = result
+End Function
+
+'++LotusScript Development Environment:2:1:getDocValueString_ErrMsg:5:8
+%REM
+	Function getDocValueString_ErrMsg
+	Description: Devuelve el valor de un campo dado. Si no existe, devuelve "<ERROR!>"
+%END REM
+Public Function getDocValueString_ErrMsg(doc As NotesDocument, fieldName As String) As String
+	On Error GoTo ERRORHANDLER
+	
+	getDocValueString_ErrMsg = "<ERROR!>"
+	
+	If doc Is Nothing Then		
+		Exit Function
+	End If
+	
+	Dim item As NotesItem
+	Set item = doc.Getfirstitem(fieldName)
+	If item Is Nothing Then
+		Exit Function
+	End If
+	
+	getDocValueString_ErrMsg = CStr(item.Values(0))
+	
+	
+	GETOUT:
+	Exit Function
+	
+	ERRORHANDLER:
+	Call RegError( "Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+	
+	getDocValueString_ErrMsg = "<ERROR!>"
+	Err = 0
+	GoTo GETOUT
+End Function 
+
+
+
+
+'++LotusScript Development Environment:2:2:AddToArray:5:8
+%REM
+	Function AddArrayToArray
+	Description: Agrega un nuevo valor en string a un arreglo dado
+%END REM
+Sub AddToArray( iArray As Variant, newValue As String ) 
+	
+	On Error GoTo HandleError
+	
+	If IsEmpty(iArray) Then
+		ReDim iArray(0) As String
+	End If
+	
+	
+	If ( UBound(iArray) = LBound(iArray) ) And iArray(UBound(iArray)) = "" Then 
+IsInitialized:
+		iArray(LBound(iArray)) = newValue
+	Else
+		Dim newSize As Integer
+		newSize = UBound(iArray)+1
+		ReDim Preserve iArray(newSize) 
+		iArray(newSize) = newValue
+		
+	End If
+	
+	Exit Sub
+	
+HandleError:
+	If Err = 200 Then 
+		ReDim iArray( 0 To 0 )
+		Resume IsInitialized
+	Else 
+		Call RegError(  Err & " " & Error )
+		Error Err, Error
+		Exit Sub
+	End If
+	
+End Sub 
+
+
+'++LotusScript Development Environment:2:1:fMax:5:8
+
+
+
+
+Function fMax(a,b)
+	If a < b Then
+		fMax = b
+	Else
+		fMax = a
+	End If
+End Function
+
+'++LotusScript Development Environment:2:1:fRepeat:3:8
+
+
+Function fRepeat(s, ByVal count As Integer)
+' Given a string and a count, Repeat returns a string which is
+' the argument value repeated "count" times.  Passed an array,
+' it returns an array where each element is the corresponding
+' source element repeated "count" times.
+	Dim i%
+	If IsArray(s) Then
+		ReDim hark(LBound(s) To UBound(s)) As String
+		For i% = LBound(s) To UBound(s)
+			hark(i%) = fRepeat(s(i%), count)
+		Next
+		fRepeat = hark
+	ElseIf VarType(s) = 8 Then
+		Select Case Len(s)
+		Case 0:
+			fRepeat = "" ' empty string repeated any number of times is still empty.
+		Case 1:
+			fRepeat = String(s, count) ' This is much faster than using a loop.
+		Case Else
+			fRepeat = ""
+			For i% = 1 To count
+				fRepeat = fRepeat & s
+			Next
+		End Select
+	Else
+		fRepeat = fRepeat(CStr(s), count)
+	End If
+End Function
+
+'++LotusScript Development Environment:2:1:fPartition:4:8
+'**************************************************************
+'*partition: utilizada por la función quickSort.
+'**************************************************************
+Function fPartition( Slot_Array As Variant, Lower As Integer, Upper As Integer ) As Integer
+	Dim p_index As Integer
+	Dim Item_Array As Variant
+	Dim pivot As String
+	Dim temp As String
+	Dim i As Integer
+	Dim j As Integer
+	p_index = Lower + (Upper - Lower) \ 2
+	pivot = Slot_Array(p_index)
+	Slot_Array(p_index) = Slot_Array(Lower)
+	i = Lower + 1
+	j = Upper
+	Do
+		Do While i < j
+			temp = Slot_Array(i)
+			If pivot <= temp Then Exit Do
+			i = i + 1
+		Loop
+		Do While j >= i
+			temp = Slot_Array(j)
+			If temp <= pivot Then Exit Do
+			j = j - 1
+		Loop
+		If i >= j Then Exit Do
+		temp = Slot_Array(i)
+		Slot_Array(i) = Slot_Array(j)
+		Slot_Array(j) = temp
+		j = j - 1
+		i = i + 1
+	Loop
+	Slot_Array(Lower) = Slot_Array(j)
+	Slot_Array(j) = pivot
+	fPartition = j
+End Function 
+
+'++LotusScript Development Environment:2:1:fEvaluarRegla:6:8
+'************************************************************************************************************************************
+'* evaluarRegla: evalua una regla, la cual debe ser una expresión booleana, si la regla es incorrecta o está 
+'*		vacía devuelve el valor default
+'* 
+'************************************************************************************************************************************
+Public Function fEvaluarRegla(doc As NotesDocument, ByVal regla As String, default As Integer) As Integer
+	Dim retVal As Variant
+	regla = Trim(regla)
+	If regla = "" Then
+		fEvaluarRegla = default And True	'Asigna valor de tipo booleano.
+		Exit Function
+	End If
+	If UCase(Left(regla, 3)) <> "@IF" Then
+		regla = "@If(" & regla & "; @True; @False)"
+	End If
+	On Error GoTo ErrorHandler
+	retVal = Evaluate(regla, doc)		
+	If IsArray(retVal) Then
+		If IsNumeric(retVal(0)) Then
+			fEvaluarRegla = retVal(0)
+		End If
+	End If
+	Exit Function
+ErrorHandler:
+	fEvaluarRegla = default And True
+	Exit Function
+End Function
+
+'++LotusScript Development Environment:2:2:fQuickSort:14:8
+
+
+
+
+
+'******************************************************************************************
+'*quickSort; ordena alfabéticamente un arreglo de una dimensión, cuyos 
+'*		elementos son de tipo string. Utiliza el algoritmo de quick-sort.
+'*Argumentos:
+'*		Slot_Array is your array
+'*		Lower is the lbound(Slot_Array)
+'*		Upper is the ubound(Slot_Array)
+'******************************************************************************************
+Sub fQuickSort(Slot_Array As Variant, Lower As Integer, Upper As Integer )
+	Dim M As Integer
+	If Lower < Upper Then
+		M = fPartition(Slot_Array, Lower, Upper )
+		Call fQuickSort(Slot_Array, Lower, M - 1 )
+		Call fQuickSort(Slot_Array, M + 1, Upper ) 
+	End If 
+End Sub
+
+'++LotusScript Development Environment:2:1:AddArrayToArray:5:8
+%REM
+	Function AddArrayToArray
+	Description: Agrega todos los valores de un arreglo a otro arreglo
+%END REM
+Function AddArrayToArray(Array As Variant, AddArray As Variant) As Variant
+	On Error GoTo manejoErrores
+	Const Modulo = "AddArrayToArray"
+	
+	ForAll valor In AddArray
+		Call AddToArray(Array, CStr(valor))
+	End ForAll
+	
+	AddArrayToArray = Array
+	
+	Exit Function
+manejoErrores:
+	Call RegError( Error() & ". Error " & Err() & ". " & "En " + LNAME + "." + Modulo + " línea: " & Erl() & " <- ")
+	Exit Function
+	
+End Function
+
+'++LotusScript Development Environment:2:1:fServerUrl:1:8
+Function fServerUrl() As String	
+	Dim vEvaluate As Variant
+	
+	Dim dbWebPath As String
+	
+	
+	vEvaluate =Evaluate(| @Name([CN]; @Subset(@DbName; 1)) + "/"+@ReplaceSubstring(@Subset(@DbName;-1);"\\";"/");|)
+	dbWebPath = vEvaluate(0)
+	
+	fServerUrl ="http://" +  dbWebPath 
+End Function
+
+'++LotusScript Development Environment:2:1:fIsMember:4:8
+'************************************************************************************************************************************
+'* isMember: indica si el valor se encuentra dentro del array indicado
+'************************************************************************************************************************************
+Public Function fIsMember(valor As Variant, array As Variant) As Integer
+	fIsMember = Not IsNull(ArrayGetIndex(array, valor, 0)) 
+End Function
+
+'++LotusScript Development Environment:2:1:getDocValueLong:5:8
+%REM
+	Function getDocValueLong
+	Description:  Obtiene el valor Long de un campo en un documento dado
+%END REM
+Public Function getDocValueLong(doc As NotesDocument, fieldName As String) As Long
+	On Error GoTo ERRORHANDLER
+	getDocValueLong = 0
+	
+	If doc Is Nothing Then		
+		Exit Function
+	End If
+	
+	Dim item As NotesItem
+	Set item = doc.Getfirstitem(fieldName)
+	If item Is Nothing Then
+		Exit Function
+	End If
+	
+	If IsNumeric(item.Values(0)) Then
+		getDocValueLong= CLng( item.Values(0) )
+	End If
+
+	Exit Function
+	
+GETOUT:
+	Exit Function
+	
+ERRORHANDLER:
+	getDocValueLong = 0
+	Call RegError( "Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+	
+	GoTo GETOUT
+End Function
+
+'++LotusScript Development Environment:2:1:CrearFechaCompleta:5:8
+%REM
+	Function CrearFechaCompleta
+	Description: Comments for Function
+%END REM
+Function CrearFechaCompleta(dia As Integer, mes As Integer, anno As Integer, hora As Integer, minutos As Integer, segundos As Integer) As NotesDateTime
+	On Error GoTo ERRORHANDLER
+	
+	
+	Set CrearFechaCompleta= CrearFechaHora0(Dia, Mes, Anno) 
+	Call CrearFechaCompleta.Adjusthour(hora, True) 	
+	Call CrearFechaCompleta.Adjustminute(minutos, True)
+	Call CrearFechaCompleta.Adjustsecond(segundos, True)
+		
+		
+	GETOUT:
+	Exit Function
+	
+	ERRORHANDLER:
+		Call RegError("Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+		GoTo GETOUT
+
+
+
+End Function
+
+'++LotusScript Development Environment:2:1:getDocValueInteger:5:8
+%REM
+	Function getDocValueInteger
+	Description: Obtiene el valor Integer de un campo en un documento dado
+%END REM
+Public Function getDocValueInteger(doc As NotesDocument, fieldName As String) As Integer
+	On Error GoTo ERRORHANDLER
+	getDocValueInteger = 0
+	
+	If doc Is Nothing Then		
+		Exit Function
+	End If
+	
+	Dim item As NotesItem
+	Set item = doc.Getfirstitem(fieldName)
+	If item Is Nothing Then
+		Exit Function
+	End If
+	
+	If IsNumeric(item.Values(0)) Then
+		getDocValueInteger= item.Values(0)
+	End If
+
+	Exit Function
+	
+	GETOUT:
+	Exit Function
+	
+	ERRORHANDLER:
+		getDocValueInteger = 0
+	Call RegError( "Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+	
+		GoTo GETOUT
+End Function
+
+
+
+'++LotusScript Development Environment:2:1:FunctExplode:1:8
+Function FunctExplode(s$, div$) As Variant
+	ReDim result(0 To 0) As String
+	Dim i%, pos%, oldpos%
+	oldpos = 1
+	pos = InStr(s, div)
+	Do Until pos = 0
+		ReDim Preserve result(0 To i+1)
+		result(i) = Mid$(s, oldpos, pos-oldpos)
+		i = i + 1
+		oldpos = pos + 1
+		pos = InStr(pos+1, s, div)
+	Loop
+	result(i) = Mid$(s, oldpos, 32000)
+	FunctExplode = result
+End Function
+
+'++LotusScript Development Environment:2:2:RegError:5:8
+%REM
+	Sub RegError
+	Description: Comments for Sub
+%END REM
+Sub RegError(errorMessage As String)
+	On Error GoTo ERRORHANDLER
+		
+	MessageBox errorMessage, 16
+	 
+	GETOUT:
+	Exit Sub
+	
+	ERRORHANDLER:
+		Msgbox "Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & Lsi_info(2) & |"|, 16, "Error"
+		GoTo GETOUT
+End Sub
+
+'++LotusScript Development Environment:2:1:FunctAppendItemValue:1:8
+Function FunctAppendItemValue( doc As NotesDocument, campo As String, valor As Variant) As NotesItem
+	Dim item As NotesItem
+	Dim nuevoValor As Integer
+	Dim i As Integer
+	Dim j As Integer
+	
+	On Error GoTo  ErrorHandler
+	
+	If doc Is Nothing Then Exit Function
+	Set item = doc.GetFirstItem(campo)
+	nuevoValor = False
+	If item Is Nothing Then
+		nuevoValor = True
+	Else
+		If TypeName(item.Values(0)) = "STRING" Then
+			If item.Values(0) = "" Then
+				nuevoValor = True
+			End If
+		End If		
+	End If
+	
+	If nuevoValor Then
+		Set item = doc.ReplaceItemValue(campo, valor)
+	Else
+		i = Num_Elements(item.Values) 
+		ReDim Preserve arrayCampo(i) 	
+		For j = 0 To i - 1
+			arrayCampo(j) = item.Values(j)			
+		Next
+		arrayCampo(i) = valor
+		Set item = doc.ReplaceItemValue(campo, arrayCampo)
+	End If
+	Set FunctAppendItemValue = item
+	
+	Exit Function
+ErrorHandler:
+	Print 	"-> fAppendItemValue. Error:" & Err() & ". Linea:" & Erl() & ". "  &  Error()
+	Exit Function
+End Function
+
+'++LotusScript Development Environment:2:1:getDocValuesToArray:5:8
+%REM
+	Function getDocValuesVariant
+	Description: Description: Obtiene el arreglo de valores de un campo en un documento dado
+%END REM
+Public Function getDocValuesToArray(doc As NotesDocument, fieldName As String) As Variant
+	On Error GoTo ERRORHANDLER
+	Dim arrayResultado As Variant
+	
+	getDocValuesToArray= ""
+	
+	If doc Is Nothing Then		
+		Exit Function
+	End If
+	
+	Dim item As NotesItem
+	Set item = doc.Getfirstitem(fieldName)
+	If item Is Nothing Then
+		Exit Function
+	End If
+	
+	If item.Text="" Then
+		Exit Function
+	End If
+	
+	ForAll value In Item.Values
+		If Trim(CStr(value)<>"") Then
+			Call AddToArray(arrayResultado, CStr(value))
+		End If		
+	End ForAll
+	
+	getDocValuesToArray= arrayResultado
+	
+	
+	GETOUT:
+	Exit Function
+	
+	ERRORHANDLER:
+	Call RegError( "Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+		GoTo GETOUT
+End Function
+
+'++LotusScript Development Environment:2:1:isAlreadyEmptyArray:5:8
+%REM
+	Function isAlreadyEmptyArray
+	Description: Comments for Function
+%END REM
+Function isAlreadyEmptyArray(array As Variant) As Boolean
+	On Error GoTo errCatch
+	Dim indexSuperior As Long
+	isAlreadyEmptyArray= False
+	
+	If IsEmpty(array) Then
+		isAlreadyEmptyArray= True
+		Exit Function
+	End If
+	If (Not IsArray(array)) Then
+		isAlreadyEmptyArray= True
+		Exit Function
+	End If 
+	indexSuperior=UBound(array) 
+	If (indexSuperior=0 And array(indexSuperior)="") Then
+		isAlreadyEmptyArray= True
+		Exit Function
+	End If
+	Exit Function
+	
+errCatch:
+	Call RegError( "Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+	
+	
+	Exit Function
+End Function
+
+'++LotusScript Development Environment:2:1:fGetFieldDouble:2:8
+'fGetFieldDouble: devuelve el valor de un campo como doble.
+Function fGetFieldDouble(doc As NotesDocument, campo As String) As Double
+	Dim itemTmp As NotesItem
+	Dim retVal As Double
+	Dim nvar As Variant
+	On Error GoTo ErrorHandler
+	
+	Set itemTmp = doc.GetFirstItem(campo)
+	If itemTmp Is Nothing  Then
+		retVal = 0
+	Else
+		nvar = itemTmp.Values(0)
+		If IsNumeric(nvar) Then
+			retVal = CDbl(nvar)
+		Else
+			retVal = 0
+		End If	
+	End If
+	fGetFieldDouble = retVal
+	Exit Function
+ErrorHandler:
+	fGetFieldDouble = 0
+	Exit Function
+End Function
+
+'++LotusScript Development Environment:2:1:fGetFieldString:3:8
+
+'fGetFieldString: devuelve el valor de un campo como string.
+Function fGetFieldString(doc As NotesDocument, campo As String) As String
+	Dim itemTmp As NotesItem
+	Dim retVal As String
+	Dim nvar As Variant
+	On Error GoTo ErrorHandler
+	
+	Set itemTmp = doc.GetFirstItem(campo)
+	If itemTmp Is Nothing  Then
+		retVal = ""
+	Else
+		nvar = itemTmp.Values(0)		
+		retVal = CStr(nvar)
+	End If
+	fGetFieldString = retVal
+	Exit Function
+	
+ErrorHandler:
+	fGetFieldString = ""
+	Exit Function
+	
+End Function
+
+'++LotusScript Development Environment:2:1:fElements:1:8
+Public Function fElements(arr As Variant) As Integer
+	If IsArray(arr) Then
+		fElements = UBound(arr) - LBound(arr) +1
+	Else
+		fElements = 0
+	End If
+End Function
+
+'++LotusScript Development Environment:2:1:isMemberOfArray:5:8
+%REM
+	Function isMember
+	Description: Comments for Function
+%END REM
+Public Function isMemberOfArray(Value As String, arr As Variant) As Boolean
+
+	On Error GoTo ERRORHANDLER
+	
+	ForAll arrval In arr 
+		If value = CStr(arrval) Then
+			isMemberOfArray = True
+			Exit Function
+		End If
+	End ForAll
+	isMemberOfArray = False	
+	
+	
+	
+GETOUT:
+	Exit Function
+	
+ERRORHANDLER:
+	Call RegError( "Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+	
+	GoTo GETOUT
+End Function
+

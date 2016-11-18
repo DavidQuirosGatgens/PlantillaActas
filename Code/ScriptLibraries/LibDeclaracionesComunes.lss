@@ -1,0 +1,108 @@
+'++LotusScript Development Environment:2:5:(Options):0:74
+%REM
+	Library LibDeclaracionesComunes
+	Created Sep 23, 2014 by Milton Villegas/CV3 
+	Description: Librería para la declaración de bases de datos, vistas, documentos en forma global en
+	la base de datos.
+	
+%END REM
+Option Public
+Option Declare
+Use "UtilidadesGenericas"
+Use "LibBitacora"
+ 
+ 
+
+'++LotusScript Development Environment:2:5:(Forward):0:1
+Declare Sub Initialize
+Declare Private Sub RegistrarError(errorMessage As String)
+Declare Function TraeParametro(xParametro As String)
+
+'++LotusScript Development Environment:2:5:(Declarations):0:10
+
+
+REM Configuración de Parametros Generales
+Dim vistaDocsPerfiles As NotesView
+Dim docPerfilGeneral As NotesDocument
+
+REM Base de datos desde la que saldrán los envios de notificaciones
+Dim dbMail As NotesDatabase
+
+REM *****************************************************
+Dim arrayErrores As Variant
+
+
+Dim vDocsByID As NotesView
+Dim db As NotesDatabase
+Dim s As NotesSession
+
+'++LotusScript Development Environment:2:2:Initialize:1:10
+Sub Initialize
+	Set vistaDocsPerfiles= dbActual.GetView( "(Parametros)"	)
+	Set docPerfilGeneral= vistaDocsPerfiles.GetDocumentByKey("Parametros")
+	If docPerfilGeneral Is Nothing  Then
+		Call RegistrarError("Debe completarse la configuración general de la base de datos.")
+		Exit Sub
+	End If
+
+	Set vDocsByID= dbActual.GetView( "(IdDocumentos)"	)
+
+	If dbMail Is Nothing Then
+		Set dbMail = New NotesDatabase( "", "" )
+		REM por Default, lo setea con los datos de la configuracion general de SAC Central
+		Call dbMail.Open( getDocValueString(docPerfilGeneral, "NotificacionesServidor"), _
+		getDocValueString(docPerfilGeneral, "NotificacionesUbicacionBD"))
+		
+		REM ************************************************************
+		REM En caso de no poder instanciar la base de datos parametrizada 
+		If Not dbMail.Isopen Then
+			Call dbMail.Open(dbActual.Server, "mail.box" )	'		
+			If Not dbMail.IsOpen Then
+				Call dbMail.Open(dbActual.Server, "mail1.box" )	'			
+				If Not dbMail.IsOpen Then
+					If Not dbMail.IsOpen Then
+						Call dbMail.Open(dbActual.Server, "mail3.box" )	'					
+						If Not dbMail.IsOpen Then 
+							Call dbMail.Open(dbActual.Server, "mail4.box" )	'
+						End If							
+					End If
+				End If		 
+			End If				
+		End If
+		REM ************************************************************
+	End If
+	Set s= New NotesSession
+	Set db=s.Currentdatabase	
+	
+End Sub
+
+
+'++LotusScript Development Environment:2:2:RegistrarError:2:8
+
+Private Sub RegistrarError(errorMessage As String)
+	
+	Call AgregarLogError(errorMessage)
+	
+End Sub
+
+
+'++LotusScript Development Environment:2:1:TraeParametro:1:8
+Function TraeParametro(xParametro As String)
+	Dim ViewPar As NotesView
+	Dim DocPar As NotesDocument
+	Dim item As NotesItem
+	Set ViewPar=db.GetView("(Parametros)")
+	Set DocPar = ViewPar.GetFirstDocument
+	Dim xLlave As String
+	If Not DocPar Is Nothing Then
+		xLlave = Trim(xParametro)
+		If DocPar.HasItem(xLlave) Then
+			Set item = DocPar.GetFirstItem(xLlave)
+			If Not item Is Nothing Then
+				TraeParametro = item.Text
+				Exit Function
+			End If
+		End If
+	End If
+	TraeParametro = "" 
+End Function

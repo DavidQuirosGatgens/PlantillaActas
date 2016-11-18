@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config>
+  <faces-config-extension>
+    <namespace-uri>http://www.ibm.com/xsp/custom</namespace-uri>
+    <default-prefix>xc</default-prefix>
+  </faces-config-extension>
+  <composite-component>
+    <component-type>ccMarcarPendiente</component-type>
+    <composite-name>ccMarcarPendiente</composite-name>
+    <composite-file>/ccMarcarPendiente.xsp</composite-file>
+    <composite-extension>
+      <designer-extension>
+        <in-palette>true</in-palette>
+        <render-markup>&#xd;
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#xd;
+&lt;xp:view xmlns:xp="http://www.ibm.com/xsp/core"&gt;&#xd;
+&lt;xp:image url="/Marcar Pendiente.jpg"&gt;&lt;/xp:image&gt;&#xd;
+&lt;/xp:view&gt;</render-markup>
+      </designer-extension>
+    </composite-extension>
+    <property>
+      <property-name>refreshID</property-name>
+      <property-class>string</property-class>
+    </property>
+    <property>
+      <property-name>panelView</property-name>
+      <property-class>string</property-class>
+    </property>
+  </composite-component>
+</faces-config>

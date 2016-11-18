@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='utf-8'?>
+<note class='form' xmlns='http://www.lotus.com/dxl' version='9.0' maintenanceversion='1.0'
+ replicaid='0625806D0062AD0E'>
+<noteinfo noteid='5ca' unid='71EF916239453FEB06257D8E0053D708' sequence='60'>
+<created><datetime>20141112T091545,36-06</datetime></created>
+<modified><datetime>20161118T102859,75-06</datetime></modified>
+<revised><datetime>20161118T102859,74-06</datetime></revised>
+<lastaccessed><datetime>20161118T102859,75-06</datetime></lastaccessed>
+<addedtofile><datetime>20161116T115755,49-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Elisa Núñez/OU=Tec/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name
+>CN=CV3JOHAN/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=Elisa Núñez/OU=Tec/O=CV3</name><name
+>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=Elisa Núñez/OU=Tec/O=CV3</name><name
+>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=CV3JOHAN/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name
+>CN=SJODOMDES/OU=SVR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=localJohan/OU=DEV/O=CV3</name><name>CN=localMilton/OU=DEV/O=CV3</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localCristhian/OU=DEV/O=CV3</name></updatedby>
+<wassignedby><name>CN=localCristhian/OU=DEV/O=CV3</name></wassignedby>
+<item name='$TITLE' sign='true'><text>SistemaActas</text></item>
+<item name='$Comment' sign='true'><text/></item>
+<item name='$FrameSet' sign='true'>
+<rawitemdata type='1'>
+7/8YAAIABQAAAAAAAAAAAAAAAAAAAAAA8P8+AAAAAAABAAAAAAALAAsAAAAAAAUAAAAAAAUAAAAA
+AAIAAQAAAAAABQAAAAAAAAACAAYAAgBeAAMAAQDx/z4AAAAAAABAAQADAAEAAQAAAAAACgAAAAAA
+AQAAAAAAAABFbmNhYmV6YWRvAQD///8AAQAACgEAAAAAAPb/LAAAAAAAAwAHAAoAAAAAAAAAAAAA
+AAAAAAAAAAAAAABMZWZ0SGVhZGVy8P8+AAAAAAABAAAAAAALAAsAAAAAAAUAAAAAAAUAAAAAAAEA
+AgAAAAAABQAAAAAAAAADAAEAAwASAAMAUgDx/zgAAAAAAABAAQADAAEAAQAAAAAABAAAAAAAAQAA
+AAAAAABNZW51AQD///8AAQAACgEAAAAAAPb/JgAAAAAAAwAHAAQAAAAAAAAAAAAAAAAAAAAAAAAA
+AABNZW518f89AAAAAAAAQAEAAwABAAEAAAAAAAkAAAAAAAEAAAAAAAAAQ29udGVuaWRvAQD///8A
+AQAACgEAAAAAAD/2/y4AAAAAAAMAAgAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAQWN0YXNFbkxpYnJv
+</rawitemdata></item>
+<item name='$Flags'><text>#34CQ</text></item>
+<item name='$DesignerVersion' sign='true'><text>8.5.3</text></item></note>
+

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+
+	
+	<xe:dialog id="dialogTemasPendientes" title="Temas Disponibles" tooltip="Temas Disponibles">
+		<xe:dialogButtonBar id="dialogButtonBar3">
+
+			
+			<xp:button value="Agregar Tema" id="button12">
+				<xp:eventHandler event="onclick" submit="true" refreshMode="partial" refreshId="viewPanelAsignados">
+					<xp:this.action><![CDATA[#{javascript:var viewPanel=getComponent("viewPanelTemasDisponibles");
+var docIDArray=viewPanel.getSelectedIds(); 
+for(i=0;i < docIDArray.length; i++){
+	var docId=docIDArray[i];
+	var doc:NotesDocument=database.getDocumentByID(docId); 
+	if(doc!=null){
+		doc.replaceItemValue("IDdocOrden",document1.getItemValueString("IDdocOrden"));
+		doc.replaceItemValue("Estado","Asignado");
+		doc.save(true,false);
+	}
+}
+var c = getComponent("dialogTemaDisponible")
+c.hide()}]]></xp:this.action>
+				</xp:eventHandler>
+			</xp:button>
+			<xp:link escape="true" text="Salir" id="link1">
+				<xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+					<xp:this.action><![CDATA[#{javascript:var c = getComponent("dialogTemaDisponible")
+c.hide()}]]></xp:this.action>
+				</xp:eventHandler></xp:link>
+		</xe:dialogButtonBar>
+		<xe:dialogContent id="dialogContent2">
+			<xp:panel>
+				<xp:viewPanel rows="30" id="viewPanelTemasDisponibles">
+					<xp:this.facets>
+						<xp:pager partialRefresh="true" layout="Previous Group Next" xp:key="headerPager" id="pager3">
+						</xp:pager>
+					</xp:this.facets>
+					<xp:this.data>
+						<xp:dominoView var="viewTemasDisponibles" viewName="vTemasPendientes">
+						</xp:dominoView>
+					</xp:this.data>
+					<xp:viewColumn columnName="Titulo" id="viewColumn4" style="width:600px" showCheckbox="true">
+						<xp:viewColumnHeader value="Titulo" id="viewColumnHeader4">
+						</xp:viewColumnHeader>
+					</xp:viewColumn>
+				</xp:viewPanel>
+				<xp:br></xp:br>
+			</xp:panel>
+		</xe:dialogContent>
+	</xe:dialog></xp:view>

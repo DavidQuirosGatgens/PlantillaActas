@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><note class="filter" maintenanceversion="1.0" replicaid="0625806D0062AD0E" version="9.0" xmlns="http://www.lotus.com/dxl">
+<noteinfo noteid="4e2" sequence="44" unid="C10CD128ED8503A006257D450001D092">
+<created><datetime>20140830T181949,30-06</datetime></created>
+<modified><datetime>20161118T102901,87-06</datetime></modified>
+<revised><datetime>20161118T102901,86-06</datetime></revised>
+<lastaccessed><datetime>20161118T102901,87-06</datetime></lastaccessed>
+<addedtofile><datetime>20161116T115754,41-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Web Admin/O=INSWEB</name><name>CN=Sandra Castro/O=UNA</name><name>CN=Elisa Núñez/OU=Tec/O=CV3</name><name>CN=Julio Coto/O=CV3</name><name>CN=Recope Administrator/O=Recope</name><name>CN=CV3JCF01/OU=SVR/O=CV3</name><name>CN=Recope Administrator/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=Recope Administrator/O=Recope</name><name>CN=Consultores Lotus/O=INS</name><name>CN=CV3DEV01/OU=DEV/O=CV3</name><name>CN=CV3JOHAN/O=CV3</name><name>CN=Johan Arroyo/O=CV3</name><name>CN=CV3DEV01/OU=DEV/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=CV3JOHAN/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=CV3JOHAN/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=SJODOMDES/OU=SVR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localJohan/OU=DEV/O=CV3</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localCristhian/OU=DEV/O=CV3</name></updatedby>
+<wassignedby><name>CN=localCristhian/OU=DEV/O=CV3</name></wassignedby>
+<item name="$TITLE" sign="true"><text>Num2Char</text></item>
+<item name="$Flags"><text>s34Q</text></item>
+<item name="$PublicAccess" sign="true"><text>1</text></item>
+
+
+<item name="$POID"><datetime>20160526T143246,34-06</datetime></item></note>

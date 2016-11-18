@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core">
+	<xp:br></xp:br>
+	<xp:viewPanel rows="30" id="viewPanel1">
+
+					<xp:this.data>
+						<xp:dominoView var="view2" viewName="vAnexosActa">
+							<xp:this.categoryFilter><![CDATA[#{javascript:document1.getItemValueString("IDdocActa")}]]></xp:this.categoryFilter>
+						</xp:dominoView>
+					</xp:this.data>
+					<xp:viewColumn columnName="IDdocActa" id="viewColumn5" rendered="false">
+						<xp:viewColumnHeader value="IDdocActa" id="viewColumnHeader5">
+						</xp:viewColumnHeader>
+					</xp:viewColumn>
+					<xp:viewColumn columnName="$2" id="viewColumn6" style="width:94.0px">
+						<xp:viewColumnHeader value="Anexo" id="viewColumnHeader6">
+						</xp:viewColumnHeader>
+					</xp:viewColumn>
+					<xp:viewColumn columnName="SwAttName_1" id="viewColumn7" style="width:165.0px" displayAs="link">
+						<xp:viewColumnHeader value="Descripción" id="viewColumnHeader7">
+						</xp:viewColumnHeader>
+					</xp:viewColumn>
+				</xp:viewPanel></xp:view>

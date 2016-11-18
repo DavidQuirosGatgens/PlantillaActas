@@ -1,0 +1,62 @@
+'++LotusScript Development Environment:2:5:(Options):0:74
+%REM
+	Library CreaLogs
+	Created Feb 17, 2014 by Franklin Gomez/CV3
+	Description: Comments for Library
+%END REM
+Option Public
+
+
+Option Declare
+
+
+'++LotusScript Development Environment:2:5:(Forward):0:1
+Declare Sub CrearActa(IdOrden As Integer)
+
+'++LotusScript Development Environment:2:5:(Declarations):0:10
+
+
+
+
+'++LotusScript Development Environment:2:2:CrearActa:6:8
+%REM
+	Sub CrearDocumentoLog
+	Description: Comments for Sub
+%END REM
+
+Sub CrearActa(IdOrden As Integer)
+
+   On Error GoTo ErrorReturn	
+  'MessageBox Registro
+  
+  
+Dim session As New NotesSession
+
+Dim db As NotesDatabase
+
+Dim documento As NotesDocument
+
+Set db = session.CurrentDatabase
+
+Set documento = New NotesDocument ( db )
+  
+	' Instanciar la base de datos.
+	' crear un documento en la base de datos.
+	
+    documento.Form = "Acta"		
+	Call documento.Replaceitemvalue("NumeroActa$","0011")	
+	Call documento.Replaceitemvalue("FechaActa$", Now)
+	Call documento.Replaceitemvalue("IDdocOrden$",IdOrden)
+		
+	Call documento.Save(False,True)
+  
+	Exit Sub
+	
+ErrorReturn: 
+	
+	MsgBox "Error al crear documento Acta"    
+	
+	
+	Exit Sub
+	
+End Sub

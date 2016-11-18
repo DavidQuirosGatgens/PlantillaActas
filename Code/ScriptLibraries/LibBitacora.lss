@@ -1,0 +1,65 @@
+'++LotusScript Development Environment:2:5:(Options):0:74
+%REM
+	Library LibBitacora
+	Created Nov 21, 2014 by Milton Villegas/CV3 
+	Description: Comments for Library
+%END REM
+Option Public
+Option Declare
+
+'++LotusScript Development Environment:2:5:(Forward):0:1
+Declare Private Sub RegistrarError(errorMessage As String)
+Declare 	Public Sub AgregarLogInformativo(mensajeLog As String)
+Declare Public Sub AgregarLogError(mensajeLog As String)
+Declare 	Private Sub AgregarRegistroLog (accion As String, esError As Boolean, esInformativo As Boolean)
+
+'++LotusScript Development Environment:2:5:(Declarations):0:2
+
+'++LotusScript Development Environment:2:2:RegistrarError:2:8
+
+Private Sub RegistrarError(errorMessage As String)
+	MsgBox errorMessage , 16, "Error"
+End Sub
+
+
+'++LotusScript Development Environment:2:2:AgregarLogInformativo:1:8
+	Public Sub AgregarLogInformativo(mensajeLog As String)
+		Call AgregarRegistroLog( mensajeLog, False, True) 
+	End Sub
+
+'++LotusScript Development Environment:2:2:AgregarLogError:2:8
+	
+Public Sub AgregarLogError(mensajeLog As String)
+	Call AgregarRegistroLog( mensajeLog, True, False) 
+End Sub
+
+
+
+'++LotusScript Development Environment:2:2:AgregarRegistroLog:1:8
+	Private Sub AgregarRegistroLog (accion As String, esError As Boolean, esInformativo As Boolean)
+		On Error GoTo ErrorHandler
+		Dim rtLogItem As NotesRichTextItem
+		Dim accionAAgregar As String
+		
+		If (esError) Then				
+			accionAAgregar = CStr(Format(Today,"dd-mm-yyyy")) &" "& CStr(Format(Now,"h:mm:ss")) &_
+			" | ERROR: "&  accion				
+		Else
+			If (esInformativo) Then
+				accionAAgregar = CStr(Format(Today,"dd-mm-yyyy")) &" "& CStr(Format(Now,"h:mm:ss")) &_
+	 			" | IMPORTANTE : "&  accion				
+			Else
+				accionAAgregar = CStr(Format(Today,"dd-mm-yyyy")) &" "& CStr(Format(Now,"h:mm:ss")) &_
+				" | "&  accion				
+			End If
+		End If		
+		
+
+		MessageBox accionAAgregar
+		
+		Exit Sub
+ErrorHandler:
+		MessageBox GetThreadInfo(1) & ". Error (" & Err() & "): " & Error()  & ". En línea: " & Erl()
+		Exit Sub
+		
+	End Sub

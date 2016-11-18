@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xc="http://www.ibm.com/xsp/custom" dojoParseOnLoad="true"
+	dojoTheme="true" xmlns:xe="http://www.ibm.com/xsp/coreex"
+	pageTitle="#{javascript:database.getTitle()}">
+
+	<xc:Plantilla>
+		<xp:this.facets>
+
+
+			<xe:formTable id="formTable1" labelPosition="above"
+				formTitle="Formulario de Tema (Artículo)" xp:key="facetMiddle">
+				<xe:this.formDescription><![CDATA[#{javascript:var vParam=database.getView("(Parametros)");
+var docParam=vParam.getFirstDocument();
+if(docParam!=null){
+	return docParam.getItemValueString("Empresa");
+}
+}]]></xe:this.formDescription>
+				<xp:panel>
+
+
+
+
+
+
+
+					<xp:this.readonly><![CDATA[#{javascript:if (context.getUser().getRoles().contains('[Secretaria]')){
+	return false;
+}else{
+	return true;
+}
+}]]></xp:this.readonly>
+					<xe:formRow id="formRow1">
+						<xc:ccTema></xc:ccTema>
+
+
+					</xe:formRow>
+				</xp:panel>
+
+
+			</xe:formTable>
+
+
+
+			<xc:Menu xp:key="facetLeft"></xc:Menu>
+		</xp:this.facets>
+	</xc:Plantilla>
+</xp:view>

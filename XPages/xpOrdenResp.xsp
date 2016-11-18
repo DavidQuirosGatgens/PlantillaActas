@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xc="http://www.ibm.com/xsp/custom"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+
+	<xc:Plantilla>
+		<xp:this.facets>
+			<xp:panel xp:key="facetMiddle">
+				<xe:formTable id="formTable1"
+					formTitle="Orden del Día">
+					<xe:this.formDescription><![CDATA[#{javascript:var vParam=database.getView("(Parametros)");
+var docParam=vParam.getFirstDocument();
+if(docParam!=null){
+	return docParam.getItemValueString("Empresa");
+}
+}]]></xe:this.formDescription>
+					<xe:formRow id="formRow1">
+						<xc:ccOrdenDia></xc:ccOrdenDia>
+					</xe:formRow>
+				</xe:formTable></xp:panel>
+			<xc:Menu xp:key="facetLeft"></xc:Menu>
+		</xp:this.facets>
+	</xc:Plantilla>
+</xp:view>

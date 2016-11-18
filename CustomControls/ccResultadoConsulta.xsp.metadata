@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><note class="form" maintenanceversion="1.0" replicaid="0625806D0062AD0E" version="9.0" xmlns="http://www.lotus.com/dxl">
+<noteinfo noteid="502" sequence="305" unid="CDE77D9E0A524F0A06257D34005E096F">
+<created><datetime>20140814T110707,99-06</datetime></created>
+<modified><datetime>20161118T102902,01-06</datetime></modified>
+<revised><datetime>20161118T102902,00-06</datetime></revised>
+<lastaccessed><datetime>20161118T102902,01-06</datetime></lastaccessed>
+<addedtofile><datetime>20161116T115754,55-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Johan Arroyo/O=CV3</name><name>CN=CV3DEV01/OU=DEV/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=CV3JOHAN/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=Johan Arroyo/O=CV3</name><name>CN=Elisa Núñez/OU=Tec/O=CV3</name><name>CN=Johan Arroyo/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=Elisa Núñez/OU=Tec/O=CV3</name><name>CN=Johan Arroyo/O=CV3</name><name>CN=Elisa Núñez/OU=Tec/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=CV3JOHAN/O=CV3</name><name>CN=Johan Arroyo/O=CV3</name><name>CN=CV3JOHAN/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=Johan Arroyo/O=CV3</name><name>CN=Elisa Núñez/OU=Tec/O=CV3</name><name>CN=Johan Arroyo/O=CV3</name><name>CN=Elisa Núñez/OU=Tec/O=CV3</name><name>CN=Johan Arroyo/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=Johan Arroyo/O=CV3</name><name>CN=Elisa Núñez/OU=Tec/O=CV3</name><name>CN=Johan Arroyo/O=CV3</name><name>CN=SJODOMDES/OU=SVR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localJohan/OU=DEV/O=CV3</name><name>CN=Johan Arroyo/O=CV3</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=Johan Arroyo/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localCristhian/OU=DEV/O=CV3</name></updatedby>
+<wassignedby><name>CN=localCristhian/OU=DEV/O=CV3</name></wassignedby>
+<item name="$Flags"><text>gC~4;</text></item>
+
+
+<item name="$TITLE" sign="true"><text>ccResultadoConsulta.xsp</text></item>
+
+
+
+<item name="$DesignerVersion" sign="true"><text>8.5</text></item>
+
+
+
+<item name="$FileNames" sign="true"><text>ccResultadoConsulta.xsp</text></item>
+
+
+
+</note>

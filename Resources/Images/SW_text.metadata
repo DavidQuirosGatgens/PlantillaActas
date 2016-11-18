@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><note class="form" maintenanceversion="1.0" replicaid="0625806D0062AD0E" version="9.0" xmlns="http://www.lotus.com/dxl">
+<noteinfo noteid="64e" sequence="7" unid="E03C9C836B83B0BF06257D9D0052AB98">
+<created><datetime>20141127T090258,80-06</datetime></created>
+<modified><datetime>20161118T102900,39-06</datetime></modified>
+<revised><datetime>20161118T102900,38-06</datetime></revised>
+<lastaccessed><datetime>20161118T102900,39-06</datetime></lastaccessed>
+<addedtofile><datetime>20161116T115756,13-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Miro Vuković/O=SWING</name><name>CN=Ivan Pavić/O=SWING</name><name>CN=Stipe Sumić/O=SWING</name><name>CN=DOMINO/O=SWING</name><name>CN=sw01/O=SWING</name><name>CN=Elisa Núñez/OU=Tec/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=CV3JOHAN/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=SJODOMDES/OU=SVR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localCristhian/OU=DEV/O=CV3</name></updatedby>
+<wassignedby><name>CN=localCristhian/OU=DEV/O=CV3</name></wassignedby>
+<item name="$ImagesWide" sign="true"><number>1</number></item>
+<item name="$ImagesHigh" sign="true"><number>1</number></item>
+<item name="$ImagesColorize" sign="true"><number>0</number></item>
+<item name="$ImageNames" sign="true"><text>other.gif</text></item>
+<item name="$TITLE" sign="true"><text>SW_text</text></item>
+<item name="$DesignerVersion" sign="true"><text>5</text></item>
+
+<item name="$HideInfo" sign="true" summary="false"><datetime dst="true">20010915T091837,13+02</datetime></item>
+<item name="$Class"><text>SW_IntOfficev4</text></item>
+<item name="$Flags"><text>34CiQ</text></item></note>

@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='utf-8'?>
+<note class='form' xmlns='http://www.lotus.com/dxl' version='9.0' maintenanceversion='1.0'
+ replicaid='0625806D0062AD0E'>
+<noteinfo noteid='3ba' unid='6660EEAC5A60B9FB06257D7B000939E1' sequence='51'>
+<created><datetime>20141023T194046,41-06</datetime></created>
+<modified><datetime>20161118T102903,41-06</datetime></modified>
+<revised><datetime>20161118T102903,40-06</datetime></revised>
+<lastaccessed><datetime>20161118T102903,41-06</datetime></lastaccessed>
+<addedtofile><datetime>20161116T115753,07-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Johan Arroyo/O=CV3</name><name>CN=CV3DEV01/OU=DEV/O=CV3</name><name
+>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=CV3JOHAN/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name
+>CN=CV3JOHAN/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=SJODOMDES/OU=SVR/O=Recope</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localJohan/OU=DEV/O=CV3</name><name
+>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=localCristhian/OU=DEV/O=CV3</name></updatedby>
+<wassignedby><name>CN=localCristhian/OU=DEV/O=CV3</name></wassignedby>
+<item name='$Comment' sign='true'><text/></item>
+<item name='IndexAprobadorActual' summary='false' sign='true'><number>0</number></item>
+<item name='$HTMLCode' sign='true'>
+<rawitemdata type='1'>
+X/8QAAIADwAHAAAAAAAAAA==
+</rawitemdata></item>
+<item name='$TITLE'><text>ConfirmarAsistencia</text></item>
+<item name='$Info' sign='true'>
+<rawitemdata type='1'>
+hhgBAIAAAAAAgAAAAQABAP///wAQAAAA
+</rawitemdata></item>
+<item name='$SubForms' sign='true'><text>subfrmCamposCompartidos</text></item>
+<item name='$SubForm_RepIDs' sign='true'><text>0000000000000000</text></item>
+<item name='$Flags'><text/></item>
+<item name='$DesignerVersion' sign='true'><text>8.5.3</text></item>
+<item name='$$ScriptName' summary='false' sign='true'><text>ConfirmarAsistencia</text></item>
+<item name='IDDocumentoAsociado' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='Comentarios' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='Persona' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='fechaCreacion' summary='false' sign='true'>
+<rawitemdata type='400'>
+AAAAAAAAAAA=
+</rawitemdata></item>
+<item name='Autor' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='UsuarioActual' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='DocumentoEliminado' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='Estado' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='Autores' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='Lectores' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='IDDocumento' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='ComentariosTX' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='LectoresAdemas' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='$Fields'><textlist><text>LectoresAdemas</text><text>ComentariosTX</text><text
+>IDDocumento</text><text>Lectores</text><text>Autores</text><text>Estado</text><text
+>DocumentoEliminado</text><text>UsuarioActual</text><text>Autor</text><text
+>FechaCreacion</text><text>Persona</text><text>Comentarios</text><text>IDDocumentoAsociado</text></textlist></item>
+<item name='$Body' sign='true'>
+<rawitemdata type='1'>
+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
+</rawitemdata></item></note>
+

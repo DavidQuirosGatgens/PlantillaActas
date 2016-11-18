@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex"
+	pageTitle="#{javascript:database.getTitle()}">
+
+	<xe:dataView id="dataView1" pageName="/xpOrden.xsp"
+		columnTitles="true" var="rowHandle" collapsibleDetail="true">
+		<xp:this.facets>
+			<xe:pagerAddRows id="pagerAddRows1" xp:key="pagerBottom"
+				for="dataView1" rowCount="2" refreshPage="true"
+				partialRefresh="true">
+			</xe:pagerAddRows>
+			<xp:panel xp:key="detail">
+				<xp:text escape="true" id="computedField1">
+					<xp:this.value><![CDATA[#{javascript:return rowHandle.getColumnValues()[1];}]]></xp:this.value>
+				</xp:text>
+				<xp:repeat id="repeat1" rows="30" var="repeatTemas">
+					<xp:this.value><![CDATA[#{javascript:var vTemas:NotesView=database.getView("vTemasAsignados_ByOrdenDia");
+var doc1:NotesDocument=null;
+if (rowHandle.isDocument()){
+	var idOrden=rowHandle.getDocument().getItemValueString("IDdocOrden");
+	var vecTemas:NotesViewEntryCollection=vTemas.getAllEntriesByKey(idOrden);
+	return vecTemas;
+}else{
+	return null;
+}}]]></xp:this.value>
+
+					<xp:table>
+						<xp:tr>
+							<xp:td>
+								<xp:link escape="true" text="Abrir"
+									id="link1">
+									<xp:eventHandler event="onclick"
+										submit="true" refreshMode="complete">
+										<xp:this.action>
+											<xp:openPage
+												name="/xpTema.xsp" target="openDocument"
+												documentId="#{javascript:repeatTemas.getNoteID()}">
+											</xp:openPage>
+										</xp:this.action>
+									</xp:eventHandler>
+								</xp:link>
+							</xp:td>
+							<xp:td>
+								<xp:text escape="true"
+									id="computedField2">
+									<xp:this.value><![CDATA[#{javascript:repeatTemas.getDocument().getItemValueString("Titulo")}]]></xp:this.value>
+								</xp:text>
+							</xp:td>
+						</xp:tr>
+
+					</xp:table>
+				</xp:repeat>
+			</xp:panel>
+
+			<xp:pager layout="Previous Group Next" partialRefresh="true"
+				id="pager1" xp:key="pagerTop">
+			</xp:pager>
+		</xp:this.facets>
+		<xe:this.data>
+			<xp:dominoView var="vOrdenes" viewName="vOrdenes"></xp:dominoView>
+		</xe:this.data>
+		<xe:this.summaryColumn>
+			<xe:viewSummaryColumn columnName="$3"
+				columnTitle="Numero">
+			</xe:viewSummaryColumn>
+		</xe:this.summaryColumn>
+		<xe:this.extraColumns>
+			<xe:viewExtraColumn columnName="FechasOrden"
+				columnTitle="Fecha">
+			</xe:viewExtraColumn>
+		</xe:this.extraColumns>
+	</xe:dataView>
+	<xe:pagerSaveState id="pagerSaveState1" for="dataView1"
+		globalRows="false">
+	</xe:pagerSaveState>
+</xp:view>

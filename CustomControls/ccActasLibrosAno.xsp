@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core">
+
+	<xp:link text="Colapsar" id="linkCollapseAll" themeId="Link.collapse">
+						<xp:eventHandler event="onclick" submit="true" refreshMode="complete" immediate="true">
+							<xp:this.action><![CDATA[#{javascript:sessionScope.viewMode = 1;
+context.reloadPage();}]]></xp:this.action>
+						</xp:eventHandler>
+</xp:link>&#160;&#160;&#160;&#160;&#160;<xp:link text="Expandir" id="linkExpandAll" themeId="Link.expand">
+						<xp:eventHandler event="onclick" submit="true" refreshMode="complete" immediate="true">
+							<xp:this.action><![CDATA[#{javascript:sessionScope.viewMode = 0;
+context.reloadPage()}]]></xp:this.action>
+						</xp:eventHandler>
+</xp:link><xp:viewPanel rows="30" id="viewPanel1">
+		<xp:this.facets>
+			<xp:pager partialRefresh="true" layout="Previous Group Next" xp:key="headerPager" id="pager1">
+			</xp:pager>
+		</xp:this.facets>
+		<xp:this.data>
+			<xp:dominoView var="view1" viewName="vActasLibros_PorAno"
+				expandLevel="#{javascript:return parseInt(sessionScope.viewMode);}">
+			</xp:dominoView>
+		</xp:this.data>
+		<xp:viewColumn columnName="$8" id="viewColumn1" style="font-weight:bold;font-style:italic;text-decoration:underline;color:rgb(0,64,128)">
+			<xp:this.converter>
+				<xp:convertNumber type="number" integerOnly="true"></xp:convertNumber>
+			</xp:this.converter>
+			<xp:viewColumnHeader value="Año" id="viewColumnHeader1" style="font-size:8pt;color:rgb(128,128,128)"></xp:viewColumnHeader>
+		</xp:viewColumn>
+		<xp:viewColumn columnName="$9" id="viewColumn2" rendered="false">
+			<xp:viewColumnHeader value="$9" id="viewColumnHeader2"></xp:viewColumnHeader>
+		</xp:viewColumn>
+		<xp:viewColumn columnName="$10" id="viewColumn3" style="font-weight:bold">
+			<xp:viewColumnHeader value="Mes" id="viewColumnHeader3"
+				style="font-size:8pt;color:rgb(128,128,128)">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+		<xp:viewColumn columnName="FechaCreacion" id="viewColumn4"
+			displayAs="link" openDocAsReadonly="true">
+			<xp:this.converter>
+				<xp:convertDateTime type="date"></xp:convertDateTime>
+			</xp:this.converter>
+			<xp:viewColumnHeader value="Creación" id="viewColumnHeader4"
+				style="font-size:8pt;color:rgb(128,128,128)">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+		<xp:viewColumn columnName="$5" id="viewColumn5" displayAs="link" openDocAsReadonly="true">
+			<xp:viewColumnHeader value="Número de Acta"
+				id="viewColumnHeader5"
+				style="font-size:8pt;color:rgb(128,128,128)">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+		<xp:viewColumn columnName="FechaOrdenLetras" id="viewColumn6" displayAs="link" openDocAsReadonly="true">
+			<xp:viewColumnHeader value="Fecha" id="viewColumnHeader6"
+				style="font-size:8pt;color:rgb(128,128,128)">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+		<xp:viewColumn columnName="HoraSesionLetras" id="viewColumn7" displayAs="link" openDocAsReadonly="true">
+			<xp:viewColumnHeader value="Hora" id="viewColumnHeader7"
+				style="font-size:8pt;color:rgb(128,128,128)">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+		<xp:viewColumn columnName="$7" id="viewColumn8">
+			<xp:viewColumnHeader value="Creador" id="viewColumnHeader8"
+				style="font-size:8pt;color:rgb(128,128,128)">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+		<xp:viewColumn columnName="Estado" id="viewColumn9">
+			<xp:viewColumnHeader value="Estado" id="viewColumnHeader9"
+				style="font-size:8pt;color:rgb(128,128,128)">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+	</xp:viewPanel></xp:view>

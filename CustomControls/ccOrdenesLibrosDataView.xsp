@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:xe="http://www.ibm.com/xsp/coreex">
+	<xp:panel>
+		<xp:button value="Nueva Orden" id="button1">
+			<xp:this.rendered><![CDATA[#{javascript:context.getUser().getRoles().contains('[Secretaria]')}]]></xp:this.rendered><xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+				<xp:this.action>
+					<xp:openPage name="/xpOrden.xsp" target="newDocument">
+					</xp:openPage>
+				</xp:this.action>
+			</xp:eventHandler>
+		</xp:button>
+		
+		
+	</xp:panel>
+	<xe:dataView id="dataView1" collapsibleDetail="true"
+		columnTitles="true" var="rowHandle" pageName="/xpOrden.xsp"
+		openDocAsReadonly="true">
+		<xe:this.summaryColumn>
+			<xe:viewSummaryColumn columnName="$3"
+				columnTitle="Número">
+			</xe:viewSummaryColumn>
+		</xe:this.summaryColumn>
+		<xe:this.extraColumns>
+			<xe:viewExtraColumn columnName="FechaOrdenLetras"
+				columnTitle="Fecha">
+			</xe:viewExtraColumn>
+			<xe:viewExtraColumn columnName="HoraSesionLetras"
+				columnTitle="Hora">
+			</xe:viewExtraColumn>
+			<xe:viewExtraColumn columnName="$6" columnTitle="Creador"></xe:viewExtraColumn>
+			<xe:viewExtraColumn columnName="FechaCreacion"
+				columnTitle="Creación">
+			</xe:viewExtraColumn>
+			
+		</xe:this.extraColumns>
+		<xp:this.facets>
+			<xp:pager layout="Previous Group Next" partialRefresh="true"
+				id="pager2" xp:key="pagerBottomRight">
+			</xp:pager>
+			<xp:pager layout="Previous Group Next" partialRefresh="true"
+				id="pager1" xp:key="pagerTop">
+			</xp:pager>
+			<xe:pagerAddRows id="pagerAddRows1" xp:key="pagerBottom"
+				for="dataView1" partialRefresh="true" refreshPage="true">
+			</xe:pagerAddRows>
+			<xp:panel xp:key="detail">
+				
+				<xp:label value="Tipo sesión:" id="label8" for="tipoSesion1" style="font-weight:bold">
+				</xp:label>&#160;<xp:text escape="true" id="computedField3">
+					<xp:this.value><![CDATA[#{javascript:rowHandle.getDocument().getItemValueString("TipoSesion")}]]></xp:this.value>
+				</xp:text>
+				<xp:br></xp:br><xp:label value="Lugar:" id="label1" for="tipoSesion1" style="font-weight:bold">
+				</xp:label>&#160;<xp:text escape="true" id="computedField2">
+					<xp:this.value><![CDATA[#{javascript:rowHandle.getDocument().getItemValueString("Lugar")}]]></xp:this.value>
+				</xp:text>
+				
+				<xp:repeat id="repeat1" rows="30" var="repeatTemas">
+					<xp:this.value><![CDATA[#{javascript:var vTemas:NotesView=database.getView("vTemasAsignados_ByOrdenDia");
+var doc1:NotesDocument=null;
+if (rowHandle.isDocument()){
+	var idOrden=rowHandle.getDocument().getItemValueString("IDdocOrden");
+	var vecTemas:NotesViewEntryCollection=vTemas.getAllEntriesByKey(idOrden);
+	return vecTemas;
+}else{
+	return null;
+}}]]></xp:this.value>
+
+					<xp:table>
+						<xp:tr>
+							<xp:td style="width:30px"><xp:image url="/ping.png" id="image1"></xp:image></xp:td>
+							<xp:td>
+								<xp:link escape="true" id="link1" style="font-weight:bold">
+									<xp:this.text><![CDATA[#{javascript:repeatTemas.getDocument().getItemValueString("NumeroTema")}]]></xp:this.text>
+									<xp:eventHandler event="onclick"
+										submit="true" refreshMode="complete" id="eventHandler1">
+										<xp:this.action>
+											<xp:openPage
+												name="/xpTema.xsp" target="openDocument"
+												documentId="#{javascript:repeatTemas.getNoteID()}">
+											</xp:openPage>
+										</xp:this.action>
+									</xp:eventHandler>
+								</xp:link>
+							</xp:td>
+							<xp:td>
+
+							<xp:link escape="true" id="link2" style="font-weight:bold">
+									<xp:this.text><![CDATA[#{javascript:repeatTemas.getDocument().getItemValueString("Titulo")}]]></xp:this.text>
+									<xp:eventHandler event="onclick" submit="true" refreshMode="complete" id="eventHandler2">
+										<xp:this.action>
+											<xp:openPage name="/xpTema.xsp" target="openDocument" documentId="#{javascript:repeatTemas.getNoteID()}">
+											</xp:openPage>
+										</xp:this.action>
+									</xp:eventHandler>
+
+								</xp:link></xp:td>
+						</xp:tr>
+
+					</xp:table>
+				</xp:repeat>
+			</xp:panel>
+
+		</xp:this.facets>
+		<xe:this.data>
+			<xp:dominoView var="vOrdenes" viewName="vOrdenesLibros"></xp:dominoView>
+		</xe:this.data>
+	</xe:dataView>
+	<xe:pagerSaveState id="pagerSaveState1" for="dataView1" globalRows="false">
+	</xe:pagerSaveState></xp:view>

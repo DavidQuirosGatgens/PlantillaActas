@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><note class="form" maintenanceversion="1.0" replicaid="0625806D0062AD0E" version="9.0" xmlns="http://www.lotus.com/dxl">
+<noteinfo noteid="17be" sequence="19" unid="42A88923579E9B7C06257F96007CB3CE">
+<created><datetime>20160415T164204,94-06</datetime></created>
+<modified><datetime>20161118T102851,09-06</datetime></modified>
+<revised><datetime>20161118T102851,08-06</datetime></revised>
+<lastaccessed><datetime>20161118T102851,09-06</datetime></lastaccessed>
+<addedtofile><datetime>20161116T115805,57-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Milton Villegas/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localCristhian/OU=DEV/O=CV3</name></updatedby>
+<wassignedby><name>CN=localCristhian/OU=DEV/O=CV3</name></wassignedby>
+<item name="$TITLE"><text>ccBusquedaAvanzada.xsp</text></item>
+<item name="$Flags"><text>gC~4;</text></item>
+
+
+
+
+
+
+
+<item name="$FileNames" sign="true"><text>ccBusquedaAvanzada.xsp</text></item>
+<item name="$DesignerVersion" sign="true"><text>8.5</text></item>
+
+
+</note>

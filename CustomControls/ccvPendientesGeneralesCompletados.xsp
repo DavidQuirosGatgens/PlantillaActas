@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core">
+	<xp:panel>
+		<xp:button value="Crear Nuevo Pendiente" id="button1"><xp:this.rendered><![CDATA[#{javascript:context.getUser().getRoles().contains('[Secretaria]')}]]></xp:this.rendered><xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+	<xp:this.action>
+		<xp:openPage name="/xpSeguimiento.xsp" target="newDocument"></xp:openPage>
+	</xp:this.action></xp:eventHandler></xp:button><xp:button value="Eliminar" id="button2">
+			
+		<xp:this.rendered><![CDATA[#{javascript:context.getUser().getRoles().contains('[Secretaria]')}]]></xp:this.rendered><xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+			<xp:this.action>
+
+				<xp:actionGroup>
+
+
+
+
+					<xp:confirm message="Esta Seguro? Se eliminaran el documento seleccionado y todos los documentos asociados.">
+					</xp:confirm>
+
+
+
+
+
+
+
+					<xp:executeScript>
+						<xp:this.script><![CDATA[#{javascript:var agent = database.getAgent('(EliminaDocsRelacionados)');
+var viewPanel=getComponent("viewPanel1");
+var docIDArray=viewPanel.getSelectedIds(); 
+if (docIDArray.length>0){
+	for(i=0;i < docIDArray.length; i++){
+		var docId=docIDArray[i];
+		var doc:NotesDocument=database.getDocumentByID(docId); 
+		if(doc!=null){
+			agent.runWithDocumentContext(doc);
+			//view.postScript("alert('Se selecciono un documento.')");
+		}
+	}
+}else{
+	view.postScript("alert('Debe seleccionar al menos un documento.')");
+} }]]></xp:this.script>
+					</xp:executeScript>
+				</xp:actionGroup>
+			</xp:this.action></xp:eventHandler></xp:button></xp:panel>
+	<xp:this.data>
+		<xp:dominoView var="view1"
+			viewName="PendientesGeneralesCompletados">
+		</xp:dominoView>
+	</xp:this.data>
+	<xp:viewPanel value="#{view1}" id="viewPanel1" pageName="/xpSeguimiento.xsp">
+		<xp:this.facets>
+			<xp:pager partialRefresh="true" layout="Previous Group Next"
+				xp:key="headerPager" id="pager1">
+			</xp:pager>
+		</xp:this.facets>
+		<xp:viewColumn columnName="Descripcion" id="viewColumn1"
+			displayAs="link" openDocAsReadonly="true">
+			<xp:this.facets>
+				<xp:viewColumnHeader value="Descripción" xp:key="header"
+					id="viewColumnHeader1">
+				</xp:viewColumnHeader>
+			</xp:this.facets>
+			<xp:this.showCheckbox><![CDATA[${javascript:context.getUser().getRoles().contains('[Secretaria]')}]]></xp:this.showCheckbox>
+		</xp:viewColumn>
+	</xp:viewPanel></xp:view>

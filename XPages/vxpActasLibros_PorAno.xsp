@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xc="http://www.ibm.com/xsp/custom"
+	pageTitle="#{javascript:database.getTitle()}">
+
+	<xp:this.resources>
+		<xp:script src="/GeneralSSJS.jss" clientSide="false"></xp:script>
+	</xp:this.resources>
+	<xp:this.beforePageLoad><![CDATA[#{javascript:InitRedirect();}]]></xp:this.beforePageLoad>
+	<xc:Plantilla>
+		<xp:this.facets>
+			<xc:ccActasLibrosAno xp:key="facetMiddle"></xc:ccActasLibrosAno>
+			
+
+			<xc:Menu xp:key="facetLeft"></xc:Menu>
+		</xp:this.facets>
+	</xc:Plantilla>
+</xp:view>

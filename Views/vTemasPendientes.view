@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='utf-8'?>
+<note class='view' xmlns='http://www.lotus.com/dxl' version='9.0' maintenanceversion='1.0'
+ replicaid='0625806D0062AD0E'>
+<noteinfo noteid='2ea' unid='9F2E60245C37348A06257CA8007092DE' sequence='57'>
+<created><datetime>20140327T142936,30-06</datetime></created>
+<modified><datetime>20161118T102904,53-06</datetime></modified>
+<revised><datetime>20161118T102904,52-06</datetime></revised>
+<lastaccessed><datetime>20161118T102904,53-06</datetime></lastaccessed>
+<addedtofile><datetime>20161116T115752,07-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Johan Arroyo/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name
+>CN=SJODOMDES/OU=SVR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=localJohan/OU=DEV/O=CV3</name><name>CN=localMilton/OU=DEV/O=CV3</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localCristhian/OU=DEV/O=CV3</name></updatedby>
+<wassignedby><name>CN=localCristhian/OU=DEV/O=CV3</name></wassignedby>
+<item name='$FormulaClass' sign='true'><text>1</text></item>
+<item name='$TITLE' sign='true'><text>vTemasPendientes</text></item>
+<item name='$Index' sign='true'><text/></item>
+<item name='$Formula' summary='true' sign='true'><formula compiled='true'>
+pgAFADAAKwAEAAwABgAJAAQARmVjaGFTZXNzaW9uVGl0dWxvJENvbmZsaWN0JFJFRgAEAAQAAABU
+AAUABABGb3JtAQAEAFRlbWEKAgQABQAGAGVzdGFkbwEACQBQZW5kaWVudGUACgIcAgQABQAPAERl
+bGV0ZWREb2N1bWVudAABAAAACgIcAgMABwAcABUACUwxUzRTNVM3UzhTMTFTMTJTMTNTAA==
+</formula></item>
+<item name='$Collation' summary='true'>
+<rawitemdata type='2'>
+JgACAABEgGYAAAAMAIBmAAwABgBGZWNoYVNlc3Npb25UaXR1bG8=
+</rawitemdata></item>
+<item name='$ViewFormat' summary='true' sign='true'>
+<rawitemdata type='5'>
+AQACAAMACAAAAFZDAQAMABIAAAAAAJoAAQAACgAAAAAAAAAAAAACAAAAVkMBAAYABgAAAAAAvwAB
+AAAKAAAAAAAAAAAAAgIAAABGZWNoYVNlc3Npb25GZWNoYSBkZSBpbmNsdXNpom5UaXR1bG9UaXR1
+bG8mAAEAAAABAQAJAQAACgEBDgoAAAEArSsBAAEAAQAAAAAAAAAAAFdDAQEACQAAAAAAAAAAAAAA
+AAAAAAAAAMQAAAAAAP//AAAAAAAAAAAAAAAAAABXQwEBAAkAAAAAAAAAAAAAAAAAAAAAAAAEAAAA
+AAD//wAAAAAAAAAAAAAAAAAAQgAAAAAAAQD///8ABQD///8AAQAAAAAAAAAAAAAAAAABAP///wAB
+AP///wAAAAEAAAAAAAEAAAAAAAEAAAAAAAAACAAAAAAAAQBYQwAIgAMAAAAAAAECAgIBAQEBBwQD
+AAAAAAAAAAAgLy86WUMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAA==
+</rawitemdata></item>
+<item name='$Comment' sign='true'><text/></item>
+<item name='$Flags'><text>Y</text></item>
+<item name='$DesignerVersion' sign='true'><text>8.5.3</text></item></note>
+

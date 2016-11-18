@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core">
+
+	<xp:this.data>
+		<xp:dominoView var="view1" viewName="(PlantillasCorreo)"></xp:dominoView>
+	</xp:this.data>
+
+	<xp:panel>
+	<xp:button value="Nueva Plantilla" id="button1" rendered="false">
+			
+		<xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+			<xp:this.action>
+				<xp:openPage name="/xpPlantillaCorreo.xsp"
+					target="newDocument">
+				</xp:openPage>
+			</xp:this.action></xp:eventHandler></xp:button>
+	<xp:button value="Eliminar" id="button3" rendered="false"><xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+	<xp:this.action>
+		<xp:deleteSelectedDocuments view="viewPanel1"
+			message="¿Esta seguro que desea eliminar?">
+		</xp:deleteSelectedDocuments>
+	</xp:this.action></xp:eventHandler></xp:button>
+	<xp:viewPanel value="#{view1}" id="viewPanel1" pageName="/xpPlantillaCorreo.xsp">
+		
+
+		<xp:viewColumn columnName="NombrePlantilla" id="viewColumn1" displayAs="link" showCheckbox="true">
+			<xp:this.facets>
+				<xp:viewColumnHeader value="Nombre plantilla"
+					xp:key="header" id="viewColumnHeader1">
+				</xp:viewColumnHeader>
+			</xp:this.facets>
+		</xp:viewColumn>
+		<xp:this.facets>
+			<xp:pager partialRefresh="true" layout="Previous Group Next"
+				xp:key="headerPager" id="pager1">
+			</xp:pager>
+			<xp:pager partialRefresh="true" layout="Previous Group Next"
+				xp:key="footerPager" id="pager2">
+			</xp:pager>
+
+		</xp:this.facets></xp:viewPanel>
+	<xp:button value="Eliminar" id="button2" rendered="false"><xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+	<xp:this.action>
+		<xp:deleteSelectedDocuments view="viewPanel1"
+			message="¿Está seguro que desea eliminar el(los) documento(s)?">
+		</xp:deleteSelectedDocuments>
+	</xp:this.action></xp:eventHandler></xp:button>
+	</xp:panel></xp:view>

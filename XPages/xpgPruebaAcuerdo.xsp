@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xc="http://www.ibm.com/xsp/custom">
+	<xp:this.data>
+		<xp:dominoDocument var="document1" formName="Acuerdo"></xp:dominoDocument>
+	</xp:this.data>
+
+	<xp:table>
+		<xp:tr>
+			<xp:td>
+				<xp:label value="I d acuerdo:" id="iDAcuerdo_Label1"
+					for="iDAcuerdo1">
+				</xp:label>
+			</xp:td>
+			<xp:td>
+				<xp:inputText value="#{document1.IDAcuerdo}"
+					id="iDAcuerdo1">
+				</xp:inputText>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td>
+				<xp:label value="I ddoc tema:" id="iDdocTema_Label1"
+					for="iDdocTema1">
+				</xp:label>
+			</xp:td>
+			<xp:td>
+				<xp:inputText value="#{document1.IDdocTema}"
+					id="iDdocTema1">
+				</xp:inputText>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td>
+				<xp:label value="I ddoc acta:" id="iDdocActa_Label1"
+					for="iDdocActa1">
+				</xp:label>
+			</xp:td>
+			<xp:td>
+				<xp:inputText value="#{document1.IDdocActa}"
+					id="iDdocActa1">
+				</xp:inputText>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td>
+				<xp:label value="Descripcion:" id="descripcion_Label1"
+					for="descripcion1">
+				</xp:label>
+			</xp:td>
+			<xp:td>
+				<xp:inputText value="#{document1.Descripcion}"
+					id="descripcion1">
+				</xp:inputText>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td>
+				<xp:label value="Acuerdo:" id="acuerdo_Label1"
+					for="acuerdo1">
+				</xp:label>
+			</xp:td>
+			<xp:td>
+				<xp:inputText value="#{document1.Acuerdo}"
+					id="acuerdo1">
+				</xp:inputText>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td></xp:td>
+			<xp:td>
+				<xp:messages layout="table" style="color:red"
+					id="messages1">
+				</xp:messages>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td></xp:td>
+			<xp:td>
+				<xp:button value="Submit" id="button1">
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="complete" immediate="false" save="true"
+						id="eventHandler1">
+					</xp:eventHandler>
+				</xp:button>
+			</xp:td>
+		</xp:tr>
+	</xp:table></xp:view>

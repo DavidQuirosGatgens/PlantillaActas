@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+	<xp:button id="button3" value="Marcar tema pendiente111">
+		<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable() && !currentDocument.isNewNote()}]]></xp:this.rendered>
+		<xp:eventHandler event="onclick" submit="false"
+			id="eventHandler33">
+
+			<xp:this.script><![CDATA[XSP.openDialog('#{id:dialogComentarios}');]]></xp:this.script>
+		</xp:eventHandler>
+	</xp:button>
+	<xe:dialog id="dialogComentarios" title="Comentarios">
+		<xe:dialogButtonBar id="dialogButtonBar3">
+
+			<xp:button value="Aceptar" id="button1">
+				<xp:eventHandler event="onclick" submit="true" refreshMode="partial" refreshId="#{javascript:compositeData.refreshID}">
+					
+					<xp:this.script><![CDATA[var msg="";
+if(!validaCampoTexto(dojo.byId("#{id:txComentariosWF}")))msg= msg + "Comentarios.\n";
+
+
+
+if(msg!=""){
+	alert("Debe incluir los siguientes Datos: \n" + msg);
+	return false;
+}
+
+
+]]></xp:this.script>
+					<xp:this.action>
+						<xp:executeScript>
+
+							<xp:this.script><![CDATA[#{javascript:var viewPanel=getComponent("viewPanelAsignados");
+var docIDArray=viewPanel.getSelectedIds(); 
+var user:NotesName=session.createName(session.getUserName());
+for(i=0;i < docIDArray.length; i++){
+	var docId=docIDArray[i];
+	var doc:NotesDocument=database.getDocumentByID(docId); 
+	if(doc!=null){
+		doc.replaceItemValue("IDdocOrden","");
+		doc.replaceItemValue("IDdocActa","");
+		doc.replaceItemValue("Estado","Pendiente");
+		doc.replaceItemValue("LectoresAdemas","");
+		doc.save(true,false);
+		CreateBitacora(user,"Marca Tema  Pendiente","",doc.getUniversalID());
+		
+	}
+}
+var c = getComponent("dialogComentarios")
+c.hide()}]]></xp:this.script>
+						</xp:executeScript>
+					</xp:this.action></xp:eventHandler>
+			</xp:button>
+			<xp:button value="Cancelar" id="button2">
+				<xp:eventHandler event="onclick" submit="false">
+					<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogComentarios}')]]></xp:this.script>
+				</xp:eventHandler>
+			</xp:button>
+		</xe:dialogButtonBar>
+
+		<xe:dialogContent id="dialogContent5">
+			<xp:panel>
+				<xp:table>
+
+					<xp:tr>
+						<xp:td>
+							<xp:label value="Comentario" id="label5"></xp:label>
+							<xp:br></xp:br>
+
+						</xp:td>
+						<xp:td>
+							<xp:inputTextarea id="txComentariosWF"
+								style="width:568.0px;height:63.0px">
+							</xp:inputTextarea>
+						</xp:td>
+					</xp:tr>
+					<xp:tr>
+						<xp:td><xp:label value="Fecha de " id="label1"></xp:label></xp:td>
+						<xp:td>
+							<xp:inputText id="inputFechaSession">
+								<xp:dateTimeHelper
+									id="dateTimeHelper1">
+								</xp:dateTimeHelper>
+								<xp:this.converter>
+									<xp:convertDateTime type="date"></xp:convertDateTime>
+								</xp:this.converter>
+							</xp:inputText></xp:td>
+					</xp:tr>
+				</xp:table>
+			</xp:panel>
+		</xe:dialogContent>
+	</xe:dialog>
+
+</xp:view>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><note class="form" maintenanceversion="1.0" replicaid="0625806D0062AD0E" version="9.0" xmlns="http://www.lotus.com/dxl">
+<noteinfo noteid="163e" sequence="26" unid="D0D65B3558C338CE06257E740075AB1B">
+<created><datetime>20150630T152515,15-06</datetime></created>
+<modified><datetime>20161118T102853,03-06</datetime></modified>
+<revised><datetime>20161118T102853,02-06</datetime></revised>
+<lastaccessed><datetime>20161118T102853,03-06</datetime></lastaccessed>
+<addedtofile><datetime>20161116T115804,69-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Lotus Notes Template Development/O=Lotus Notes</name><name>CN=CV3JOHAN/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=Johan Arroyo/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localJohan/OU=DEV/O=CV3</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localCristhian/OU=DEV/O=CV3</name></updatedby>
+<wassignedby><name>CN=localCristhian/OU=DEV/O=CV3</name></wassignedby>
+<item name="$Flags"><text>34567Cg~`</text></item>
+<item name="$$ScriptName" sign="true" summary="false"><text>blue.theme</text></item>
+<item name="$TITLE" sign="true"><text>oneuiv2_1_onyx.theme</text></item>
+<item name="$DesignerVersion" sign="true"><text>8.5.3</text></item>
+
+
+<item name="$FileNames" sign="true"><text>oneuiv2_1_onyx.theme</text></item>
+<item name="$CSSFiles" sign="true"><textlist><text>blue.css</text><text>blue_ie06.css</text><text>blue_ie78.css</text><text>commonRTL.css</text><text>pagerRTL.css</text><text>oneuiv2_1.css</text></textlist></item></note>

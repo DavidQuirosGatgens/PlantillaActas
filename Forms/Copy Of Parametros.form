@@ -1,0 +1,173 @@
+<?xml version='1.0' encoding='utf-8'?>
+<note class='form' xmlns='http://www.lotus.com/dxl' version='9.0' maintenanceversion='1.0'
+ replicaid='0625806D0062AD0E'>
+<noteinfo noteid='11b2' unid='39978BD713208E4406257DB2005C0CF3' sequence='39'>
+<created><datetime>20141218T104526,27-06</datetime></created>
+<modified><datetime>20161118T102857,35-06</datetime></modified>
+<revised><datetime>20161118T102857,34-06</datetime></revised>
+<lastaccessed><datetime>20161118T102857,35-06</datetime></lastaccessed>
+<addedtofile><datetime>20161116T115759,71-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Milton Villegas/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name
+>CN=CV3JOHAN/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=SJODOMDES/OU=SVR/O=Recope</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localJohan/OU=DEV/O=CV3</name><name
+>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=localCristhian/OU=DEV/O=CV3</name></updatedby>
+<wassignedby><name>CN=localCristhian/OU=DEV/O=CV3</name></wassignedby>
+<item name='$Comment' sign='true'><text/></item>
+<item name='$HTMLCode' sign='true'>
+<rawitemdata type='1'>
+X/8QAAIADwAHAAAAAAAAAA==
+</rawitemdata></item>
+<item name='$Info' sign='true'>
+<rawitemdata type='1'>
+hhgBAIAAAAAAgAAAAQABAP///wAQAAAA
+</rawitemdata></item>
+<item name='$SubForms' sign='true'><text>subfrmCamposCompartidos</text></item>
+<item name='$SubForm_RepIDs' sign='true'><text>0000000000000000</text></item>
+<item name='$Flags'><text/></item>
+<item name='$DesignerVersion' sign='true'><text>8.5.3</text></item>
+<item name='$$ScriptName' summary='false' sign='true'><text>Parametros</text></item>
+<item name='fechaCreacion' summary='false' sign='true'>
+<rawitemdata type='400'>
+AAAAAAAAAAA=
+</rawitemdata></item>
+<item name='Autor' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='UsuarioActual' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='DeletedDocument' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='Estado' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='Autores' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='Lectores' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='IDDocumento' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='ComentariosTX' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='LectoresAdemas' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='Attachments' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='Empresa' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='LogoEmpresa' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='AprobadoresPred' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='AprobadoresPredPuestos' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='AprobadoresEsPrincipal' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='URLBD' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='NotificacionesServidor' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='NotificacionesUbicacionBD' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='EmisorNotificaciones' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='RecibeTareasCompletadas' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='Administrador' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='$Fields'><textlist><text>Administrador</text><text>RecibeTareasCompletadas</text><text
+>EmisorNotificaciones</text><text>NotificacionesUbicacionBD</text><text>NotificacionesServidor</text><text
+>URLBD</text><text>AprobadoresEsPrincipal</text><text>AprobadoresPredPuestos</text><text
+>AprobadoresPred</text><text>LogoEmpresa</text><text>Empresa</text><text>Attachments</text><text
+>LectoresAdemas</text><text>ComentariosTX</text><text>IDDocumento</text><text
+>Lectores</text><text>Autores</text><text>Estado</text><text>DeletedDocument</text><text
+>UsuarioActual</text><text>Autor</text><text>FechaCreacion</text></textlist></item>
+<item name='$Body' sign='true'>
+<rawitemdata type='1'>
+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
+</rawitemdata></item>
+<item name='$TITLE'><text>Copy Of Parametros</text></item></note>
+

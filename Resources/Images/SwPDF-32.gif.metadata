@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><note class="form" maintenanceversion="1.0" replicaid="0625806D0062AD0E" version="9.0" xmlns="http://www.lotus.com/dxl">
+<noteinfo noteid="65a" sequence="39" unid="E2D78F2E667964DE06257D9D0052AB9D">
+<created><datetime>20141127T090258,85-06</datetime></created>
+<modified><datetime>20161118T102900,49-06</datetime></modified>
+<revised><datetime>20161118T102900,48-06</datetime></revised>
+<lastaccessed><datetime>20161118T102900,49-06</datetime></lastaccessed>
+<addedtofile><datetime>20161116T115756,19-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Ivan Pavić/O=SWING</name><name>CN=sw01/O=SWING</name><name>CN=Nikša Marković/O=SWING</name><name>CN=sw01/O=SWING</name><name>CN=Nikša Marković/O=SWING</name><name>CN=sw01/O=SWING</name><name>CN=Nikša Marković/O=SWING</name><name>CN=sw01/O=SWING</name><name>CN=Nikša Marković/O=SWING</name><name>CN=sw01/O=SWING</name><name>CN=Nikša Marković/O=SWING</name><name>CN=sw01/O=SWING</name><name>CN=Elisa Núñez/OU=Tec/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=CV3JOHAN/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=SJODOMDES/OU=SVR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localJohan/OU=DEV/O=CV3</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localCristhian/OU=DEV/O=CV3</name></updatedby>
+<wassignedby><name>CN=localCristhian/OU=DEV/O=CV3</name></wassignedby>
+<item name="$TITLE"><text>SwPDF-32.gif</text></item>
+<item name="$FlagsExt" sign="true"><text>D</text></item>
+<item name="$ImagesWide" sign="true"><number>1</number></item>
+<item name="$ImagesHigh" sign="true"><number>1</number></item>
+<item name="$ImagesColorize" sign="true"><number>0</number></item>
+
+<item name="$MimeType" sign="true"><text>image/gif</text></item>
+<item name="$FileModDT" sign="true"><datetime dst="true">20090331T124436,95+02</datetime></item>
+<item name="$ImageNames" sign="true"><text>SwPDF-32.gif</text></item>
+<item name="$DesignerVersion" sign="true"><text>8.5</text></item>
+<item name="$Flags"><text>D34CiQ</text></item>
+
+<item name="$HideInfo" sign="true" summary="false"><datetime dst="true">20120120T115147,65+02</datetime></item></note>

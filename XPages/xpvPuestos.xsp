@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xc="http://www.ibm.com/xsp/custom"
+	xmlns:xe="http://www.ibm.com/xsp/coreex"
+	pageTitle="#{javascript:database.getTitle()}">
+	<xp:this.data>
+		<xp:dominoDocument formName="ListaValores"
+			var="DocListaValores">
+		</xp:dominoDocument>
+	</xp:this.data>
+
+	<xc:Plantilla>
+		<xp:this.facets>
+			<xe:formTable id="formTable1" xp:key="facetMiddle"
+				formTitle="Administración / Puestos">
+				<xe:this.formDescription><![CDATA[#{javascript:var vParam=database.getView("(Parametros)");
+var docParam=vParam.getFirstDocument();
+if(docParam!=null){
+	return docParam.getItemValueString("Empresa");
+}
+}]]></xe:this.formDescription>
+				<xe:formRow id="formRow1">
+					<xp:panel>
+						<xp:button id="button1" value="Nuevo">
+							<xp:eventHandler event="onclick"
+								submit="true" refreshMode="complete">
+								<xp:this.action>
+									<xp:openPage name="/xpPuesto.xsp"
+										target="newDocument">
+									</xp:openPage>
+								</xp:this.action>
+							</xp:eventHandler>
+						</xp:button>
+						<xp:button value="Eliminar" id="button2"></xp:button>
+						<xp:br></xp:br>
+						<xp:viewPanel rows="30" id="viewPanel1"
+							pageName="/xpPuesto.xsp">
+							<xp:this.facets>
+								<xp:pager partialRefresh="true"
+									layout="Previous Group Next" xp:key="headerPager"
+									id="pager1">
+								</xp:pager>
+							</xp:this.facets>
+							<xp:this.data>
+								<xp:dominoView var="vPuestos"
+									viewName="vPuestos">
+								</xp:dominoView>
+							</xp:this.data>
+							<xp:viewColumn columnName="IDPuesto"
+								id="viewColumn1" displayAs="link" openDocAsReadonly="true">
+								<xp:this.converter>
+									<xp:convertNumber type="number"
+										integerOnly="true">
+									</xp:convertNumber>
+								</xp:this.converter>
+								<xp:viewColumnHeader value="ID Puesto"
+									id="viewColumnHeader1">
+								</xp:viewColumnHeader>
+							</xp:viewColumn>
+							<xp:viewColumn columnName="Descripcion"
+								id="viewColumn2" displayAs="link">
+								<xp:viewColumnHeader value="Nombre"
+									id="viewColumnHeader2">
+								</xp:viewColumnHeader>
+							</xp:viewColumn>
+						</xp:viewPanel>
+					</xp:panel>
+				</xe:formRow>
+			</xe:formTable>
+
+
+
+			<xc:Menu xp:key="facetLeft"></xc:Menu>
+		</xp:this.facets>
+	</xc:Plantilla>
+</xp:view>

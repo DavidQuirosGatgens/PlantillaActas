@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+
+	<xp:this.data>
+		<xp:dominoDocument var="document1" formName="Acta"
+			computeWithForm="both">
+		</xp:dominoDocument>
+	</xp:this.data>
+
+	<xp:panel>
+		<xp:button id="button1" value="Guardar">
+			<xp:eventHandler event="onclick" submit="true"
+				refreshMode="complete" immediate="false" save="true">
+			</xp:eventHandler>
+		</xp:button>
+		<xp:button id="button2" value="Salir">
+			<xp:eventHandler event="onclick" submit="true"
+				refreshMode="complete" immediate="true" save="false">
+				<xp:this.action>
+					<xp:openPage name="$$PreviousPage"></xp:openPage>
+				</xp:this.action>
+			</xp:eventHandler>
+		</xp:button>
+		<xp:button value="Nuevo Tema" id="button3"><xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+	<xp:this.action>
+		<xp:openPage name="/xpTema.xsp" target="newDocument"></xp:openPage>
+	</xp:this.action></xp:eventHandler></xp:button></xp:panel>
+	
+	<xp:br></xp:br>
+	<xp:br></xp:br>
+	<xp:table style="width:567.0px">
+		<xp:tr>
+			<xp:td>
+				<xp:label value="Numero acta:" id="numeroActa_Label1"
+					for="numeroActa1">
+				</xp:label>
+			</xp:td>
+			<xp:td style="width:477.0px">
+				<xp:inputText value="#{document1.NumeroActa}"
+					id="numeroActa1">
+					<xp:this.converter>
+						<xp:convertNumber type="currency"
+							integerOnly="true">
+						</xp:convertNumber>
+					</xp:this.converter>
+				</xp:inputText>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td>
+				<xp:label value="Fecha acta:" id="fechaActa_Label1"
+					for="fechaActa1">
+				</xp:label>
+			</xp:td>
+			<xp:td style="width:477.0px">
+				<xp:inputText value="#{document1.FechaActa}"
+					id="fechaActa1">
+					<xp:dateTimeHelper id="dateTimeHelper1"></xp:dateTimeHelper>
+					<xp:this.converter>
+						<xp:convertDateTime type="date"
+							dateStyle="short">
+						</xp:convertDateTime>
+					</xp:this.converter>
+				</xp:inputText>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td style="height:225.0px">
+				<xp:label value="Comentarios:" id="comentarios_Label1"
+					for="comentarios1">
+				</xp:label>
+			</xp:td>
+			<xp:td style="width:477.0px;height:225.0px">
+				<xp:inputRichText value="#{document1.Comentarios}"
+					id="comentarios1" style="width:487.0px;height:258.0px">
+				</xp:inputRichText>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td></xp:td><xp:td style="width:477.0px"></xp:td></xp:tr></xp:table>
+	<xp:br></xp:br>
+	<xp:br></xp:br>
+	<xp:panel></xp:panel>
+	<xp:viewPanel rows="30" id="viewPanel1" >
+		<xp:this.facets>
+			<xp:pager partialRefresh="true" layout="Previous Group Next"
+				xp:key="headerPager" id="pager1" style="font-weight:bold">
+			</xp:pager>
+		</xp:this.facets>
+		<xp:this.data>
+			<xp:dominoView var="view1" viewName="vTemas"></xp:dominoView>
+		</xp:this.data>
+		<xp:viewColumn columnName="Titulo" id="viewColumn1"
+			showCheckbox="true">
+			<xp:viewColumnHeader value="Titulo"
+				id="viewColumnHeader1" style="font-weight:bold">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+	</xp:viewPanel>
+	
+</xp:view>

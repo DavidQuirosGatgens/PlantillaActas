@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xc="http://www.ibm.com/xsp/custom">
+
+
+	<xp:this.data>
+		<xp:dominoView var="view1" viewName="vOrdenes"></xp:dominoView>
+	</xp:this.data>
+	<xp:panel>
+		<xp:button value="Nueva Orden" id="button1">
+			<xp:eventHandler event="onclick" submit="true"
+				refreshMode="complete">
+				<xp:this.action>
+					<xp:openPage name="/xpOrden.xsp"
+						target="newDocument">
+					</xp:openPage>
+				</xp:this.action>
+			</xp:eventHandler>
+		</xp:button>
+		
+		<xp:button value="Eliminar" id="button2">
+			
+		<xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+			<xp:this.action>
+				<xp:deleteSelectedDocuments view="viewPanel1"
+					message="¿Está seguro que desea eliminar el(los) documento(s)?">
+				</xp:deleteSelectedDocuments>
+			</xp:this.action></xp:eventHandler></xp:button>
+	</xp:panel>
+	
+	<xp:viewPanel rows="30" id="viewPanel1" pageName="/xpOrden.xsp">
+		<xp:this.facets>
+			<xp:pager partialRefresh="true" layout="Previous Group Next"
+				xp:key="headerPager" id="pager1">
+			</xp:pager>
+		</xp:this.facets>
+		<xp:this.data>
+			<xp:dominoView var="viewOrdenes" viewName="vOrdenes"></xp:dominoView>
+		</xp:this.data>
+		<xp:viewColumn columnName="$3" id="viewColumn1"
+			displayAs="link" openDocAsReadonly="true" style="width:154.0px" showCheckbox="true">
+			<xp:viewColumnHeader value="Orden del  dia"
+				id="viewColumnHeader1">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+		<xp:viewColumn columnName="FechasOrden" id="viewColumn2"
+			style="width:214.0px">
+			<xp:viewColumnHeader value="Fecha de la Orden"
+				id="viewColumnHeader2">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+	</xp:viewPanel></xp:view>

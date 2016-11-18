@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core">
+
+
+	<xp:this.data>
+		<xp:dominoView var="view1" viewName="vAnexos"></xp:dominoView>
+	</xp:this.data>
+	
+	<xp:panel><xp:viewPanel value="#{view1}" id="viewPanel1">
+		<xp:this.facets>
+			<xp:pager partialRefresh="true" layout="Previous Group Next" xp:key="headerPager" id="pager1">
+			</xp:pager>
+		</xp:this.facets>
+		<xp:viewColumn columnName="$2" id="viewColumn1" showCheckbox="true">
+			<xp:this.facets>
+				<xp:viewColumnHeader value="Nombre del Archivo:" xp:key="header" id="viewColumnHeader1">
+				</xp:viewColumnHeader>
+			</xp:this.facets>
+		</xp:viewColumn>
+	</xp:viewPanel><xp:button value="Eliminar" id="button2"><xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+	<xp:this.action>
+		<xp:deleteSelectedDocuments view="viewPanel1"
+			message="¿Está seguro que desea eliminar el(los) documento(s)?">
+		</xp:deleteSelectedDocuments>
+	</xp:this.action></xp:eventHandler></xp:button></xp:panel></xp:view>

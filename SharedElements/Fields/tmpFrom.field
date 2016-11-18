@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<note class='sharedfield' xmlns='http://www.lotus.com/dxl' version='9.0' maintenanceversion='1.0'
+ replicaid='0625806D0062AD0E'>
+<noteinfo noteid='7c2' unid='4929F851953B4BAA06257DA20055AF23' sequence='39'>
+<created><datetime>20141202T093553,95-06</datetime></created>
+<modified><datetime>20161118T102859,51-06</datetime></modified>
+<revised><datetime>20161118T102859,50-06</datetime></revised>
+<lastaccessed><datetime>20161118T102859,51-06</datetime></lastaccessed>
+<addedtofile><datetime>20161116T115757,75-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Debbie Branco/O=Iris</name><name>CN=Lotus Notes Template Development/O=Lotus Notes</name><name
+>CN=DOMINO/O=SWING</name><name>CN=sw01/O=SWING</name><name>CN=Ivan Pavić/O=SWING</name><name
+>CN=sw01/O=SWING</name><name>CN=Nikša Marković/O=SWING</name><name>CN=sw01/O=SWING</name><name
+>CN=Nikša Marković/O=SWING</name><name>CN=sw01/O=SWING</name><name>CN=Elisa Núñez/OU=Tec/O=CV3</name><name
+>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=CV3JOHAN/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name
+>CN=SJODOMDES/OU=SVR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=localJohan/OU=DEV/O=CV3</name><name>CN=localMilton/OU=DEV/O=CV3</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localCristhian/OU=DEV/O=CV3</name></updatedby>
+<wassignedby><name>CN=localCristhian/OU=DEV/O=CV3</name></wassignedby>
+<item name='$TITLE'><text>tmpFrom</text></item>
+<item name='$Flags'><text/></item>
+<item name='$Info' sign='true'>
+<rawitemdata type='1'>
+hhgBAIAAAAAAgAAAAQABAP///wAAAAAA
+</rawitemdata></item>
+<item name='$Body' summary='true' sign='true'>
+<rawitemdata type='1'>
+gQKC/1IAAQAAAAAAAAAAAKAFAACgBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAABAAAAAJQHAAAAAAAAAAAAAAAAgwQBAIX/CAABAAAK3QYAAIr//v9QAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAACK/0ICgAEABQAwAgAAAAAAAAIBAAAKFgIAAAAAAAAHAAAAAAAWAgkADAJbVOnj
+cGgy2l1ZnLchSZAsi3dvKxYkxHrUILCwaWuFgosOnJhMEDmLPfGkZ/DMzzNrQx6fjTRwKmOr6+PA
+qDia0XsKKM8afeLCuz3ppVt5XzqVkYdfLrKly5Uycv3bwgny7afuB2SeZyE6F2KHz4Vt95BBzMb0
+w4CeVnQFQ8OWTQ5EOdky8UzHGoB35aBUdmW1sUI1e7W9B4IETzG4se6TBLpUnxODalHJJUbng9Ei
+8bk9AYYNgYq+vMxyw9g0eBLeRg+w7e921u4LAC4ryoJnUfcZrGugz/4BvDe9N9maab6YH5yz+gaX
+kXvbo69FZD2wDPsIGtCfZhPN9wgQ8fI5ONOb5BDzKqvKNjQ1kBLKMRVjt79xEYSgkbs6NWVhfQ+E
+kfmcllZKYx2zn5aOz4gNszg2EBKmlzppRA45xR7GjhdDhOzG4QZav0nrEdzOUbS2Tvs045drQAvw
+kHRDyExoU+6IvRy7P4rQ0p5CJO+i8SgotuoxaiImyHb/9O6BEkOUA92DBXu42C8tpjgvtrOJmw8u
+bD20bs6nInLayvWkL/z/CZNugfVfUXxSwX24SLmxMjVAFHKuRVG5WCRofjWq6+d8uTSSVDRtnPOC
+oek0lo+3JnRpxg81u/8lYC8bLf/j4bBLHLCqU/vzIB1qPTq0HAWYQCG/d9IJeosJ+90Xccdsz/3h
+Odd+BAAEAAQABAB0bXBGcm9tAN4GAACK/4X/CAABAAAK
+</rawitemdata></item>
+<item name='$HideInfo' summary='false' sign='true'><datetime dst='true'>20120119T130016,04+02</datetime></item></note>
+

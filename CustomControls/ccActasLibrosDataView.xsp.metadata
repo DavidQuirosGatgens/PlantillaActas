@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><note class="form" maintenanceversion="1.0" replicaid="0625806D0062AD0E" version="9.0" xmlns="http://www.lotus.com/dxl">
+<noteinfo noteid="1772" sequence="28" unid="CAA817E93A08714B06257F7300782081">
+<created><datetime>20160311T155206,41-06</datetime></created>
+<modified><datetime>20161118T102850,72-06</datetime></modified>
+<revised><datetime>20161118T102850,71-06</datetime></revised>
+<lastaccessed><datetime>20161118T102850,72-06</datetime></lastaccessed>
+<addedtofile><datetime>20161116T115805,19-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Johan Arroyo/O=CV3</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localCristhian/OU=DEV/O=CV3</name></updatedby>
+<wassignedby><name>CN=localCristhian/OU=DEV/O=CV3</name></wassignedby>
+<item name="$TITLE"><text>ccActasLibrosDataView.xsp</text></item>
+<item name="$Flags"><text>gC~4;</text></item>
+
+
+<item name="$FileNames" sign="true"><text>ccActasLibrosDataView.xsp</text></item>
+
+
+<item name="$DesignerVersion" sign="true"><text>8.5</text></item>
+
+
+
+
+</note>

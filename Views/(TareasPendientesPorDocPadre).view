@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='utf-8'?>
+<note class='view' xmlns='http://www.lotus.com/dxl' version='9.0' maintenanceversion='1.0'
+ replicaid='0625806D0062AD0E'>
+<noteinfo noteid='11da' unid='A8D16F243236176D06257DB2005C2BCA' sequence='43'>
+<created><datetime>20141218T104645,22-06</datetime></created>
+<modified><datetime>20161118T102857,55-06</datetime></modified>
+<revised><datetime>20161118T102857,54-06</datetime></revised>
+<lastaccessed><datetime>20161118T102857,55-06</datetime></lastaccessed>
+<addedtofile><datetime>20161116T115759,91-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Johan Arroyo/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name
+>CN=SJODOMDES/OU=SVR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=localJohan/OU=DEV/O=CV3</name><name>CN=localMilton/OU=DEV/O=CV3</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localCristhian/OU=DEV/O=CV3</name></updatedby>
+<wassignedby><name>CN=localCristhian/OU=DEV/O=CV3</name></wassignedby>
+<item name='$FormatNote' summary='true' sign='true'>
+<rawitemdata type='4'>
+AQA/1ReBPUjh7obubQCNfSUG
+</rawitemdata></item>
+<item name='$FormulaClass' sign='true'><text>1</text></item>
+<item name='$TITLE' sign='true'><text>(TareasPendientesPorDocPadre)|TareasPendientesPorDocPadre</text></item>
+<item name='$Index' sign='true'><text/></item>
+<item name='$Formula' summary='true' sign='true'><formula compiled='true'>
+0AAFADoANgAEABAADQAJAAQASUREb2N1bWVudG9QYWRyZUZlY2hhQ3JlYWNpb24kQ29uZmxpY3Qk
+UkVGBAAEAAAAcgAFAAQARm9ybQEABQBUYXJlYQAKAgQABAAFAAYARXN0YWRvAQAKAEZpbmFsaXph
+ZGELAhwCBQAGAEVzdGFkbwEACQBDYW5jZWxhZGEACwIcAgUADwBEZWxldGVkRG9jdW1lbnQAAQAA
+AAoCHAIDAAcAHgAYAAlMMVM0UzVTOFM5UzEyUzEzUzE2UzE3Uw==
+</formula></item>
+<item name='$Collation' summary='true'>
+<rawitemdata type='2'>
+MQACAABEiGYHAAAQAIBmABAADQBJRERvY3VtZW50b1BhZHJlRmVjaGFDcmVhY2lvbg==
+</rawitemdata></item>
+<item name='$ViewFormat' summary='true' sign='true'>
+<rawitemdata type='5'>
+AQACAAcAiAQAAFZDAwAQABAAAAAAAIQAAQAACgABAAAAAAAAAAICAAAAVkMBAA0ADQAAAAAAfgAB
+AAAKAAAAAAAAAAAAAgIAAABJRERvY3VtZW50b1BhZHJlSUREb2N1bWVudG9QYWRyZUZlY2hhQ3Jl
+YWNpb25GZWNoYUNyZWFjaW9uJgABAAAAAQEACQEAAAoBAQ4KAAAYAK0rAQABAAEAAAAAAAAAAABX
+QwEBAAkAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAD//wAAAAAAAAAAAAAAAAAAV0MBAQAJAAAAAAAA
+AAAAAAAAAAAAAAAABAAAAAAA//8AAAAAAAAAAAAAAAAAAEIAAAAAAAEA////AAEA1er/AAEAAAAA
+AAAAAAAAAAAAAQD///8AAQBxss8AAAABAAAAAAABAAAAAAABAAAAAAAAAAgAAAAAAAEA
+</rawitemdata></item>
+<item name='$Comment' sign='true'><text/></item>
+<item name='$Flags'><text>Y</text></item>
+<item name='$DesignerVersion' sign='true'><text>8.5.3</text></item>
+<item name='$V5ACTIONS' sign='true'>
+<rawitemdata type='1'>
+vRzXAAAAAQABAAAAAQAAAAAAAAAAAAAACAACAHn/bAABAHGyzwABAAAAAAAJAAAAAAABAHGyzwAB
+AB8AAAAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAPz/OgAAAAAAAQAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAEAAAAAAAAAAAAAAAAAAAC+/yYAAAAFAAAAnQEAAAsAAAAAAAAAX0NhdGVnb3KhYXMA
+AQBOfA==
+</rawitemdata></item></note>
+

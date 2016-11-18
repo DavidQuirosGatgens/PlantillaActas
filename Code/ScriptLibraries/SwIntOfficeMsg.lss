@@ -1,0 +1,287 @@
+'++LotusScript Development Environment:2:5:(Options):0:74
+Option Public
+
+'++LotusScript Development Environment:2:5:(Forward):0:1
+Declare Sub Initialize
+Declare Function SW_IntOfficeMsg (MsgNo As Integer) As String
+
+'++LotusScript Development Environment:2:5:(Declarations):0:10
+Const SW_IntOfficeMsg1 = "Field in MS Excel is being edited!"
+Const SW_IntOfficeMsg2 = "Attachment has not been saved. Do you want to continue?"
+Const SW_IntOfficeMsg3 = "Template name is required field!"
+Const SW_IntOfficeMsg4 = "Form name is required field!"
+Const SW_IntOfficeMsg5 = "Cannot be more Lotus Notes - field names then Template - field names!"
+Const SW_IntOfficeMsg6 = "Cannot be more Template - field names then Lotus Notes - field names!"
+Const SW_IntOfficeMsg9 = "Read document"
+Const SW_IntOfficeMsg10 = "Edit document"
+Const SW_IntOfficeMsg11 = "Detach"
+Const SW_IntOfficeMsg12 = "Delete"
+Const SW_IntOfficeMsg13 = "Warning"
+Const SW_IntOfficeMsg14 = "You are in READ mode. Choose your next action..."
+Const SW_IntOfficeMsg15 = "Detach document as"
+Const SW_IntOfficeMsg16 = "Templates"
+Const SW_IntOfficeMsg17 = "Please select template."
+Const SW_IntOfficeMsg18 = "Delete"
+Const SW_IntOfficeMsg19 = "Do you want to delete attachment?"
+Const SW_IntOfficeMsg20 = "Document attachment detach"
+Const SW_IntOfficeMsg21 = "File already exists; overwrite it? "
+Const SW_IntOfficeMsg22 = "Select template file"
+Const SW_IntOfficeMsg23 = "Forms"
+Const SW_IntOfficeMsg24 = "Choose a database form from list:"
+Const SW_IntOfficeMsg25 = "Cannot delete temporary file!"
+Const SW_IntOfficeMsg26 = "Attach file"
+Const SW_IntOfficeMsg27 = "File will be attached on document exit"
+Const SW_IntOfficeMsg28 = "Database does not exist on server"
+Const SW_IntOfficeMsg29 = "SWING Integrator for Notes and Office"
+Const SW_IntOfficeMsg30 = "Do you want to save?"
+Const SW_IntOfficeMsg31 = "Documents"
+Const SW_IntOfficeMsg32 = "Please select document"
+Const SW_IntOfficeMsg33 = "Save to Notes"
+Const SW_IntOfficeMsg34 = "Save and Close Notes document"
+Const SW_IntOfficeMsg35 = "Document fields"
+Const SW_IntOfficeMsg36 = "Choose a document field from a list:"
+Const SW_IntOfficeMsg37 = "Template fields"
+Const SW_IntOfficeMsg38 = "Choose a template field from list:"
+Const SW_IntOfficeMsg39 = "Collecting fields from a document..."
+Const SW_IntOfficeMsg40 = "Attachment selection"
+Const SW_IntOfficeMsg41 = "In order to install macros correctly, you should exit all Office applications."
+Const SW_IntOfficeMsg42 = "Please close following applications:"
+Const SW_IntOfficeMsg43 = "No more attachments can be placed on this document."
+Const SW_IntOfficeMsg44 = "Please contact your database manager for version update!"
+Const SW_IntOfficeMsg45 = "You are not authorized to edit this document!"
+Const SW_IntOfficeMsg46 = "Database manager: Execute 'Update version' action on a template setup view"
+Const SW_IntOfficeMsg47 = "You are trying to attach file that has been currently in use. Please close the document and try again."
+Const SW_IntOfficeMsg48 = "There is no form name entered."
+Const SW_IntOfficeMsg49 = "No documents selected"
+Const SW_IntOfficeMsg50 = "Workbook contains no charts!"
+Const SW_IntOfficeMsg51 = "Charts"
+Const SW_IntOfficeMsg52 = "Please select chart."
+Const SW_IntOfficeMsg53 = "Database views"
+Const SW_IntOfficeMsg54 = "Choose a database view from a list:"
+Const SW_IntOfficeMsg55 = "Columns in view "
+Const SW_IntOfficeMsg56 = "Choose columns from a list:"
+Const SW_IntOfficeMsg57 = "Choose a database view from a list. This view will be used to evaluate column values from template document."
+Const SW_IntOfficeMsg58 = |Parameter "resultDoc" is not a valid NotesUIDocument.|
+Const SW_IntOfficeMsg59 = |Parameter "docs" is not a valid NotesDocumentCollection.|
+Const SW_IntOfficeMsg60 = "There are no templates defined for the current view."
+Const SW_IntOfficeMsg61 = "There are no templates defined for the current form."
+Const SW_IntOfficeMsg62 = "Document has not been saved. Do you want to save it now?"
+Const SW_IntOfficeMsg63 = "Opening attachment..."
+Const SW_IntOfficeMsg64 = "Updating document fields..."
+Const SW_IntOfficeMsg65 = "Updating browser fields..."
+Const SW_IntOfficeMsg66 = "Uploading "
+Const SW_IntOfficeMsg67 = "Downloading file..."
+Const SW_IntOfficeMsg68 = "Decoding file..."
+Const SW_IntOfficeMsg69 = "Decompressing file..."
+Const SW_IntOfficeMsg70 = "Compressing... "
+Const SW_IntOfficeMsg71 = "Compressing file for download... "
+Const SW_IntOfficeMsg72 = "Encoding file for download... "
+Const SW_IntOfficeMsg73 = "Excel application does not exist on local machine."
+Const SW_IntOfficeMsg74 = "Transferring data to Excel - row  "
+Const SW_IntOfficeMsg75 = "Getting view data..."
+Const SW_IntOfficeMsg76 = "Uploading chart  "
+Const SW_IntOfficeMsg77 = "Saving charts to Notes document..."
+Const SW_IntOfficeMsg78 = "Save and Close Office document"
+Const SW_IntOfficeMsg79 = "File has been removed from disk and would not be attached."
+Const SW_IntOfficeMsg80 = "MS Word template"
+Const SW_IntOfficeMsg81 = "MS Excel template"
+Const SW_IntOfficeMsg82 = "Template"
+Const SW_IntOfficeMsg83 = "Multiple resulting forms have been selected. Please select one."
+Const SW_IntOfficeMsg84 = "Lotus Notes - form names"
+Const SW_IntOfficeMsg85 = "Lotus Notes - field names"
+Const SW_IntOfficeMsg86 = "Please select field name"
+Const SW_IntOfficeMsg87 = "Template - field names"
+Const SW_IntOfficeMsg88 = "Separator"
+Const SW_IntOfficeMsg89 = "Please select separator"
+Const SW_IntOfficeMsg90 = "Linked template has been renamed or deleted. Please select a new template."
+Const SW_IntOfficeMsg91 = "You already have a mail merge document opened in Word. Please close it and try again."
+Const SW_IntOfficeMsg92 = "Microsoft Word application does not exist on local machine."
+Const SW_IntOfficeMsg93 = "Microsoft Excel application does not exist on local machine."
+Const SW_IntOfficeMsg94 = "Microsoft PowerPoint application does not exist on local machine."
+Const SW_IntOfficeMsg95 = "You already have a Word document opened inside browser window. Please close it and try again."
+Const SW_IntOfficeMsg96 = "Your system experienced a crash in one of the previous sessions. Some of the files remained on your hard drive and may cause data loss. These files will be backed up now."
+Const SW_IntOfficeMsg97 = "Please select template type"
+Const SW_IntOfficeMsg98 = "Mail merge"
+Const SW_IntOfficeMsg99 = "Mailing labels"
+Const SW_IntOfficeMsg100 = "Selected template does not contain an attachment."
+
+Const SW_IntOfficeMsg101 = "Insert from Content Library..."
+Const SW_IntOfficeMsg102 = "Save selection to Content Library..."
+Const SW_IntOfficeMsg103 = "Convert to PDF and E-mail"
+Const SW_IntOfficeMsg104 = "Save as PDF..."
+Const SW_IntOfficeMsg105 = "Content Library"
+Const SW_IntOfficeMsg106 = "Available texts"
+Const SW_IntOfficeMsg107 = "Search all texts"
+Const SW_IntOfficeMsg108 = "Search for:"
+Const SW_IntOfficeMsg109 = "Search"
+Const SW_IntOfficeMsg110 = "Description"
+Const SW_IntOfficeMsg111 = "Title"
+Const SW_IntOfficeMsg112 = "Category"
+Const SW_IntOfficeMsg113 = "Insert"
+Const SW_IntOfficeMsg114 = "Save"
+Const SW_IntOfficeMsg115 = "Cancel"
+
+Const SW_IntOfficeMsg116 = "Colors"
+Const SW_IntOfficeMsg117 = "Choose color for alternate rows:"
+
+Const SW_IntOfficeMsg118 = "none"
+Const SW_IntOfficeMsg119 = "Gray"
+Const SW_IntOfficeMsg120 = "Cream"
+Const SW_IntOfficeMsg121 = "Light blue"
+Const SW_IntOfficeMsg122 = "Light green"
+Const SW_IntOfficeMsg123 = "Lavender"
+
+Const SW_IntOfficeMsg124 = "Optional sections"
+Const SW_IntOfficeMsg125 = "Select sections that should be included in the document:"
+
+Const SW_IntOfficeMsg126 = "Error overwriting file."
+Const SW_IntOfficeMsg127 = "PDF settings"
+Const SW_IntOfficeMsg128 = "Please select PDF conversion settings:"
+Const SW_IntOfficeMsg129 = "Choose destination:"
+Const SW_IntOfficeMsg130 = "Reusable texts"
+Const SW_IntOfficeMsg131 = "Please select reusable text:"
+
+Const SW_IntOfficeMsg132 = "Word document cannot be closed. Please make sure there are no dialogs opened in Word."
+
+Const SW_IntOfficeMsg133 = "Save to disk"
+Const SW_IntOfficeMsg134 = "Send by e-mail"
+Const SW_IntOfficeMsg135 = "Save as new attachment"
+Const SW_IntOfficeMsg136 = "Replace existing attachment"
+
+Const SW_IntOfficeMsg137 = "Current document has not been saved and you are about to continue working on a local copy of a document. In order to keep changes in Lotus Notes database, you must first save the document. Do you want to continue?"
+
+' New messages as of v5
+Const SW_IntOfficeMsg138 = "OpenOffice Writer template"
+Const SW_IntOfficeMsg139 = "OpenOffice Calc template"
+Const SW_IntOfficeMsg140 = "You are about to create new mailing labels template. Please do not save or close newly created document before returning to Lotus Notes."
+Const SW_IntOfficeMsg141 = "Are you finnished with OpenOffice document editing?"
+
+Public SW_tmpIntOfficeMsg$
+
+
+'//*************************Constants for VBA menu options******************
+'//*************************DO NOT MODIFY THEIR VALUES****************
+Const SW_VBA_MENU_SAVE_TO_NOTES& = 1
+Const SW_VBA_MENU_SAVE_CLOSE_OFFICE& = 2
+Const SW_VBA_MENU_SAVE_CLOSE_NOTES& = 4
+Const SW_VBA_MENU_INSERT_FROM_CONTENT_LIB& =8
+Const SW_VBA_MENU_SAVE_TO_CONTENT_LIB& = 16
+Const SW_VBA_MENU_CONVERT_SEND_PDF& = 32
+Const SW_VBA_MENU_SAVE_PDF& = 64
+
+
+
+'//************************* Global variable declaration ************************
+Dim SW_ExportDataSeparator As String
+Dim SW_TemplateDbServer As String
+Dim SW_TemplateDbFilePath As String
+Dim SW_DocumentsDbServer As String
+Dim SW_DocumentsDbFilePath As String
+Dim SW_TemplatePassword As String
+Dim SW_EnableOfficeMacros As Variant
+Dim SW_AttVersion As String
+Dim SW_DettachInDialog As Variant
+Dim SW_ShowStatusDialog As Variant
+Dim SW_Prompt2SaveDoc As Integer
+Dim SW_VBATemplatesPrefix As String
+Dim SW_MissingTemplateBehaviour As Integer
+Dim SW_ExistingAttachmentReadMode As String
+Dim SW_Convert2PDFOption As Integer
+Dim SW_ShowContentLibMenus As Variant
+Dim SW_VisibleVBAMacroMenuItems As Long
+Dim SW_EnabledVBAMacroMenuItems As Long
+
+Dim SW_SuperUser_Domain As String
+Dim SW_SuperUser_UserName As String
+Dim SW_SuperUser_Password As String
+
+Dim SW_DetachedFileProtectionType As String
+Dim SW_DoCloseOfficeApp As Variant
+Dim SW_DisableWordAddins As String
+'//***********************************************************************************
+
+'++LotusScript Development Environment:2:2:Initialize:1:10
+Sub Initialize
+	' global variables 
+	SW_ExportDataSeparator = "|"
+'Change the value of the following four variables only if you are setting up a separate templates database	
+	SW_TemplateDbServer = ""		'Use in documents database to point to templates database server
+	SW_TemplateDbFilePath = ""	    	'Use in documents database to point to templates database, relative to data directory (e.g. "IntOffice\MyTemplates.nsf")
+	SW_DocumentsDbServer = ""		'Use in templates database to point to documents database server
+	SW_DocumentsDbFilePath = ""	 'Use in templates database to point to documents database, relative to data directory (e.g. "IntOffice\MyDocuments.nsf")
+	SW_TemplatePassword = ""
+	SW_EnableOfficeMacros = True	' set this value to False, if you want not to use macros in Office
+	SW_AttVersion = ""					' string; if you are using version control, assign version value to this global variable
+	SW_DettachInDialog = True		' if True "Detach" option is displayed in dialog (read mode).
+	SW_ShowStatusDialog = False
+	SW_Prompt2SaveDoc = 1
+	SW_VBATemplatesPrefix = ""
+	SW_MissingTemplateBehaviour = 1
+	SW_ExistingAttachmentReadMode = "1"		' "1"=Display dialog box; "2" = Open in READ mode; "3" = Open in EDIT mode
+	SW_Convert2PDFOption = 0		' 	0 = Prompt user; 1 = Save to disk; 2 = Send by e-mail; 3 = Save as new attachment; 4 = Replace existing attachment
+	SW_ShowContentLibMenus = True	' set this value to False, if you don't want to use content library features from within MS Word
+	
+	SW_SuperUser_Domain = ""
+	SW_SuperUser_UserName = ""
+	SW_SuperUser_Password = ""
+	
+	'NEW IN VERSION 5
+	SW_DetachedFileProtectionType = "READ_ONLY" ' "PASSWORD" = Protect doc with internal password | "READ_ONLY" = Protect doc by opening it in read only mode
+	SW_DoCloseOfficeApp = False 'Determines whether to close Office application after use, if it has 0 opened documents
+	SW_DisableWordAddins = "rhd.dot"
+	
+'	Variable SW_VisibleVBAMacroMenuItems determines which entries in Lotus Notes submenus in MS Office applications will be visible.
+'	It is a sum of the following symbolic constants:
+'	SW_VBA_MENU_SAVE_TO_NOTES -> Save to Notes
+'	SW_VBA_MENU_SAVE_CLOSE_OFFICE -> Save and close Office document
+'	SW_VBA_MENU_SAVE_CLOSE_NOTES -> Save and close Notes document	
+'	SW_VBA_MENU_INSERT_FROM_CONTENT_LIB -> Insert from content library
+'	SW_VBA_MENU_SAVE_TO_CONTENT_LIB -> Save to content library
+'	SW_VBA_MENU_CONVERT_SEND_PDF -> Convert to PDF and E-mail
+'	SW_VBA_MENU_SAVE_PDF -> Save as PDF
+'	
+%REM	
+	SW_VisibleVBAMacroMenuItems = _
+	SW_VBA_MENU_SAVE_TO_NOTES + _
+	SW_VBA_MENU_SAVE_CLOSE_OFFICE + _
+	SW_VBA_MENU_SAVE_CLOSE_NOTES + _
+	SW_VBA_MENU_INSERT_FROM_CONTENT_LIB + _
+	SW_VBA_MENU_SAVE_TO_CONTENT_LIB + _
+	SW_VBA_MENU_CONVERT_SEND_PDF + _
+	SW_VBA_MENU_SAVE_PDF
+%END REM
+	SW_VisibleVBAMacroMenuItems = _
+	SW_VBA_MENU_SAVE_TO_NOTES + _
+	SW_VBA_MENU_SAVE_CLOSE_OFFICE + _
+	SW_VBA_MENU_SAVE_CLOSE_NOTES + _
+	SW_VBA_MENU_INSERT_FROM_CONTENT_LIB + _
+	SW_VBA_MENU_SAVE_TO_CONTENT_LIB + _
+	SW_VBA_MENU_CONVERT_SEND_PDF + _
+	SW_VBA_MENU_SAVE_PDF
+	
+	SW_EnabledVBAMacroMenuItems = _
+	SW_VBA_MENU_SAVE_TO_NOTES + _
+	SW_VBA_MENU_SAVE_CLOSE_OFFICE + _
+	SW_VBA_MENU_SAVE_CLOSE_NOTES + _
+	SW_VBA_MENU_INSERT_FROM_CONTENT_LIB + _
+	SW_VBA_MENU_SAVE_TO_CONTENT_LIB + _
+	SW_VBA_MENU_CONVERT_SEND_PDF + _
+	SW_VBA_MENU_SAVE_PDF
+'//*********************************
+End Sub
+
+'++LotusScript Development Environment:2:1:SW_IntOfficeMsg:1:8
+Function SW_IntOfficeMsg (MsgNo As Integer) As String
+%REM
+Defined in
+	SWMessageLib
+Parameters
+	MsgNo
+		Number of message text.
+Return Value
+	String
+		Message text.
+%END REM
+	Execute(|SW_tmpIntOfficeMsg$ = SW_IntOfficeMsg| + Cstr(MsgNo))
+	SW_IntOfficeMsg = SW_tmpIntOfficeMsg$
+End Function

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core">
+
+
+
+
+	<xp:viewPanel rows="10" id="viewPanel1"
+		viewStyle="color:rgb(128,128,128);margin-left:1.0px;padding-left:1.0px;background-repeat:repeat">
+		<xp:this.facets>
+			<xp:pager partialRefresh="true" layout="Previous Group Next"
+				xp:key="headerPager" id="pager1"
+				style="font-weight:bold;font-style:italic">
+			</xp:pager>
+		</xp:this.facets>
+		<xp:this.data>
+			<xp:dominoView var="view1" viewName="vBitacora">
+				<xp:this.categoryFilter><![CDATA[#{javascript:compositeData.get("key")}]]></xp:this.categoryFilter>
+			</xp:dominoView>
+		</xp:this.data>
+		<xp:viewColumn columnName="IDDocumento" id="viewColumn1"
+			style="font-size:8pt" rendered="#{javascript:false}">
+			<xp:viewColumnHeader value="I d documento"
+				id="viewColumnHeader1" rendered="#{javascript:false}"
+				style="font-weight:bold;width:76.0px">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+		<xp:viewColumn columnName="Hora" id="viewColumn2"
+			style="font-size:8pt;font-weight:bold">
+			<xp:this.converter>
+				<xp:convertDateTime type="both"></xp:convertDateTime>
+			</xp:this.converter>
+			<xp:viewColumnHeader value="Fecha" id="viewColumnHeader2"
+				style="font-weight:bold;width:134.0px">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+		<xp:viewColumn columnName="$4" id="viewColumn3"
+			style="font-size:8pt;width:189.0px">
+			<xp:viewColumnHeader value="Usuario" id="viewColumnHeader3"
+				style="font-weight:bold;width:110.0px">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+		<xp:viewColumn columnName="Accion" id="viewColumn4"
+			style="font-size:8pt;width:147.0px">
+			<xp:viewColumnHeader value="Acción" id="viewColumnHeader4"
+				style="font-weight:bold">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+		<xp:viewColumn id="viewColumn5" columnName="Detalle"
+			style="width:293.0px">
+			<xp:this.facets>
+				<xp:viewColumnHeader xp:key="header"
+					id="viewColumnHeader5" value="Detalle" style="font-weight:bold">
+				</xp:viewColumnHeader>
+			</xp:this.facets>
+		</xp:viewColumn></xp:viewPanel>
+</xp:view>

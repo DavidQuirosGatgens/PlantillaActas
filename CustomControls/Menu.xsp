@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+
+	<xe:navigator id="navigator1" expandable="true"
+		style="font-size:10pt;border-collapse: collapse;border-spacing: 0"
+		expandEffect="wipe" keepState="true">
+		<xe:this.treeNodes>
+
+
+			<xe:userTreeNode>
+				<xe:this.label><![CDATA[#{javascript:@Name("[CN]", @UserName())}]]></xe:this.label>
+			</xe:userTreeNode>
+			<xe:separatorTreeNode></xe:separatorTreeNode>
+
+
+			<xe:basicContainerNode label="  Pendientes"
+				style="background-color:rgb(230,230,230);font-family:Arial Black;font-weight:bold;color:rgb(97,154,223)"
+				selected="false" image="/folder.png">
+
+				<xe:this.children>
+					<xe:pageTreeNode label="  Activos"
+						page="/xpvPendientesGeneralesActivos.xsp" image="/slide.png"
+						style="font-size:9pt" imageHeight="15px">
+					</xe:pageTreeNode>
+				</xe:this.children>
+				<xe:this.children>
+					<xe:pageTreeNode label="  Completados"
+						page="/xpvPendientesGeneralesCompletados.xsp" image="/slide.png"
+						style="font-size:9pt" imageHeight="15px">
+					</xe:pageTreeNode>
+				</xe:this.children>
+				<xe:this.children>
+					<xe:pageTreeNode label="  Inactivos"
+						page="/xpvPendientesGeneralesInactivos.xsp" image="/slide.png"
+						style="font-size:9pt" imageHeight="15px">
+					</xe:pageTreeNode>
+				</xe:this.children>
+
+			</xe:basicContainerNode>
+
+
+
+
+
+
+
+
+
+
+
+
+			<xe:separatorTreeNode></xe:separatorTreeNode>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			<xe:basicContainerNode label="  Temas (Artículos)"
+				style="background-color:rgb(230,230,230);font-family:Arial Black;font-weight:bold;color:rgb(97,154,223)"
+				image="/folder.png">
+				<xe:this.children>
+					<xe:pageTreeNode label="  Pendientes"
+						page="/vxpPendientes.xsp" image="/slide.png" style="font-size:9pt"
+						imageHeight="15px">
+					</xe:pageTreeNode>
+				</xe:this.children>
+			</xe:basicContainerNode>
+
+
+
+
+			<xe:separatorTreeNode></xe:separatorTreeNode>
+
+
+
+
+
+
+
+
+
+
+
+			<xe:basicContainerNode label="  Orden del Día"
+				style="background-color:rgb(230,230,230);font-family:Arial Black;font-weight:bold;color:rgb(97,154,223)"
+				image="/folder.png">
+				<xe:this.children>
+					<xe:pageTreeNode
+						label="  Ordenes del Día en Borrador" page="/vxpOrdenes.xsp"
+						image="/slide.png" style="font-size:9pt" imageHeight="15px">
+					</xe:pageTreeNode>
+					<xe:pageTreeNode label="  Ordenes del Día en Libros"
+						page="/vxpOrdenesLibros.xsp" image="/slide.png"
+						style="font-size:9pt" imageHeight="15px">
+					</xe:pageTreeNode>
+				</xe:this.children>
+			</xe:basicContainerNode>
+
+
+			<xe:separatorTreeNode></xe:separatorTreeNode>
+
+
+			<xe:basicContainerNode label="  Actas"
+				style="background-color:rgb(230,230,230);font-family:Arial Black;font-weight:bold;color:rgb(97,154,223)"
+				image="/folder.png">
+				<xe:this.children>
+					<xe:pageTreeNode label="  Actas en Borrador"
+						page="/vxpActas.xsp" image="/slide.png" style="font-size:9pt"
+						imageHeight="15px">
+					</xe:pageTreeNode>
+					<xe:pageTreeNode label="  Actas en Libros"
+						page="/vxpActasLibros.xsp" image="/slide.png"
+						style="font-size:9pt" imageHeight="15px">
+					</xe:pageTreeNode>
+					<xe:pageTreeNode label="  Actas en Libros por Año"
+						page="/vxpActasLibros_PorAno.xsp" image="/slide.png"
+						imageHeight="15px" style="font-size:9pt">
+					</xe:pageTreeNode>
+				</xe:this.children>
+			</xe:basicContainerNode>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			<xe:separatorTreeNode></xe:separatorTreeNode>
+
+
+
+
+
+
+
+
+			<xe:basicContainerNode label="  Seguimientos"
+				style="background-color:rgb(230,230,230);font-family:Arial Black;font-weight:bold;color:rgb(97,154,223)"
+				image="/folder.png">
+
+				<xe:this.children>
+					<xe:pageTreeNode label="  Activos"
+						page="/xpvSeguimientosActivos.xsp" image="/slide.png"
+						style="font-size:9pt" imageHeight="15px">
+					</xe:pageTreeNode>
+				</xe:this.children>
+				<xe:this.children>
+					<xe:pageTreeNode label="  Completados"
+						page="/xpvSeguimientosCompletados.xsp" image="/slide.png"
+						style="font-size:9pt" imageHeight="15px">
+					</xe:pageTreeNode>
+				</xe:this.children>
+				<xe:this.children>
+					<xe:pageTreeNode label="  Inactivos"
+						page="/xpvSeguimientosInactivos.xsp" image="/slide.png"
+						style="font-size:9pt" imageHeight="15px">
+					</xe:pageTreeNode>
+				</xe:this.children>
+				<xe:this.children>
+					<xe:pageTreeNode label="  Por Dependencia"
+						page="/xpvSeguimientosPorDependencia.xsp" image="/slide.png"
+						style="font-size:9pt" imageHeight="15px">
+					</xe:pageTreeNode>
+				</xe:this.children>
+
+			</xe:basicContainerNode>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			<xe:separatorTreeNode></xe:separatorTreeNode>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		</xe:this.treeNodes>
+
+	</xe:navigator>
+</xp:view>

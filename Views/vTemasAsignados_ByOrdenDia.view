@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='utf-8'?>
+<note class='view' xmlns='http://www.lotus.com/dxl' version='9.0' maintenanceversion='1.0'
+ replicaid='0625806D0062AD0E'>
+<noteinfo noteid='2fa' unid='01EC322F0ED0072706257CD200560B57' sequence='61'>
+<created><datetime>20140508T093949,99-06</datetime></created>
+<modified><datetime>20161118T102904,39-06</datetime></modified>
+<revised><datetime>20161118T102904,38-06</datetime></revised>
+<lastaccessed><datetime>20161118T102904,39-06</datetime></lastaccessed>
+<addedtofile><datetime>20161116T115752,15-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Johan Arroyo/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name
+>CN=SJODOMDES/OU=SVR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=localJohan/OU=DEV/O=CV3</name><name>CN=localMilton/OU=DEV/O=CV3</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localCristhian/OU=DEV/O=CV3</name></updatedby>
+<wassignedby><name>CN=localCristhian/OU=DEV/O=CV3</name></wassignedby>
+<item name='$FormulaClass' sign='true'><text>1</text></item>
+<item name='$TITLE' sign='true'><text>vTemasAsignados_ByOrdenDia</text></item>
+<item name='$Index' sign='true'><text/></item>
+<item name='$Formula' summary='true' sign='true'><formula compiled='true'>
+/AACAE4ACgBOdW1lcm9UZW1hBQAKAE51bWVyb1RlbWFYAVoBrwAoABAAAAAAAAAAAAAAAK4AGAAF
+AAoATnVtZXJvVGVtYVgBrgAEALUDAwAFADoANQAFAAoACgAGAAkABABJRGRvY09yZGVuTnVtZXJv
+VGVtYVRpdHVsbyRDb25mbGljdCRSRUYABAAEAAAAUgAFAAQARm9ybQEABABUZW1hCgIEAAUABgBl
+c3RhZG8BAAgAQXNpZ25hZG8KAhwCBAAFAA8ARGVsZXRlZERvY3VtZW50AAEAAAAKAhwCAwAHABwA
+FQAJTDFTNFM1UzdTOFMxMVMxMlMxM1MA
+</formula></item>
+<item name='$Collation' summary='true'>
+<rawitemdata type='2'>
+NQADAABEiGYHAAAKAIBmAAoACgCAZgAUAAYASURkb2NPcmRlbk51bWVyb1RlbWFUaXR1bG8=
+</rawitemdata></item>
+<item name='$ViewFormat' summary='true' sign='true'>
+<rawitemdata type='5'>
+AQADAAUACAAAAFZDAwQKAAoAAAAAAFAAAQAACgABAAAAAAAAAAICAAAAVkMBAAoABgBcAAAAUAAB
+AAAKAAAAAQAAAAAAAgIAAABWQwEABgAGAAAAAAC/AAEAAAoAAAAAAAAAAAACAgAAAElEZG9jT3Jk
+ZW5JRGRvY09yZGVuTnVtZXJvVGVtYU6jbWVyb1wAAgBOAAoATnVtZXJvVGVtYQUACgBOdW1lcm9U
+ZW1hWAFaAa8AKAAQAAAAAAAAAAAAAACuABgABQAKAE51bWVyb1RlbWFYAa4ABAC1AwMABwAMAAUA
+CTBTMEUAVGl0dWxvVGl0dWxvJgABAAAAAQEACQEAAAoBAQ4KAAABAK0rAQABAAEAAAAAAAAAAABX
+QwEBAAkAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAD//wAAAAAAAAAAAAAAAAAAV0MBAQAJAAAAAAAA
+AAAAAAAAAAAAAAAAhAAAAAAA//8AAAAAAAAAAAAAAAAAAFdDAQEACQAAAAAAAAAAAAAAAAAAAAAA
+AAQAAAAAAP//AAAAAAAAAAAAAAAAAABCAAAAAAABAP///wAFAP///wABAAAAAAAAAAAAAAAAAAEA
+////AAEA////AAAAAQAAAAAAAQAAAAAAAQAAAAAAAAAIAAAAAAABAFlDAAEAAAEAAQAAAAEAAAAA
+AAAAAAAAAAAAAAAAAAEAAAIAAAAAAAAAAQAAAAAAAAAAAAAuLgOA
+</rawitemdata></item>
+<item name='$Comment' sign='true'><text/></item>
+<item name='$Flags'><text>Y</text></item>
+<item name='$DesignerVersion' sign='true'><text>8.5.3</text></item></note>
+

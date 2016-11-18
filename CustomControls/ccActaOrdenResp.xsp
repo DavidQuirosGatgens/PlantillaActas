@@ -1,0 +1,3717 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex" dojoParseOnLoad="true"
+	dojoTheme="true" xmlns:xc="http://www.ibm.com/xsp/custom"><xp:this.beforePageLoad><![CDATA[#{javascript://Se almacena la url de la pagina anterior
+if(sessionScope.RedirectActa==""){
+	if(context.getHistoryUrl(-1)!=""){
+		sessionScope.RedirectActa=context.getHistoryUrl(-1);
+	}else{
+		sessionScope.RedirectActa="/vxpActas.xsp"
+	}
+}else{
+	sessionScope.RedirectActa="/vxpActas.xsp"
+}
+
+}]]></xp:this.beforePageLoad><xp:this.data>
+		<xp:dominoDocument var="document1" formName="Acta" computeWithForm="both">
+		<xp:this.postSaveDocument>
+			<xp:executeScript>
+				<xp:this.script>
+					<![CDATA[#{javascript:var agent = database.getAgent("SwXPagesAfterSave");
+					//agent.runOnServer(document1.getNoteID());
+var doc:NotesDocument = document1.getDocument();
+agent.runWithDocumentContext(doc);
+					}]]>
+				</xp:this.script>
+			</xp:executeScript>
+		</xp:this.postSaveDocument></xp:dominoDocument>
+
+	</xp:this.data><xp:this.resources>
+		<xp:script src="/GeneralSSJS.jss" clientSide="false"></xp:script>
+		<xp:script src="/ActasSSJS.jss" clientSide="false"></xp:script>
+		<xp:script src="/ClientSideValidationV1.js" clientSide="true"></xp:script>
+
+	</xp:this.resources><script language="Javascript">
+		XSP.addOnLoad(function () { SwInitializeControl("Acta", 1);
+		});
+	</script><xp:this.dataContexts>
+		<xp:dataContext var="esEditorDeCampos">
+			<xp:this.value><![CDATA[#{javascript:if (!context.getUser().getRoles().contains('[Secretaria]') || (currentDocument.getItemValueString("Estado").equals("Cerrado"))){
+	return false;
+}else{
+	return true;
+}
+}]]></xp:this.value>
+		</xp:dataContext>
+</xp:this.dataContexts>
+	<xp:panel>
+			<xp:button id="button1" value="Guardar">
+				<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable() && esEditorDeCampos}]]></xp:this.rendered>
+				<xp:eventHandler event="onclick" submit="true" refreshMode="partial" immediate="false" save="false" refreshId="tabbedPanel1">
+					<xp:this.action>
+
+						<xp:actionGroup>
+
+
+
+
+							<xp:executeScript>
+								<xp:this.script><![CDATA[#{javascript:var agent = database.getAgent('(Funciones)');
+if(null != agent){
+	var document = document1.getDocument(true);
+	if(null != document){
+		try{
+			document.replaceItemValue("FuncionSTR","FechaLetras");
+			agent.runWithDocumentContext(document);
+			document1.setValue("FechaOrdenLetras",document.getItemValueString("FechaOrdenLetras").toUpperCase());
+			document.replaceItemValue("FuncionSTR","NumeroLetras");
+			agent.runWithDocumentContext(document);
+			document1.setValue("HoraSesionLetras",document.getItemValueString("HoraSesionLetras").toUpperCase());
+		}catch(e){
+			print('Error: ' + e);
+			return;
+		}
+		//document.save();
+	}
+}}]]></xp:this.script>
+							</xp:executeScript>
+							<xp:saveDocument var="document1"></xp:saveDocument>
+
+						</xp:actionGroup>
+					</xp:this.action>
+					<xp:this.script><![CDATA[var msg="";
+if(!validaCampoTexto(dojo.byId("#{id:FechasOrden}")))msg= msg + "Fecha.\n";
+if(!validaCampoTexto(dojo.byId("#{id:HoraOrden}")))msg= msg + "Hora Tema.\n";
+if(!validaCampoTexto(dojo.byId("#{id:Lugar}")))msg= msg + "Lugar.\n";
+if(!validaCampoTexto(dojo.byId("#{id:TipoSesion}")))msg= msg + "Tipo Sesión.\n";
+
+
+if(msg!=""){
+	alert("Debe incluir los siguientes Datos: \n" + msg);
+	return false;
+}]]></xp:this.script>
+				</xp:eventHandler>
+			</xp:button>
+
+
+			<xp:button value="Editar" id="button11">
+				<xp:this.rendered><![CDATA[#{javascript:
+!currentDocument.isEditable() && esEditorDeCampos}]]></xp:this.rendered>
+				<xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+					<xp:this.action>
+						<xp:changeDocumentMode mode="edit" var="document1">
+						</xp:changeDocumentMode>
+					</xp:this.action>
+				</xp:eventHandler>
+			</xp:button>
+
+			<xp:button id="button2" value="Salir">
+				<xp:eventHandler event="onclick" submit="true" refreshMode="complete" immediate="true" save="false">
+					<xp:this.action>
+
+
+						<xp:actionGroup>
+							<xp:executeScript script="#{javascript:viewStateBean.restoreState=true;}">
+							</xp:executeScript>
+							<xp:actionGroup>
+
+
+
+
+
+								<xp:openPage>
+									<xp:this.name><![CDATA[#{javascript://redirecciona pagina anterior
+try {
+if(sessionScope.RedirectActa!=""){
+	var dir=sessionScope.RedirectActa;
+	sessionScope.RedirectActa=""
+	return dir
+	
+}else{
+	context.redirectToHome();
+}
+}
+catch(err) {
+   context.redirectToHome();
+}
+}]]></xp:this.name>
+								</xp:openPage>
+							</xp:actionGroup>
+
+						</xp:actionGroup>
+					</xp:this.action>
+				</xp:eventHandler>
+			</xp:button>
+			<xp:button value="Pasar Acta a Libros" id="button25">
+				<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable() && !currentDocument.isNewNote() 
+&& esEditorDeCampos}]]></xp:this.rendered>
+				<xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+					<xp:this.action>
+
+
+						<xp:actionGroup>
+							<xp:confirm message="Esta seguro de pasar el acta a libros?">
+							</xp:confirm>
+							<xp:actionGroup>
+
+
+
+
+								<xp:executeScript script="#{javascript:viewStateBean.restoreState=true;}">
+
+								</xp:executeScript>
+
+
+
+
+
+								<xp:executeScript>
+									<xp:this.script><![CDATA[#{javascript:document1.replaceItemValue("Estado","Cerrado");
+FinalizaDocsAsociados(document1.getDocument());
+var user:NotesName=session.createName(@UserName());
+CreateBitacora(user,"Se pasa el acta a libros","",document1.getDocument(true).getUniversalID());
+view.postScript('alert("Se ha finalizado el Acta.")');
+document1.save();}]]></xp:this.script>
+								</xp:executeScript>
+								<xp:openPage>
+									<xp:this.name><![CDATA[#{javascript://redirecciona pagina anterior
+if(sessionScope.RedirectActa!=""){
+	var dir=sessionScope.RedirectActa;
+	sessionScope.RedirectActa=""
+	return dir
+	
+}else{
+	context.redirectToHome();
+}
+}]]></xp:this.name>
+								</xp:openPage>
+
+							</xp:actionGroup>
+
+						</xp:actionGroup>
+					</xp:this.action>
+					<xp:this.script><![CDATA[var msg="";
+if(!validaCampoTexto(dojo.byId("#{id:FechasOrden}")))msg= msg + "Fecha.\n";
+if(!validaCampoTexto(dojo.byId("#{id:HoraOrden}")))msg= msg + "Hora Tema.\n";
+if(!validaCampoTexto(dojo.byId("#{id:Lugar}")))msg= msg + "Lugar.\n";
+if(!validaCampoTexto(dojo.byId("#{id:TipoSesion}")))msg= msg + "Tipo Sesión.\n";
+
+
+if(msg!=""){
+	alert("Debe incluir los siguientes Datos: \n" + msg);
+	return false;
+}]]></xp:this.script>
+				</xp:eventHandler>
+			</xp:button>
+			<xp:button value="Generar Acta" id="button6">
+
+				<xp:this.rendered><![CDATA[#{javascript://esEditorDeCampos
+false}]]></xp:this.rendered>
+				<xp:eventHandler event="onclick" submit="true"
+					refreshMode="complete">
+					<xp:this.action>
+
+						<xp:actionGroup>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+							<xp:executeScript>
+								<xp:this.script><![CDATA[#{javascript:var agent = database.getAgent('(GenerarActa)');
+if(null != agent){
+	var document = currentDocument.getDocument(true);
+	if(null != document){
+		try{
+			agent.runWithDocumentContext(document);		
+			var user:NotesName=session.createName(@UserName());
+			CreateBitacora(user,"Se genera el Acta","",document1.getDocument(true).getUniversalID());
+		}catch(e){
+			print('Error: ' + e);
+			return;
+		}
+	}
+}}]]></xp:this.script>
+							</xp:executeScript>
+						</xp:actionGroup>
+					</xp:this.action>
+					<xp:this.script><![CDATA[var msg="";
+if(!validaCampoTexto(dojo.byId("#{id:FechasOrden}")))msg= msg + "Fecha.\n";
+if(!validaCampoTexto(dojo.byId("#{id:HoraOrden}")))msg= msg + "Hora Tema.\n";
+if(!validaCampoTexto(dojo.byId("#{id:Lugar}")))msg= msg + "Lugar.\n";
+if(!validaCampoTexto(dojo.byId("#{id:TipoSesion}")))msg= msg + "Tipo Sesión.\n";
+
+
+if(msg!=""){
+	alert("Debe incluir los siguientes Datos: \n" + msg);
+	return false;
+}]]></xp:this.script>
+				</xp:eventHandler>
+			</xp:button>
+
+
+			<xp:br></xp:br>
+			<xp:br></xp:br>
+			<xp:br></xp:br></xp:panel><xp:panel id="panelContenidoGen"
+		style="border-radius: 10px;border-style: solid;border-color: rgb(185,222,188);border-width:medium">
+
+
+
+
+
+
+
+
+
+
+		<xp:this.readonly><![CDATA[#{javascript:document1.getDocument().getItemValueString("Estado")=="Cerrado"}]]></xp:this.readonly>
+		
+
+
+
+		<xp:table>
+			<xp:tr>
+				<xp:td colspan="2">
+					<xp:table style="width:780.0px">
+						<xp:tr>
+							<xp:td style="width:157.0px">
+								<xp:label value="# Orden:"
+									id="numerOrden_Label1" for="numerOrden1"
+									style="font-weight:bold">
+								</xp:label>
+							</xp:td>
+							<xp:td style="width:0px"></xp:td>
+							<xp:td>
+
+								<xp:text escape="true" id="NumerOrdenD"
+									value="#{document1.NumerOrden}" style="font-weight:bold">
+									<xp:this.converter>
+										<xp:convertNumber
+											type="number">
+										</xp:convertNumber>
+									</xp:this.converter>
+								</xp:text>
+								<xp:inputText id="NumerOrden"
+									value="#{document1.NumerOrden}" style="display: none;width"
+									rendered="#{javascript:currentDocument.isEditable()}">
+								</xp:inputText>
+								<xp:br></xp:br>
+								<xp:text escape="true"
+									id="computedField1" value="#{document1.ActaLetras}"
+									style="font-style:italic">
+								</xp:text>
+
+								&#160;
+								<xp:inputText id="ActaLetras"
+									value="#{document1.ActaLetras}"
+									rendered="#{javascript:currentDocument.isEditable()}"
+									style="display: none;width">
+								</xp:inputText>
+							</xp:td>
+						</xp:tr>
+						<xp:tr>
+							<xp:td>
+								<xp:label value="Autor:" id="label10"
+									for="numerOrden1" style="font-weight:bold">
+								</xp:label>
+								<xp:span style="width:10.0px"></xp:span>
+							</xp:td>
+							<xp:td></xp:td>
+							<xp:td>
+								<xp:text escape="true"
+									id="computedField19">
+									<xp:this.value><![CDATA[#{javascript:@Name("[ABBREVIATE]",document1.getItemValueString("Autor"))}]]></xp:this.value>
+								</xp:text>
+								<xp:span style="width:241.0px">
+								</xp:span>
+							</xp:td>
+						</xp:tr>
+						<xp:tr>
+							<xp:td>
+								<xp:label value="Estado:" id="label11"
+									for="fechasOrden1" style="font-weight:bold">
+								</xp:label>
+							</xp:td>
+							<xp:td></xp:td>
+							<xp:td>
+								<xp:text escape="true"
+									id="computedField20" value="#{document1.Estado}"
+									style="font-weight:bold">
+								</xp:text>
+							</xp:td>
+						</xp:tr>
+					</xp:table>
+				</xp:td>
+
+			</xp:tr>
+
+
+
+			<xp:tr>
+				<xp:td colspan="2">
+
+
+
+
+					<xp:table style="width:100.0%">
+						<xp:tr>
+							<xp:td
+								style="border-top: thick double rgb(185,222,188)">
+							<hr></hr></xp:td>
+						</xp:tr>
+					</xp:table>
+				</xp:td>
+
+			</xp:tr>
+			<xp:tr>
+				<xp:td style="width:161.0px">
+					<xp:label value="Fecha de la Orden:"
+						id="fechasOrden_Label1" for="fechasOrden1">
+					</xp:label>
+				</xp:td>
+				<xp:td>
+					<xp:panel style="height:28.0px"
+						id="PanelFechaOrden">
+						<xe:djDateTextBox id="FechasOrden"
+							value="#{document1.FechasOrden}">
+
+							<xp:eventHandler event="onChange"
+								submit="true" refreshMode="partial" refreshId="PanelFechaOrden"
+								id="eventHandler56">
+								<xe:this.action>
+
+									<xp:actionGroup>
+
+
+										<xp:executeScript>
+											<xp:this.script><![CDATA[#{javascript:var agent = database.getAgent('(Funciones)');
+if(null != agent){
+	var document = document1.getDocument(true);
+	if(null != document){
+		try{
+			document.replaceItemValue("FuncionSTR","FechaLetras");
+			agent.runWithDocumentContext(document);			
+			document1.setValue("FechaOrdenLetras",document.getItemValueString("FechaOrdenLetras").toUpperCase());
+		}catch(e){
+			print('Error: ' + e);
+			return;
+		}
+		//document.save();
+	}
+}
+
+}]]></xp:this.script>
+										</xp:executeScript>
+										<xp:executeScript>
+											<xp:this.script><![CDATA[#{javascript:var agent = database.getAgent('(Funciones)');
+if(null != agent){
+	var document = document1.getDocument(true);
+	if(null != document){
+		try{
+			document.replaceItemValue("FuncionSTR","FechaLetrasP");
+			agent.runWithDocumentContext(document);			
+			document1.setValue("FechaOrdenLetrasP",document.getItemValueString("FechaOrdenLetrasP"));
+		}catch(e){
+			print('Error: ' + e);
+			return;
+		}
+		//document.save();
+	}
+}
+
+}]]></xp:this.script>
+										</xp:executeScript>
+									</xp:actionGroup>
+								</xe:this.action>
+							</xp:eventHandler>
+							<xe:this.converter>
+								<xp:convertDateTime type="date"
+									dateStyle="short">
+								</xp:convertDateTime>
+							</xe:this.converter>
+						</xe:djDateTextBox>
+
+						&#160;&#160;
+						<xp:text escape="true" id="computedField17"
+							value="#{document1.FechaOrdenLetras}">
+						</xp:text>
+						<xp:inputText id="FechaOrdenLetrasP"
+							value="#{document1.FechaOrdenLetras}"
+							rendered="#{javascript:currentDocument.isEditable()}"
+							style="display: none;">
+						</xp:inputText>
+					</xp:panel>
+				</xp:td>
+			</xp:tr>
+			<xp:tr>
+				<xp:td>
+					<xp:label value="Hora:" id="label9"
+						for="fechasOrden1">
+					</xp:label>
+				</xp:td>
+				<xp:td>
+
+					<xp:panel id="PanelHoraOrden">
+						<xp:inputText id="HoraOrden"
+							value="#{document1.HoraOrden}"
+							style="height:19.0px;width:179.0px">
+							<xp:this.converter>
+								<xp:convertDateTime type="time"
+									timeStyle="short" pattern="hh:mm aaa">
+								</xp:convertDateTime>
+							</xp:this.converter>
+							<xp:this.defaultValue><![CDATA[#{javascript:"8:00 am"}]]></xp:this.defaultValue>
+							<xp:dateTimeHelper
+								dojoType="dijit.form.TimeTextBox" id="dateTimeHelper1">
+							</xp:dateTimeHelper>
+							<xp:eventHandler event="onchange"
+								submit="true" refreshMode="partial" refreshId="PanelHoraOrden"
+								id="eventHandler57">
+								<xp:this.action><![CDATA[#{javascript:var agent = database.getAgent('(Funciones)');
+if(null != agent){
+	var document = document1.getDocument(true);
+	if(null != document){
+		try{
+			document.replaceItemValue("FuncionSTR","NumeroLetras");
+			agent.runWithDocumentContext(document);
+			document1.setValue("HoraSesionLetras",document.getItemValueString("HoraSesionLetras").toUpperCase());
+		}catch(e){
+			print('Error: ' + e);
+			return;
+		}
+		//document.save();
+	}
+}}]]></xp:this.action>
+							</xp:eventHandler>
+						</xp:inputText>
+						&#160;&#160;&#160;&#160;&#160;
+						<xp:text escape="true" id="computedField13"
+							value="#{document1.HoraSesionLetras}">
+						</xp:text>
+						<xp:inputText id="HoraSesionLetras"
+							value="#{document1.HoraSesionLetras}"
+							rendered="#{javascript:currentDocument.isEditable()}"
+							style="display: none;">
+						</xp:inputText>
+						&#160;
+					</xp:panel>
+				</xp:td>
+			</xp:tr>
+
+			<xp:tr>
+				<xp:td>
+					<xp:label value="Lugar" id="label15"></xp:label>
+				</xp:td>
+				<xp:td>
+					<xp:inputText id="Lugar" style="width:500.0px"
+						value="#{document1.Lugar}"
+						defaultValue="Sala de Junta Directiva">
+					</xp:inputText>
+				</xp:td>
+			</xp:tr>
+			<xp:tr>
+				<xp:td>
+					<xp:label value="Tipo sesion:" id="label8"
+						for="tipoSesion1">
+					</xp:label>
+				</xp:td>
+				<xp:td>
+					<xp:comboBox id="TipoSesionD"
+						style="width:179.0px;height:21.0px"
+						value="#{document1.TipoSesion}">
+						<xp:selectItem itemLabel="ORDINARIA"
+							itemValue="ORDINARIA" id="selectItem3">
+						</xp:selectItem>
+						<xp:selectItem itemLabel="EXTRAORDINARIA"
+							itemValue="EXTRAORDINARIA" id="selectItem4">
+						</xp:selectItem>
+
+
+						<xp:eventHandler event="onchange" submit="true"
+							refreshMode="partial" refreshId="TipoSesion"
+							id="eventHandler58">
+							<xp:this.script><![CDATA[var element=dojo.byId("#{id:TipoSesionD}");
+var element2=dojo.byId("#{id:TipoSesion}");
+if(element!=null){
+	element2.value=element.value;
+}
+]]></xp:this.script>
+						</xp:eventHandler>
+						<xp:eventHandler event="onclick" submit="true"
+							refreshMode="partial" refreshId="TipoSesion"
+							id="eventHandler59">
+						</xp:eventHandler>
+						<xp:eventHandler event="onblur" submit="true"
+							refreshMode="partial" refreshId="TipoSesion"
+							id="eventHandler60">
+						</xp:eventHandler>
+						<xp:eventHandler event="onfocus" submit="true"
+							refreshMode="partial" refreshId="TipoSesion"
+							id="eventHandler61">
+						</xp:eventHandler>
+					</xp:comboBox>
+					&#160;
+					<xp:inputText id="TipoSesion"
+						value="#{document1.TipoSesion}" style="display: none;width"
+						rendered="#{javascript:currentDocument.isEditable()}">
+					</xp:inputText>
+				</xp:td>
+			</xp:tr>
+
+
+
+			<xp:tr>
+				<xp:td>
+					<xp:label value="Presentes:" id="label7"
+						for="presentesNombres1">
+					</xp:label>
+				</xp:td>
+				<xp:td>
+
+
+					<xp:button id="button14" value="...">
+						<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable() && esEditorDeCampos}]]></xp:this.rendered>
+						<xp:eventHandler event="onclick" submit="false"
+							id="eventHandler7">
+							<xp:this.script><![CDATA[XSP.openDialog('#{id:dialogNewPresente}')]]></xp:this.script>
+						</xp:eventHandler>
+					</xp:button>
+				</xp:td>
+			</xp:tr>
+			<xp:tr>
+				<xp:td colspan="2">
+					<xp:panel id="panelPresentes">
+
+
+
+						<xe:dialog id="dialogNewPresente"
+							title="Nuevo Presente">
+
+							<xe:dialogButtonBar id="dialogButtonBar4">
+								<xp:button value="Aceptar" id="button17">
+									<xp:eventHandler event="onclick"
+										submit="true" refreshMode="partial" refreshId="panelPresentes"
+										id="eventHandler3">
+										<xp:this.action>
+
+											<xp:actionGroup>
+
+												<xp:executeScript>
+													<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogNewPresente")
+c.hide()}]]></xp:this.script>
+												</xp:executeScript>
+
+
+												<xp:executeScript>
+													<xp:this.script><![CDATA[#{javascript:
+var field = document1.getValue( 'PresentesNombres' );
+var field2 = document1.getValue( 'PresentesPuestos' );
+if(field==""){
+	field=getComponent("inputNombrePresente").getValue();
+	field2=getComponent("inputPuestoPresente").getValue();
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+	if( !field2 ){ field2 = []; }
+	if( typeof field2 === 'string' ){
+		field2 = [ field2 ];
+	}
+}else{
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+	field.push(getComponent("inputNombrePresente").getValue());
+	if( !field2 ){ field2 = []; }
+	if( typeof field2 === 'string' ){
+		field2 = [ field2 ];
+	}
+	field2.push(getComponent("inputPuestoPresente").getValue());
+}
+document1.setValue( 'PresentesNombres', field );
+document1.setValue( 'PresentesPuestos', field2 );
+document1.setValue( 'PresentesNombres1', field );
+document1.setValue( 'PresentesPuestos1', field2 );
+
+}]]></xp:this.script>
+												</xp:executeScript>
+											</xp:actionGroup>
+										</xp:this.action>
+									</xp:eventHandler>
+								</xp:button>
+								<xp:button id="button10"
+									value="Cancelar">
+									<xp:eventHandler event="onclick"
+										submit="false" id="eventHandler5">
+										<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogNewPresente}')]]></xp:this.script>
+									</xp:eventHandler>
+								</xp:button>
+
+
+							</xe:dialogButtonBar>
+							<xe:dialogContent id="dialogContent3">
+								<xp:panel>
+									<xp:table>
+										<xp:tr>
+											<xp:td>Nombre</xp:td>
+											<xp:td>
+
+												<xe:namePicker
+													id="namePicker11" for="inputNombrePresente"
+													dialogTitle="Seleccione los Nombres">
+													<xe:this.dataProvider>
+														<xe:namePickerAggregator>
+
+															<xe:this.dataProviders>
+																<xe:dominoViewNamePicker
+																	label="Nombre" labelColumn="Nombre" loaded="true"
+																	viewName="vUsuario">
+																</xe:dominoViewNamePicker>
+															</xe:this.dataProviders>
+														</xe:namePickerAggregator>
+													</xe:this.dataProvider>
+												</xe:namePicker>
+											</xp:td>
+											<xp:td>
+												<xp:inputText
+													id="inputNombrePresente" style="width:300px"
+													required="true">
+													<xp:this.validators>
+														<xp:validateRequired
+															message="El dato es requerido">
+														</xp:validateRequired>
+													</xp:this.validators>
+													<xp:eventHandler
+														event="onchange" submit="true" refreshMode="complete"
+														id="eventHandler35">
+														<xp:this.action><![CDATA[#{javascript:try{
+	var viewClientes=database.getView("vUsuario");
+	if(viewClientes!=null){
+		if(!getComponent("inputNombrePresente").getValue().equals("")){
+			var docCliente=viewClientes.getDocumentByKey(getComponent("inputNombrePresente").getValue());
+			if (docCliente!=null){
+			    getComponent("inputPuestoPresente").setValue(docCliente.getItemValueString('Puesto'));
+				//currentDocument.setValue("IDPuesto",docCliente.getItemValue('IDPuesto'))
+			}else{
+				getComponent("inputPuestoPresente").setValue("");
+				//currentDocument.setValue("IDPuesto","")
+			}
+		}
+	}
+	}catch(e){
+		print('Error: ' + e);
+		return false;
+}
+}]]></xp:this.action>
+													</xp:eventHandler>
+												</xp:inputText>
+											</xp:td>
+											<xp:td></xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td>Puesto</xp:td>
+											<xp:td></xp:td>
+											<xp:td>
+
+
+												<xp:inputText
+													id="inputPuestoPresente" style="width:302.0px">
+												</xp:inputText>
+											</xp:td>
+											<xp:td></xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+										</xp:tr>
+									</xp:table>
+
+								</xp:panel>
+							</xe:dialogContent>
+						</xe:dialog>
+
+
+
+
+
+
+
+
+
+
+
+						<xp:table
+							style="border-radius: 10px;border-style: solid;border-color: rgb(185,222,188);border-width:thin">
+							<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'PresentesNombres' ).length > 0 );}]]></xp:this.rendered>
+							<xp:tr>
+								<xp:td>
+									<xp:repeat
+										value="#{document1.PresentesNombres}" var="presentes"
+										indexVar="presentesIndex" id="repeatItemsPresentes">
+										<xp:table>
+											<xp:tr>
+												<xp:td
+													style="width:25.0px">
+													<xp:text
+														escape="true" id="computedField4"
+														value="#{javascript:presentesIndex + 1}" style="font-weight:bold">
+														<xp:this.converter>
+															<xp:convertNumber
+																type="number" integerOnly="true">
+															</xp:convertNumber>
+														</xp:this.converter>
+													</xp:text>
+												</xp:td>
+												<xp:td></xp:td>
+												<xp:td
+													style="width:60.0px">
+													<xp:link
+														escape="true" text="edit" id="link6"
+														rendered="#{javascript:currentDocument.isEditable()}">
+
+														<xp:eventHandler
+															event="onclick" submit="false" id="eventHandler6">
+															<xp:this.script><![CDATA[XSP.openDialog('#{id:dialogEditPresente}')]]></xp:this.script>
+														</xp:eventHandler>
+													</xp:link>
+												</xp:td>
+												<xp:td
+													style="width:60.0px">
+													<xp:link
+														escape="true" text="eliminar" id="link4"
+														rendered="#{javascript:currentDocument.isEditable()}">
+														<xp:eventHandler
+															event="onclick" submit="true" refreshMode="partial"
+															id="eventHandler4" refreshId="panelPresentes">
+															<xp:this.action><![CDATA[#{javascript:var field:Array = document1.getValue( 'PresentesNombres' );
+var field2:Array = document1.getValue( 'PresentesPuestos' );
+
+document1.replaceItemValue( 'PresentesNombres', SpliceArray(field,presentesIndex,1));
+document1.replaceItemValue( 'PresentesPuestos', SpliceArray(field2,presentesIndex,1) );
+
+document1.replaceItemValue( 'PresentesNombres1', SpliceArray(field,presentesIndex,1));
+document1.replaceItemValue( 'PresentesPuestos1', SpliceArray(field2,presentesIndex,1) );
+
+}]]></xp:this.action>
+														</xp:eventHandler>
+													</xp:link>
+												</xp:td>
+
+												<xp:td
+													style="width:305.0px">
+
+													<xp:inputText
+														id="inputIterPresentesNombres" style="width:300px"
+														readonly="#{javascript:true}">
+														<xp:this.rendered><![CDATA[#{javascript:return (document1.getItemValueArray( 'PresentesNombres' ).length > 1);}]]></xp:this.rendered>
+														<xp:this.value><![CDATA[#{document1.PresentesNombres[presentesIndex]}]]></xp:this.value>
+													</xp:inputText>
+
+													<xp:text
+														escape="true" id="computedField7"
+														value="#{document1.PresentesNombres}"
+														rendered="#{javascript:return ( document1.getItemValueArray( 'PresentesNombres' ).length == 1 );}">
+
+													</xp:text>
+												</xp:td>
+												<xp:td
+													style="width:305.0px">
+													<xp:inputText
+														id="inputIterPresentesPuestos" style="width:300px"
+														readonly="#{javascript:true}">
+														<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'PresentesNombres' ).length > 1 );}]]></xp:this.rendered>
+														<xp:this.value><![CDATA[#{document1.PresentesPuestos[presentesIndex]}]]></xp:this.value>
+													</xp:inputText>
+													<xp:text
+														escape="true" id="computedField8"
+														value="#{document1.PresentesPuestos}">
+														<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'PresentesNombres' ).length == 1 );
+}]]></xp:this.rendered>
+													</xp:text>
+												</xp:td>
+
+
+											</xp:tr>
+
+										</xp:table>
+
+
+										<xe:dialog
+											id="dialogEditPresente" title="Editar Presente">
+											<xe:dialogContent
+												id="dialogContent4">
+												<xp:panel>
+													<xp:table>
+														<xp:tr>
+															<xp:td>
+																Nombre
+															</xp:td>
+															<xp:td>
+
+																<xe:namePicker
+																	id="namePicker12"
+																	dialogTitle="Seleccione los Nombres">
+																	<xe:this.dataProvider>
+																		<xe:namePickerAggregator>
+
+																			<xe:this.dataProviders>
+																				<xe:dominoViewNamePicker
+																					label="Nombre" labelColumn="Nombre" loaded="true"
+																					viewName="vUsuario">
+																				</xe:dominoViewNamePicker>
+																			</xe:this.dataProviders>
+																		</xe:namePickerAggregator>
+																	</xe:this.dataProvider>
+																	<xe:this.for><![CDATA[#{javascript:if(document1.getItemValueArray( 'PresentesNombres' ).length > 1 ){
+	return "inputText6";
+}else{
+	return "inputText5";
+}}]]></xe:this.for>
+																</xe:namePicker>
+															</xp:td>
+															<xp:td>
+																<xp:inputText
+																	id="inputText6" style="width:300px" required="true">
+																	<xp:this.value><![CDATA[#{document1.PresentesNombres[presentesIndex]}]]></xp:this.value>
+																	<xp:this.validators>
+																		<xp:validateRequired
+																			message="El dato es requerido">
+																		</xp:validateRequired>
+																	</xp:this.validators>
+																	<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'PresentesNombres' ).length > 1 );}]]></xp:this.rendered>
+																	<xp:eventHandler
+																		event="onchange" submit="true" refreshMode="complete"
+																		id="eventHandler36">
+																		<xp:this.action><![CDATA[#{javascript:try{
+	
+	var viewClientes=database.getView("vUsuario");
+	if(viewClientes!=null){
+		
+		if(!getComponent("inputText6").getValue().equals("")){
+			
+			var docCliente=viewClientes.getDocumentByKey(getComponent("inputText6").getValue());
+			if (docCliente!=null){
+				
+			    getComponent("inputText23").setValue(docCliente.getItemValueString('Puesto'));
+				//currentDocument.setValue("IDPuesto",docCliente.getItemValue('IDPuesto'))
+			}else{
+				getComponent("inputText23").setValue("");
+				//currentDocument.setValue("IDPuesto","")
+			}
+		}
+	}
+	}catch(e){
+		print('Error: ' + e);
+		return false;
+}}]]></xp:this.action>
+																	</xp:eventHandler>
+																</xp:inputText>
+																<xp:br></xp:br>
+																<xp:inputText
+																	id="inputText5" style="width:300px" required="true"
+																	value="#{document1.PresentesNombres}"
+																	rendered="#{javascript:return ( document1.getItemValueArray( 'PresentesNombres' ).length == 1 );}">
+
+
+																	<xp:eventHandler
+																		event="onchange" submit="true" refreshMode="complete"
+																		id="eventHandler37">
+																		<xp:this.action><![CDATA[#{javascript:try{
+	
+	var viewClientes=database.getView("vUsuario");
+	if(viewClientes!=null){
+		if(!getComponent("inputText5").getValue().equals("")){
+			var docCliente=viewClientes.getDocumentByKey(getComponent("inputText5").getValue());
+			if (docCliente!=null){
+			    getComponent("inputText24").setValue(docCliente.getItemValueString('Puesto'));
+				//currentDocument.setValue("IDPuesto",docCliente.getItemValue('IDPuesto'))
+			}else{
+				getComponent("inputText24").setValue("");
+				//currentDocument.setValue("IDPuesto","")
+			}
+		}
+	}
+	}catch(e){
+		print('Error: ' + e);
+		return false;
+}}]]></xp:this.action>
+																	</xp:eventHandler>
+																</xp:inputText>
+															</xp:td>
+															<xp:td></xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td>
+																Puesto
+															</xp:td>
+															<xp:td></xp:td>
+															<xp:td>
+
+
+																<xp:inputText
+																	id="inputText23" style="width:302.0px">
+																	<xp:this.value><![CDATA[#{document1.PresentesPuestos[presentesIndex]}]]></xp:this.value>
+																	<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'PresentesNombres' ).length > 1 );}]]></xp:this.rendered>
+																</xp:inputText>
+																<xp:br></xp:br>
+
+																<xp:inputText
+																	id="inputText24" style="width:302.0px"
+																	value="#{document1.PresentesPuestos}"
+																	rendered="#{javascript:return ( document1.getItemValueArray( 'PresentesNombres' ).length == 1 );}">
+																</xp:inputText>
+															</xp:td>
+															<xp:td></xp:td>
+														</xp:tr>
+
+
+													</xp:table>
+												</xp:panel>
+											</xe:dialogContent>
+											<xe:dialogButtonBar
+												id="dialogButtonBar5">
+												<xp:button value="Aceptar"
+													id="button13">
+													<xp:eventHandler
+														event="onclick" submit="true" refreshMode="partial"
+														refreshId="panelPresentes" id="eventHandler9">
+														<xp:this.action>
+
+															<xp:actionGroup>
+
+
+
+																<xp:executeScript>
+																	<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogEditPresente")
+c.hide()}]]></xp:this.script>
+																</xp:executeScript>
+
+
+																<xp:executeScript>
+																	<xp:this.script><![CDATA[#{javascript:
+var field = document1.getValue( 'PresentesNombres' );
+var field2 = document1.getValue( 'PresentesPuestos' );
+
+if( !field ){ field = []; }
+if( typeof field === 'string' ){
+	field = [ field ];
+}
+
+document1.setValue( 'PresentesNombres', field );
+document1.setValue( 'PresentesNombres1', field );
+
+if( !field2 ){ field2 = []; }
+if( typeof field2 === 'string' ){
+	field2 = [ field2 ];
+}
+
+document1.setValue( 'PresentesPuestos', field2 );
+document1.setValue( 'PresentesPuestos1', field2 );
+}]]></xp:this.script>
+																</xp:executeScript>
+															</xp:actionGroup>
+														</xp:this.action>
+													</xp:eventHandler>
+												</xp:button>
+												<xp:button id="button35"
+													value="Cancelar">
+													<xp:eventHandler
+														event="onclick" submit="false" id="eventHandler10">
+														<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogEditPresente}')]]></xp:this.script>
+													</xp:eventHandler>
+												</xp:button>
+
+
+											</xe:dialogButtonBar>
+										</xe:dialog>
+
+									</xp:repeat>
+								</xp:td>
+							</xp:tr>
+						</xp:table>
+						<xp:inputText id="inputText2"
+							value="#{document1.PresentesNombres}" style="display: none;width"
+							rendered="false">
+						</xp:inputText>
+						<xp:inputText id="inputText4"
+							value="#{document1.PresentesPuestos}" style="display: none;width"
+							rendered="false">
+						</xp:inputText>
+						<xp:inputTextarea id="PresentesNombres"
+							multipleSeparator=";" value="#{document1.PresentesNombres1}"
+							rendered="#{javascript:currentDocument.isEditable()}"
+							style="display: none;width">
+						</xp:inputTextarea>
+						<xp:inputTextarea
+							value="#{document1.PresentesPuestos1}" multipleSeparator=";"
+							rendered="#{javascript:currentDocument.isEditable()}"
+							id="PresentesPuestos" style="display: none;width">
+						</xp:inputTextarea>
+					</xp:panel>
+				</xp:td>
+
+			</xp:tr>
+
+
+			<xp:tr>
+				<xp:td>
+					<xp:label value="Presentes ademas:"
+						id="presentesAdemasPuestos_Label1" for="presentesAdemasPuestos1"
+						style="color:rgb(0,0,0)">
+					</xp:label>
+				</xp:td>
+				<xp:td>
+
+					<xp:button id="button16" value="...">
+						<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable() && esEditorDeCampos}]]></xp:this.rendered>
+						<xp:eventHandler event="onclick" submit="false"
+							id="eventHandler13">
+							<xp:this.script><![CDATA[XSP.openDialog('#{id:dialogNewPresentesA}')]]></xp:this.script>
+						</xp:eventHandler>
+					</xp:button>
+				</xp:td>
+			</xp:tr>
+			<xp:tr>
+				<xp:td colspan="2">
+					<xp:panel id="panelPresentesAdemas">
+
+
+
+						<xe:dialog id="dialogNewPresentesA"
+							title="Nuevo Presente">
+
+							<xe:dialogButtonBar id="dialogButtonBar3">
+								<xp:button value="Aceptar" id="button15">
+									<xp:eventHandler event="onclick"
+										submit="true" refreshMode="partial"
+										refreshId="panelPresentesAdemas" id="eventHandler11">
+										<xp:this.action>
+
+											<xp:actionGroup>
+
+
+
+
+												<xp:executeScript>
+													<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogNewPresentesA")
+c.hide()}]]></xp:this.script>
+												</xp:executeScript>
+
+
+
+
+
+
+												<xp:executeScript>
+													<xp:this.script><![CDATA[#{javascript:
+var field = document1.getValue( 'PresentesAdemasNombres' );
+var field2 = document1.getValue( 'PresentesAdemasPuestos' );
+if(field==""){
+	field=getComponent("inputNombrePresenteAdemas").getValue();
+	field2=getComponent("inputPuestoPresenteAdemas").getValue();
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+	if( !field2 ){ field2 = []; }
+	if( typeof field2 === 'string' ){
+		field2 = [ field2 ];
+	}
+}else{
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+	field.push(getComponent("inputNombrePresenteAdemas").getValue());
+	if( !field2 ){ field2 = []; }
+	if( typeof field2 === 'string' ){
+		field2 = [ field2 ];
+	}
+	field2.push(getComponent("inputPuestoPresenteAdemas").getValue());
+}
+document1.setValue( 'PresentesAdemasNombres', field );
+document1.setValue( 'PresentesAdemasPuestos', field2 );
+
+document1.setValue( 'PresentesANombres', field );
+document1.setValue( 'PresentesAPuestos', field2 );
+
+}]]></xp:this.script>
+												</xp:executeScript>
+											</xp:actionGroup>
+										</xp:this.action>
+									</xp:eventHandler>
+								</xp:button>
+								<xp:button id="button36"
+									value="Cancelar">
+									<xp:eventHandler event="onclick"
+										submit="false" id="eventHandler12">
+										<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogNewPresentesA}')]]></xp:this.script>
+									</xp:eventHandler>
+								</xp:button>
+
+
+							</xe:dialogButtonBar>
+							<xe:dialogContent id="dialogContent2">
+								<xp:panel>
+									<xp:table>
+										<xp:tr>
+											<xp:td>Nombre</xp:td>
+											<xp:td>
+
+												<xe:namePicker
+													id="namePicker13" for="inputNombrePresenteAdemas"
+													dialogTitle="Seleccione los Nombres">
+													<xe:this.dataProvider>
+														<xe:namePickerAggregator>
+
+															<xe:this.dataProviders>
+																<xe:dominoViewNamePicker
+																	label="Nombre" labelColumn="Nombre" loaded="true"
+																	viewName="vUsuario">
+																</xe:dominoViewNamePicker>
+															</xe:this.dataProviders>
+														</xe:namePickerAggregator>
+													</xe:this.dataProvider>
+												</xe:namePicker>
+											</xp:td>
+											<xp:td>
+												<xp:inputText
+													id="inputNombrePresenteAdemas" style="width:300px"
+													required="true">
+													<xp:this.validators>
+														<xp:validateRequired
+															message="El dato es requerido">
+														</xp:validateRequired>
+													</xp:this.validators>
+													<xp:eventHandler
+														event="onchange" submit="true" refreshMode="complete"
+														id="eventHandler38">
+														<xp:this.action><![CDATA[#{javascript:try{
+	var viewClientes=database.getView("vUsuario");
+	if(viewClientes!=null){
+		if(!getComponent("inputNombrePresenteAdemas").getValue().equals("")){
+			var docCliente=viewClientes.getDocumentByKey(getComponent("inputNombrePresenteAdemas").getValue());
+			if (docCliente!=null){
+			    getComponent("inputPuestoPresenteAdemas").setValue(docCliente.getItemValueString('Puesto'));
+				//currentDocument.setValue("IDPuesto",docCliente.getItemValue('IDPuesto'))
+			}else{
+				getComponent("inputPuestoPresenteAdemas").setValue("");
+				//currentDocument.setValue("IDPuesto","")
+			}
+		}
+	}
+	}catch(e){
+		print('Error: ' + e);
+		return "";
+}}]]></xp:this.action>
+													</xp:eventHandler>
+												</xp:inputText>
+											</xp:td>
+											<xp:td></xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td>Puesto</xp:td>
+											<xp:td></xp:td>
+											<xp:td>
+
+
+												<xp:inputText
+													id="inputPuestoPresenteAdemas" style="width:302.0px">
+												</xp:inputText>
+											</xp:td>
+											<xp:td></xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+										</xp:tr>
+									</xp:table>
+
+								</xp:panel>
+							</xe:dialogContent>
+						</xe:dialog>
+
+
+
+
+						<xp:table
+							style="border-radius: 10px;border-style: solid;border-color: rgb(185,222,188);border-width:thin">
+							<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'PresentesAdemasNombres' ).length > 0 );}]]></xp:this.rendered>
+							<xp:tr>
+								<xp:td>
+									<xp:repeat
+										value="#{document1.PresentesAdemasNombres}" var="presentes"
+										indexVar="presentesAdemasIndex" id="repeatPresentesAdemas">
+										<xp:table>
+											<xp:tr>
+												<xp:td
+													style="width:25.0px">
+													<xp:text
+														escape="true" id="computedField5"
+														value="#{javascript:presentesAdemasIndex + 1}" style="font-weight:bold">
+														<xp:this.converter>
+															<xp:convertNumber
+																type="number" integerOnly="true">
+															</xp:convertNumber>
+														</xp:this.converter>
+													</xp:text>
+												</xp:td>
+												<xp:td>
+
+												</xp:td>
+												<xp:td
+													style="width:60.0px">
+													<xp:link
+														escape="true" text="edit" id="link7"
+														rendered="#{javascript:currentDocument.isEditable()}">
+
+														<xp:eventHandler
+															event="onclick" submit="false" id="eventHandler15">
+															<xp:this.script><![CDATA[XSP.openDialog('#{id:dialogEditPresentesA}')]]></xp:this.script>
+														</xp:eventHandler>
+													</xp:link>
+												</xp:td>
+												<xp:td
+													style="width:60.0px">
+													<xp:link
+														escape="true" text="eliminar" id="link9"
+														rendered="#{javascript:currentDocument.isEditable()}">
+														<xp:eventHandler
+															event="onclick" submit="true" refreshMode="partial"
+															id="eventHandler16" refreshId="panelPresentesAdemas">
+															<xp:this.action><![CDATA[#{javascript:var field:Array = document1.getValue( 'PresentesAdemasNombres' );
+var field2:Array = document1.getValue( 'PresentesAdemasPuestos' );
+
+document1.replaceItemValue( 'PresentesAdemasNombres', SpliceArray(field,presentesAdemasIndex,1));
+document1.replaceItemValue( 'PresentesAdemasPuestos', SpliceArray(field2,presentesAdemasIndex,1) );
+
+document1.replaceItemValue( 'PresentesANombres', SpliceArray(field,presentesAdemasIndex,1));
+document1.replaceItemValue( 'PresentesAPuestos', SpliceArray(field2,presentesAdemasIndex,1) );
+
+}]]></xp:this.action>
+														</xp:eventHandler>
+													</xp:link>
+												</xp:td>
+
+												<xp:td
+													style="width:305.0px">
+
+													<xp:inputText
+														id="inputText7" style="width:300px"
+														readonly="#{javascript:true}">
+														<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'PresentesAdemasNombres' ).length > 1 );}]]></xp:this.rendered>
+														<xp:this.value><![CDATA[#{document1.PresentesAdemasNombres[presentesAdemasIndex]}]]></xp:this.value>
+													</xp:inputText>
+													<xp:text
+														escape="true" id="computedField16"
+														rendered="#{javascript:return (document1.getItemValueArray('PresentesAdemasNombres').length==1);}"
+														value="#{document1.PresentesAdemasNombres}">
+													</xp:text>
+													&#160;
+
+												</xp:td>
+												<xp:td
+													style="width:305.0px">
+													<xp:inputText
+														id="inputText8" style="width:300px"
+														readonly="#{javascript:true}">
+														<xp:this.value><![CDATA[#{document1.PresentesAdemasPuestos[presentesAdemasIndex]}]]></xp:this.value>
+														<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'PresentesAdemasNombres' ).length > 1 );}]]></xp:this.rendered>
+													</xp:inputText>
+													<xp:text
+														escape="true" id="computedField11"
+														rendered="#{javascript:return (document1.getItemValueArray('PresentesAdemasNombres').length==1);}"
+														value="#{document1.PresentesAdemasPuestos}">
+													</xp:text>
+												</xp:td>
+
+
+											</xp:tr>
+
+										</xp:table>
+
+
+										<xe:dialog
+											id="dialogEditPresentesA" title="Editar Presente">
+											<xe:dialogContent
+												id="dialogContent5">
+												<xp:panel>
+													<xp:table>
+														<xp:tr>
+															<xp:td>
+																Nombre
+															</xp:td>
+															<xp:td>
+
+																<xe:namePicker
+																	id="namePicker14"
+																	dialogTitle="Seleccione los Nombres">
+																	<xe:this.dataProvider>
+																		<xe:namePickerAggregator>
+
+																			<xe:this.dataProviders>
+																				<xe:dominoViewNamePicker
+																					label="Nombre" labelColumn="Nombre" loaded="true"
+																					viewName="vUsuario">
+																				</xe:dominoViewNamePicker>
+																			</xe:this.dataProviders>
+																		</xe:namePickerAggregator>
+																	</xe:this.dataProvider>
+																	<xe:this.for><![CDATA[#{javascript:if(document1.getItemValueArray( 'PresentesAdemasNombres' ).length > 1 ){
+	return "inputText9";
+}else{
+	return "inputText18";
+}}]]></xe:this.for>
+																</xe:namePicker>
+															</xp:td>
+															<xp:td>
+																<xp:inputText
+																	id="inputText9" style="width:300px" required="true">
+																	<xp:this.value><![CDATA[#{document1.PresentesAdemasNombres[presentesAdemasIndex]}]]></xp:this.value>
+																	<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'PresentesAdemasNombres' ).length > 1 );}]]></xp:this.rendered>
+																	<xp:eventHandler
+																		event="onchange" submit="true" refreshMode="complete"
+																		id="eventHandler39">
+																		<xp:this.action><![CDATA[#{javascript:try{
+	var viewClientes=database.getView("vUsuario");
+	if(viewClientes!=null){
+		if(!getComponent("inputText9").getValue().equals("")){
+			var docCliente=viewClientes.getDocumentByKey(getComponent("inputText9").getValue());
+			if (docCliente!=null){
+			    getComponent("inputText25").setValue(docCliente.getItemValueString('Puesto'));
+				//currentDocument.setValue("IDPuesto",docCliente.getItemValue('IDPuesto'))
+			}else{
+				getComponent("inputText25").setValue("");
+				//currentDocument.setValue("IDPuesto","")
+			}
+		}
+	}
+	}catch(e){
+		print('Error: ' + e);
+		return "";
+}}]]></xp:this.action>
+																	</xp:eventHandler>
+																</xp:inputText>
+																<xp:br></xp:br>
+																<xp:inputText
+																	id="inputText18" style="width:300px" required="true"
+																	value="#{document1.PresentesAdemasNombres}"
+																	rendered="#{javascript:return ( document1.getItemValueArray( 'PresentesAdemasNombres' ).length == 1 );}">
+																	<xp:eventHandler
+																		event="onchange" submit="true" refreshMode="complete"
+																		id="eventHandler40">
+																		<xp:this.action><![CDATA[#{javascript:try{
+	var viewClientes=database.getView("vUsuario");
+	if(viewClientes!=null){
+		if(!getComponent("inputText18").getValue().equals("")){
+			var docCliente=viewClientes.getDocumentByKey(getComponent("inputText18").getValue());
+			if (docCliente!=null){
+			    getComponent("inputText26").setValue(docCliente.getItemValueString('Puesto'));
+				//currentDocument.setValue("IDPuesto",docCliente.getItemValue('IDPuesto'))
+			}else{
+				getComponent("inputText26").setValue("");
+				//currentDocument.setValue("IDPuesto","")
+			}
+		}
+	}
+	}catch(e){
+		print('Error: ' + e);
+		return "";
+}}]]></xp:this.action>
+																	</xp:eventHandler>
+																</xp:inputText>
+															</xp:td>
+															<xp:td></xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td>
+																Puesto
+															</xp:td>
+															<xp:td></xp:td>
+															<xp:td>
+
+
+																<xp:inputText
+																	id="inputText25" style="width:302.0px">
+																	<xp:this.value><![CDATA[#{document1.PresentesAdemasPuestos[presentesAdemasIndex]}]]></xp:this.value>
+																	<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'PresentesAdemasNombres' ).length > 1 );}]]></xp:this.rendered>
+																</xp:inputText>
+																<xp:br></xp:br>
+																<xp:inputText
+																	id="inputText26" style="width:302.0px"
+																	value="#{document1.PresentesAdemasPuestos}"
+																	rendered="#{javascript:return ( document1.getItemValueArray( 'PresentesAdemasNombres' ).length == 1 );}">
+																</xp:inputText>
+															</xp:td>
+															<xp:td></xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td></xp:td>
+															<xp:td></xp:td>
+															<xp:td>
+
+															</xp:td>
+															<xp:td></xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td></xp:td>
+															<xp:td></xp:td>
+															<xp:td>
+
+															</xp:td>
+															<xp:td></xp:td>
+														</xp:tr>
+													</xp:table>
+												</xp:panel>
+											</xe:dialogContent>
+											<xe:dialogButtonBar
+												id="dialogButtonBar6">
+												<xp:button value="Aceptar"
+													id="button19">
+													<xp:eventHandler
+														event="onclick" submit="true" refreshMode="partial"
+														refreshId="panelPresentesAdemas" id="eventHandler17">
+														<xp:this.action>
+
+															<xp:actionGroup>
+
+
+
+
+
+																<xp:executeScript>
+																	<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogEditPresentesA")
+c.hide()}]]></xp:this.script>
+																</xp:executeScript>
+
+
+
+
+
+																<xp:executeScript>
+																	<xp:this.script><![CDATA[#{javascript:
+var field = document1.getValue( 'PresentesAdemasNombres' );
+var field2 = document1.getValue( 'PresentesAdemasPuestos' );
+
+if( !field ){ field = []; }
+if( typeof field === 'string' ){
+	field = [ field ];
+}
+
+document1.setValue( 'PresentesAdemasNombres', field );
+document1.setValue( 'PresentesANombres', field );
+
+
+if( !field2 ){ field2 = []; }
+if( typeof field2 === 'string' ){
+	field2 = [ field2 ];
+}
+
+document1.setValue( 'PresentesAdemasPuestos', field2 );
+document1.setValue( 'PresentesAPuestos', field2 );
+}]]></xp:this.script>
+																</xp:executeScript>
+															</xp:actionGroup>
+														</xp:this.action>
+													</xp:eventHandler>
+												</xp:button>
+												<xp:button id="button37"
+													value="Cancelar">
+													<xp:eventHandler
+														event="onclick" submit="false" id="eventHandler14">
+														<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogEditPresentesA}')]]></xp:this.script>
+													</xp:eventHandler>
+												</xp:button>
+
+
+											</xe:dialogButtonBar>
+										</xe:dialog>
+
+									</xp:repeat>
+								</xp:td>
+							</xp:tr>
+						</xp:table>
+						<xp:inputTextarea id="PresentesANombres"
+							value="#{document1.PresentesANombres}" multipleSeparator=";"
+							style="display: none;width:193.0px"
+							rendered="#{javascript:currentDocument.isEditable()}">
+						</xp:inputTextarea>
+
+
+
+
+						<xp:inputTextarea id="PresentesAPuestos"
+							value="#{document1.PresentesAPuestos}" multipleSeparator=";"
+							style="display: none;width:165.0px"
+							rendered="#{javascript:currentDocument.isEditable()}">
+						</xp:inputTextarea>
+						<xp:inputText id="inputText10" rendered="false"
+							value="#{document1.PresentesAdemasNombres}"
+							style="display: none;width">
+						</xp:inputText>
+						<xp:inputText id="inputText11" rendered="false"
+							value="#{document1.PresentesAdemasPuestos}"
+							style="display: none;width">
+						</xp:inputText>
+					</xp:panel>
+				</xp:td>
+
+			</xp:tr>
+			<xp:tr>
+				<xp:td>
+					<xp:label value="Ausentes:"
+						id="ausentesNombres_Label1" for="ausentesNombres1"
+						style="color:rgb(0,0,0)">
+					</xp:label>
+				</xp:td>
+				<xp:td>
+
+					<xp:button id="button18" value="...">
+						<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable() && esEditorDeCampos}]]></xp:this.rendered>
+						<xp:eventHandler event="onclick" submit="false"
+							id="eventHandler19">
+							<xp:this.script><![CDATA[XSP.openDialog('#{id:dialogNewAusente}')]]></xp:this.script>
+						</xp:eventHandler>
+					</xp:button>
+				</xp:td>
+			</xp:tr>
+			<xp:tr>
+				<xp:td colspan="2">
+					<xp:panel id="panelAusentes">
+
+
+
+						<xe:dialog id="dialogNewAusente"
+							title="Nuevo Ausente">
+
+							<xe:dialogButtonBar id="dialogButtonBar7">
+								<xp:button value="Aceptar" id="button12">
+									<xp:eventHandler event="onclick"
+										submit="true" refreshMode="partial" refreshId="panelAusentes"
+										id="eventHandler8">
+										<xp:this.action>
+
+											<xp:actionGroup>
+
+
+
+
+
+
+
+
+
+												<xp:executeScript>
+													<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogNewAusente")
+c.hide()}]]></xp:this.script>
+												</xp:executeScript>
+
+
+												<xp:executeScript>
+													<xp:this.script><![CDATA[#{javascript:
+var field = document1.getValue( 'AusentesNombres' );
+var field2 = document1.getValue( 'AusentesPuestos' );
+if(field==""){
+	field=getComponent("inputNewAusenteNombre").getValue();
+	field2=getComponent("inputNewAusentePuesto").getValue();
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+	if( !field2 ){ field2 = []; }
+	if( typeof field2 === 'string' ){
+		field2 = [ field2 ];
+	}
+}else{
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+	field.push(getComponent("inputNewAusenteNombre").getValue());
+	if( !field2 ){ field2 = []; }
+	if( typeof field2 === 'string' ){
+		field2 = [ field2 ];
+	}
+	field2.push(getComponent("inputNewAusentePuesto").getValue());
+}
+document1.setValue( 'AusentesNombres', field );
+document1.setValue( 'AusentesPuestos', field2 );
+
+document1.setValue( 'AusentesNombres1', field );
+document1.setValue( 'AusentesPuestos1', field2 );
+
+}]]></xp:this.script>
+												</xp:executeScript>
+											</xp:actionGroup>
+										</xp:this.action>
+									</xp:eventHandler>
+								</xp:button>
+								<xp:button id="button38"
+									value="Cancelar">
+									<xp:eventHandler event="onclick"
+										submit="false" id="eventHandler18">
+										<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogNewAusente}')]]></xp:this.script>
+									</xp:eventHandler>
+								</xp:button>
+
+
+							</xe:dialogButtonBar>
+							<xe:dialogContent id="dialogContent6">
+								<xp:panel>
+									<xp:table>
+										<xp:tr>
+											<xp:td>Nombre</xp:td>
+											<xp:td>
+
+												<xe:namePicker
+													id="namePicker15" for="inputNewAusenteNombre"
+													dialogTitle="Seleccione los Nombres">
+													<xe:this.dataProvider>
+														<xe:namePickerAggregator>
+
+															<xe:this.dataProviders>
+																<xe:dominoViewNamePicker
+																	label="Nombre" labelColumn="Nombre" loaded="true"
+																	viewName="vUsuario">
+																</xe:dominoViewNamePicker>
+															</xe:this.dataProviders>
+														</xe:namePickerAggregator>
+													</xe:this.dataProvider>
+												</xe:namePicker>
+											</xp:td>
+											<xp:td>
+												<xp:inputText
+													id="inputNewAusenteNombre" style="width:300px"
+													required="true">
+													<xp:this.validators>
+														<xp:validateRequired
+															message="El dato es requerido">
+														</xp:validateRequired>
+													</xp:this.validators>
+													<xp:eventHandler
+														event="onchange" submit="true" refreshMode="complete"
+														id="eventHandler41">
+														<xp:this.action><![CDATA[#{javascript:try{
+	var viewClientes=database.getView("vUsuario");
+	if(viewClientes!=null){
+		if(!getComponent("inputNewAusenteNombre").getValue().equals("")){
+			var docCliente=viewClientes.getDocumentByKey(getComponent("inputNewAusenteNombre").getValue());
+			if (docCliente!=null){
+			    getComponent("inputNewAusentePuesto").setValue(docCliente.getItemValueString('Puesto'));
+				//currentDocument.setValue("IDPuesto",docCliente.getItemValue('IDPuesto'))
+			}else{
+				getComponent("inputNewAusentePuesto").setValue("");
+				//currentDocument.setValue("IDPuesto","")
+			}
+		}
+	}
+	}catch(e){
+		print('Error: ' + e);
+		return "";
+}}]]></xp:this.action>
+													</xp:eventHandler>
+												</xp:inputText>
+											</xp:td>
+											<xp:td></xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td>Puesto</xp:td>
+											<xp:td></xp:td>
+											<xp:td>
+
+
+												<xp:inputText
+													id="inputNewAusentePuesto" style="width:302.0px">
+												</xp:inputText>
+											</xp:td>
+											<xp:td></xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+										</xp:tr>
+									</xp:table>
+
+								</xp:panel>
+							</xe:dialogContent>
+						</xe:dialog>
+
+
+
+
+
+						<xp:table
+							style="border-radius: 10px;border-style: solid;border-color: rgb(185,222,188);border-width:thin">
+							<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'AusentesNombres' ).length > 0 );}]]></xp:this.rendered>
+							<xp:tr>
+								<xp:td>
+									<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'AusentesNombres' ).length > 0 );}]]></xp:this.rendered>
+									<xp:repeat
+										value="#{document1.AusentesNombres}" var="presentes"
+										indexVar="ausentesIndex" id="repeatAusentes">
+										<xp:table>
+											<xp:tr>
+												<xp:td
+													style="width:25.0px">
+													<xp:text
+														escape="true" id="computedField6"
+														value="#{javascript:ausentesIndex + 1}" style="font-weight:bold">
+														<xp:this.converter>
+															<xp:convertNumber
+																type="number" integerOnly="true">
+															</xp:convertNumber>
+														</xp:this.converter>
+													</xp:text>
+												</xp:td>
+												<xp:td>
+
+												</xp:td>
+												<xp:td
+													style="width:60.0px">
+													<xp:link
+														escape="true" text="edit" id="link12"
+														rendered="#{javascript:currentDocument.isEditable()}">
+
+														<xp:eventHandler
+															event="onclick" submit="false" id="eventHandler20">
+															<xp:this.script><![CDATA[XSP.openDialog('#{id:dialogEditAusente}')]]></xp:this.script>
+														</xp:eventHandler>
+													</xp:link>
+												</xp:td>
+												<xp:td
+													style="width:60.0px">
+													<xp:link
+														escape="true" text="eliminar" id="link13"
+														rendered="#{javascript:currentDocument.isEditable()}">
+														<xp:eventHandler
+															event="onclick" submit="true" refreshMode="partial"
+															id="eventHandler21" refreshId="panelAusentes">
+															<xp:this.action><![CDATA[#{javascript:var field:Array = document1.getValue( 'AusentesNombres' );
+var field2:Array = document1.getValue( 'AusentesPuestos' );
+
+document1.replaceItemValue( 'AusentesNombres', SpliceArray(field,ausentesIndex,1));
+document1.replaceItemValue( 'AusentesPuestos', SpliceArray(field2,ausentesIndex,1) );
+
+document1.replaceItemValue( 'AusentesNombres1', SpliceArray(field,ausentesIndex,1));
+document1.replaceItemValue( 'AusentesPuestos1', SpliceArray(field2,ausentesIndex,1) );}]]></xp:this.action>
+														</xp:eventHandler>
+													</xp:link>
+												</xp:td>
+
+												<xp:td
+													style="width:305.0px">
+
+													<xp:inputText
+														id="inputText12" style="width:300px"
+														readonly="#{javascript:true}">
+														<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'AusentesNombres' ).length > 1 );}]]></xp:this.rendered>
+
+														<xp:this.value><![CDATA[#{document1.AusentesNombres[ausentesIndex]}]]></xp:this.value>
+													</xp:inputText>
+
+													<xp:text
+														escape="true" id="computedField9"
+														rendered="#{javascript:return ( document1.getItemValueArray( 'AusentesNombres' ).length == 1 );}"
+														value="#{document1.AusentesNombres}">
+													</xp:text>
+												</xp:td>
+												<xp:td
+													style="width:305.0px">
+													<xp:inputText
+														id="inputText13" style="width:300px"
+														readonly="#{javascript:true}">
+														<xp:this.value><![CDATA[#{document1.AusentesPuestos[ausentesIndex]}]]></xp:this.value>
+														<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'AusentesNombres' ).length > 1 );}]]></xp:this.rendered>
+													</xp:inputText>
+
+													<xp:text
+														escape="true" id="computedField12"
+														rendered="#{javascript:return ( document1.getItemValueArray( 'AusentesNombres' ).length == 1 );}"
+														value="#{document1.AusentesPuestos}">
+													</xp:text>
+												</xp:td>
+
+
+											</xp:tr>
+
+										</xp:table>
+
+
+										<xe:dialog
+											id="dialogEditAusente" title="Editar Ausente">
+											<xe:dialogContent
+												id="dialogContent7">
+												<xp:panel>
+													<xp:table>
+														<xp:tr>
+															<xp:td>
+																Nombre
+															</xp:td>
+															<xp:td>
+
+																<xe:namePicker
+																	id="namePicker16"
+																	dialogTitle="Seleccione los Nombres">
+																	<xe:this.dataProvider>
+																		<xe:namePickerAggregator>
+
+																			<xe:this.dataProviders>
+																				<xe:dominoViewNamePicker
+																					label="Nombre" labelColumn="Nombre" loaded="true"
+																					viewName="vUsuario">
+																				</xe:dominoViewNamePicker>
+																			</xe:this.dataProviders>
+																		</xe:namePickerAggregator>
+																	</xe:this.dataProvider>
+																	<xe:this.for><![CDATA[#{javascript:if(document1.getItemValueArray( 'PresentesAdemasNombres' ).length > 1 ){
+	return "inputEditAusenteNombre";
+}else{
+	return "inputText21";
+}}]]></xe:this.for>
+																</xe:namePicker>
+															</xp:td>
+															<xp:td>
+																<xp:inputText
+																	id="inputEditAusenteNombre" style="width:300px"
+																	required="true">
+																	<xp:this.value><![CDATA[#{document1.AusentesNombres[ausentesIndex]}]]></xp:this.value>
+																	<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'AusentesNombres' ).length > 1 );}]]></xp:this.rendered>
+																	<xp:eventHandler
+																		event="onchange" submit="true" refreshMode="complete"
+																		id="eventHandler42">
+																		<xp:this.action><![CDATA[#{javascript:try{
+	var viewClientes=database.getView("vUsuario");
+	if(viewClientes!=null){
+		if(!getComponent("inputEditAusenteNombre").getValue().equals("")){
+			var docCliente=viewClientes.getDocumentByKey(getComponent("inputEditAusenteNombre").getValue());
+			if (docCliente!=null){
+			    getComponent("inputText27").setValue(docCliente.getItemValueString('Puesto'));
+				//currentDocument.setValue("IDPuesto",docCliente.getItemValue('IDPuesto'))
+			}else{
+				getComponent("inputText27").setValue("");
+				//currentDocument.setValue("IDPuesto","")
+			}
+		}
+	}
+	}catch(e){
+		print('Error: ' + e);
+		return "";
+}}]]></xp:this.action>
+																	</xp:eventHandler>
+																</xp:inputText>
+																<xp:br></xp:br>
+																<xp:inputText
+																	id="inputText21" style="width:300px" required="true"
+																	rendered="#{javascript:return ( document1.getItemValueArray( 'AusentesNombres' ).length == 1 );}"
+																	value="#{document1.AusentesNombres}">
+
+
+																	<xp:eventHandler
+																		event="onchange" submit="true" refreshMode="complete"
+																		id="eventHandler43">
+																		<xp:this.action><![CDATA[#{javascript:try{
+	var viewClientes=database.getView("vUsuario");
+	if(viewClientes!=null){
+		if(!getComponent("inputText21").getValue().equals("")){
+			var docCliente=viewClientes.getDocumentByKey(getComponent("inputText21").getValue());
+			if (docCliente!=null){
+			    getComponent("inputText28").setValue(docCliente.getItemValueString('Puesto'));
+				//currentDocument.setValue("IDPuesto",docCliente.getItemValue('IDPuesto'))
+			}else{
+				getComponent("inputText28").setValue("");
+				//currentDocument.setValue("IDPuesto","")
+			}
+		}
+	}
+	}catch(e){
+		print('Error: ' + e);
+		return "";
+}}]]></xp:this.action>
+																	</xp:eventHandler>
+																</xp:inputText>
+															</xp:td>
+															<xp:td></xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td>
+																Puesto
+															</xp:td>
+															<xp:td></xp:td>
+															<xp:td>
+
+
+																<xp:inputText
+																	id="inputText27" style="width:302.0px"
+																	readonly="true">
+																	<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'AusentesNombres' ).length > 1 );}]]></xp:this.rendered>
+																	<xp:this.value><![CDATA[#{document1.AusentesPuestos[ausentesIndex]}]]></xp:this.value>
+																</xp:inputText>
+																<xp:br></xp:br>
+																<xp:inputText
+																	id="inputText28" style="width:302.0px" readonly="true"
+																	rendered="#{javascript:return ( document1.getItemValueArray( 'AusentesNombres' ).length == 1 );}"
+																	value="#{document1.AusentesPuestos}">
+																</xp:inputText>
+															</xp:td>
+															<xp:td></xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td></xp:td>
+															<xp:td></xp:td>
+															<xp:td>
+
+															</xp:td>
+															<xp:td></xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td></xp:td>
+															<xp:td></xp:td>
+															<xp:td>
+
+															</xp:td>
+															<xp:td></xp:td>
+														</xp:tr>
+													</xp:table>
+												</xp:panel>
+											</xe:dialogContent>
+											<xe:dialogButtonBar
+												id="dialogButtonBar8">
+												<xp:button value="Aceptar"
+													id="button20">
+													<xp:eventHandler
+														event="onclick" submit="true" refreshMode="partial"
+														refreshId="panelAusentes" id="eventHandler22">
+														<xp:this.action>
+
+															<xp:actionGroup>
+
+
+
+
+
+
+
+
+
+																<xp:executeScript>
+																	<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogEditAusente")
+c.hide()}]]></xp:this.script>
+																</xp:executeScript>
+
+
+
+																<xp:executeScript>
+																	<xp:this.script><![CDATA[#{javascript:
+var field = document1.getValue( 'AusentesNombres' );
+var field2 = document1.getValue( 'AusentesPuestos' );
+
+if( !field ){ field = []; }
+if( typeof field === 'string' ){
+	field = [ field ];
+}
+
+document1.setValue( 'AusentesNombres', field );
+document1.setValue( 'AusentesNombres1', field );
+
+
+if( !field2 ){ field2 = []; }
+if( typeof field2 === 'string' ){
+	field2 = [ field2 ];
+}
+
+document1.setValue( 'InvitadosPuestos', field2 );
+document1.setValue( 'InvitadosPuestos1', field2 );
+}]]></xp:this.script>
+																</xp:executeScript>
+															</xp:actionGroup>
+														</xp:this.action>
+													</xp:eventHandler>
+												</xp:button>
+												<xp:button id="button39"
+													value="Cancelar">
+													<xp:eventHandler
+														event="onclick" submit="false" id="eventHandler23">
+														<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogEditAusente}')]]></xp:this.script>
+													</xp:eventHandler>
+												</xp:button>
+
+
+											</xe:dialogButtonBar>
+										</xe:dialog>
+
+									</xp:repeat>
+								</xp:td>
+							</xp:tr>
+						</xp:table>
+						<xp:inputTextarea id="AusentesNombres"
+							value="#{document1.AusentesNombres1}" multipleSeparator=";"
+							style="display: none;width:161.0px"
+							rendered="#{javascript:currentDocument.isEditable()}">
+						</xp:inputTextarea>
+
+
+
+
+						<xp:inputTextarea id="AusentesPuestos"
+							value="#{document1.AusentesPuestos1}" multipleSeparator=";"
+							style="display: none;width:152.0px"
+							rendered="#{javascript:currentDocument.isEditable()}">
+						</xp:inputTextarea>
+						<xp:inputText id="inputText15" rendered="false"
+							value="#{document1.AusentesNombres}"
+							style="display: none;width">
+						</xp:inputText>
+						<xp:inputText id="inputText16" rendered="false"
+							value="#{document1.AusentesPuestos}"
+							style="display: none;width">
+						</xp:inputText>
+					</xp:panel>
+				</xp:td>
+
+			</xp:tr>
+
+			<xp:tr>
+				<xp:td>
+					<xp:label value="Invitados:"
+						id="invitadosNombres_Label1" for="invitadosNombres1">
+					</xp:label>
+				</xp:td>
+				<xp:td>
+
+					<xp:button id="button22" value="...">
+						<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable() && esEditorDeCampos}]]></xp:this.rendered>
+						<xp:eventHandler event="onclick" submit="false"
+							id="eventHandler26">
+							<xp:this.script><![CDATA[XSP.openDialog('#{id:dialogNewInvitado}')]]></xp:this.script>
+						</xp:eventHandler>
+					</xp:button>
+				</xp:td>
+			</xp:tr>
+			<xp:tr>
+				<xp:td colspan="2">
+
+
+
+					<xp:panel id="panel1">
+
+
+
+						<xe:dialog id="dialogNewInvitado"
+							title="Nuevo Invitado">
+
+							<xe:dialogButtonBar id="dialogButtonBar9">
+								<xp:button value="Aceptar" id="button21">
+									<xp:eventHandler event="onclick"
+										submit="true" refreshMode="partial" refreshId="panel1"
+										id="eventHandler24">
+										<xp:this.action>
+
+											<xp:actionGroup>
+
+
+
+
+
+
+
+
+
+
+
+												<xp:executeScript>
+													<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogNewInvitado")
+c.hide()}]]></xp:this.script>
+												</xp:executeScript>
+
+
+												<xp:executeScript>
+													<xp:this.script><![CDATA[#{javascript:
+var field = document1.getValue( 'InvitadosNombres' );
+var field2 = document1.getValue( 'InvitadosPuestos' );
+if(field==""){
+	field=getComponent("inputNewInvitadoNombre").getValue();
+	field2=getComponent("inputNewInvitadoPuesto").getValue();
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+	if( !field2 ){ field2 = []; }
+	if( typeof field2 === 'string' ){
+		field2 = [ field2 ];
+	}
+}else{
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+	field.push(getComponent("inputNewInvitadoNombre").getValue());
+	if( !field2 ){ field2 = []; }
+	if( typeof field2 === 'string' ){
+		field2 = [ field2 ];
+	}
+	field2.push(getComponent("inputNewInvitadoPuesto").getValue());
+}
+document1.setValue( 'InvitadosNombres', field );
+document1.setValue( 'InvitadosPuestos', field2 );
+
+document1.setValue( 'InvitadosNombres1', field );
+document1.setValue( 'InvitadosPuestos1', field2 );
+
+
+}]]></xp:this.script>
+												</xp:executeScript>
+											</xp:actionGroup>
+										</xp:this.action>
+									</xp:eventHandler>
+								</xp:button>
+								<xp:button id="button40"
+									value="Cancelar">
+									<xp:eventHandler event="onclick"
+										submit="false" id="eventHandler25">
+										<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogNewInvitado}')]]></xp:this.script>
+									</xp:eventHandler>
+								</xp:button>
+
+
+							</xe:dialogButtonBar>
+							<xe:dialogContent id="dialogContent8">
+								<xp:panel>
+									<xp:table>
+										<xp:tr>
+											<xp:td>Nombre</xp:td>
+											<xp:td>
+
+												<xe:namePicker
+													id="namePicker17" for="inputNewInvitadoNombre"
+													dialogTitle="Seleccione los Nombres">
+													<xe:this.dataProvider>
+														<xe:namePickerAggregator>
+
+															<xe:this.dataProviders>
+																<xe:dominoViewNamePicker
+																	label="Nombre" labelColumn="Nombre" loaded="true"
+																	viewName="vUsuario">
+																</xe:dominoViewNamePicker>
+															</xe:this.dataProviders>
+														</xe:namePickerAggregator>
+													</xe:this.dataProvider>
+												</xe:namePicker>
+											</xp:td>
+											<xp:td>
+												<xp:inputText
+													id="inputNewInvitadoNombre" style="width:300px"
+													required="true">
+													<xp:this.validators>
+														<xp:validateRequired
+															message="El dato es requerido">
+														</xp:validateRequired>
+													</xp:this.validators>
+													<xp:eventHandler
+														event="onchange" submit="true" refreshMode="complete"
+														id="eventHandler44">
+														<xp:this.action><![CDATA[#{javascript:try{
+	var viewClientes=database.getView("vUsuario");
+	if(viewClientes!=null){
+		if(!getComponent("inputNewInvitadoNombre").getValue().equals("")){
+			var docCliente=viewClientes.getDocumentByKey(getComponent("inputNewInvitadoNombre").getValue());
+			if (docCliente!=null){
+			    getComponent("inputNewInvitadoPuesto").setValue(docCliente.getItemValueString('Puesto'));
+				//currentDocument.setValue("IDPuesto",docCliente.getItemValue('IDPuesto'))
+			}else{
+				getComponent("inputNewInvitadoPuesto").setValue("");
+				//currentDocument.setValue("IDPuesto","")
+			}
+		}
+	}
+	}catch(e){
+		print('Error: ' + e);
+		return "";
+}}]]></xp:this.action>
+													</xp:eventHandler>
+												</xp:inputText>
+											</xp:td>
+											<xp:td></xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td>Puesto</xp:td>
+											<xp:td></xp:td>
+											<xp:td>
+
+
+												<xp:inputText
+													id="inputNewInvitadoPuesto" style="width:302.0px">
+												</xp:inputText>
+											</xp:td>
+											<xp:td></xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+										</xp:tr>
+									</xp:table>
+
+								</xp:panel>
+							</xe:dialogContent>
+						</xe:dialog>
+
+
+
+
+
+						<xp:table
+							style="border-radius: 10px;border-style: solid;border-color: rgb(185,222,188);border-width:thin">
+							<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'InvitadosNombres' ).length > 0 );}]]></xp:this.rendered>
+							<xp:tr>
+								<xp:td>
+									<xp:repeat
+										value="#{document1.InvitadosNombres}" var="presentes"
+										indexVar="invitadosIndex" id="repeatInvitado">
+										<xp:table>
+											<xp:tr>
+												<xp:td
+													style="width:25.0px">
+													<xp:text
+														escape="true" id="computedField10"
+														value="#{javascript:invitadosIndex + 1}" style="font-weight:bold">
+														<xp:this.converter>
+															<xp:convertNumber
+																type="number" integerOnly="true">
+															</xp:convertNumber>
+														</xp:this.converter>
+													</xp:text>
+												</xp:td>
+												<xp:td>
+
+												</xp:td>
+												<xp:td
+													style="width:60.0px">
+													<xp:link
+														escape="true" text="edit" id="link16"
+														rendered="#{javascript:currentDocument.isEditable()}">
+
+														<xp:eventHandler
+															event="onclick" submit="false" id="eventHandler27">
+															<xp:this.script><![CDATA[XSP.openDialog('#{id:dialogEditInvitado}')]]></xp:this.script>
+														</xp:eventHandler>
+													</xp:link>
+												</xp:td>
+												<xp:td
+													style="width:60.0px">
+													<xp:link
+														escape="true" text="eliminar" id="link17"
+														rendered="#{javascript:currentDocument.isEditable()}">
+														<xp:eventHandler
+															event="onclick" submit="true" refreshMode="partial"
+															id="eventHandler28" refreshId="panel1">
+															<xp:this.action><![CDATA[#{javascript:var field:Array = document1.getValue( 'InvitadosNombres' );
+var field2:Array = document1.getValue( 'InvitadosPuestos' );
+
+document1.replaceItemValue( 'InvitadosNombres', SpliceArray(field,invitadosIndex,1));
+document1.replaceItemValue( 'InvitadosPuestos', SpliceArray(field2,invitadosIndex,1) );
+
+document1.replaceItemValue( 'InvitadosNombres1', SpliceArray(field,invitadosIndex,1));
+document1.replaceItemValue( 'InvitadosPuestos1', SpliceArray(field2,invitadosIndex,1) );
+
+}]]></xp:this.action>
+														</xp:eventHandler>
+													</xp:link>
+												</xp:td>
+
+												<xp:td
+													style="width:305.0px">
+
+													<xp:inputText
+														id="inputText14" style="width:300px"
+														readonly="#{javascript:true}">
+														<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'InvitadosNombres' ).length > 1 );}]]></xp:this.rendered>
+
+
+														<xp:this.value><![CDATA[#{document1.InvitadosNombres[invitadosIndex]}]]></xp:this.value>
+													</xp:inputText>
+													<xp:text
+														escape="true" id="computedField14"
+														value="#{document1.InvitadosNombres}"
+														rendered="#{javascript:return ( document1.getItemValueArray( 'InvitadosNombres' ).length == 1 );}">
+													</xp:text>
+												</xp:td>
+												<xp:td
+													style="width:305.0px">
+													<xp:inputText
+														id="inputText17" style="width:300px"
+														readonly="#{javascript:true}">
+														<xp:this.value><![CDATA[#{document1.InvitadosPuestos[invitadosIndex]}]]></xp:this.value>
+														<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'InvitadosNombres' ).length > 1 );}]]></xp:this.rendered>
+													</xp:inputText>
+													<xp:text
+														escape="true" id="computedField15"
+														value="#{document1.InvitadosPuestos}"
+														rendered="#{javascript:return ( document1.getItemValueArray( 'InvitadosNombres' ).length == 1 );}">
+													</xp:text>
+												</xp:td>
+
+
+											</xp:tr>
+
+										</xp:table>
+
+
+										<xe:dialog
+											id="dialogEditInvitado" title="Editar Invitado">
+											<xe:dialogContent
+												id="dialogContent9">
+												<xp:panel>
+													<xp:table>
+														<xp:tr>
+															<xp:td>
+																Nombre
+															</xp:td>
+															<xp:td>
+
+																<xe:namePicker
+																	id="namePicker18"
+																	dialogTitle="Seleccione los Nombres">
+																	<xe:this.dataProvider>
+																		<xe:namePickerAggregator>
+
+																			<xe:this.dataProviders>
+																				<xe:dominoViewNamePicker
+																					label="Nombre" labelColumn="Nombre" loaded="true"
+																					viewName="vUsuario">
+																				</xe:dominoViewNamePicker>
+																			</xe:this.dataProviders>
+																		</xe:namePickerAggregator>
+																	</xe:this.dataProvider>
+																	<xe:this.for><![CDATA[#{javascript:if(document1.getItemValueArray( 'InvitadosNombres' ).length > 1 ){
+	return "inputEditInvitadoNombre";
+}else{
+	return "inputText22";
+}}]]></xe:this.for>
+																</xe:namePicker>
+															</xp:td>
+															<xp:td>
+																<xp:inputText
+																	id="inputEditInvitadoNombre" style="width:300px"
+																	required="true">
+																	<xp:this.value><![CDATA[#{document1.InvitadosNombres[invitadosIndex]}]]></xp:this.value>
+																	<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'InvitadosNombres' ).length > 1 );}]]></xp:this.rendered>
+																	<xp:eventHandler
+																		event="onchange" submit="true" refreshMode="complete"
+																		id="eventHandler45">
+																		<xp:this.action><![CDATA[#{javascript:try{
+	var viewClientes=database.getView("vUsuario");
+	if(viewClientes!=null){
+		if(!getComponent("inputEditInvitadoNombre").getValue().equals("")){
+			var docCliente=viewClientes.getDocumentByKey(getComponent("inputEditInvitadoNombre").getValue());
+			if (docCliente!=null){
+			    getComponent("inputText29").setValue(docCliente.getItemValueString('Puesto'));
+				//currentDocument.setValue("IDPuesto",docCliente.getItemValue('IDPuesto'))
+			}else{
+				getComponent("inputText29").setValue("");
+				//currentDocument.setValue("IDPuesto","")
+			}
+		}
+	}
+	}catch(e){
+		print('Error: ' + e);
+		return "";
+}}]]></xp:this.action>
+																	</xp:eventHandler>
+																</xp:inputText>
+																<xp:br></xp:br>
+																<xp:inputText
+																	id="inputText22" style="width:300px" required="true"
+																	value="#{document1.InvitadosNombres}"
+																	rendered="#{javascript:return ( document1.getItemValueArray( 'InvitadosNombres' ).length == 1 );}">
+
+																	<xp:eventHandler
+																		event="onchange" submit="true" refreshMode="complete"
+																		id="eventHandler46">
+																		<xp:this.action><![CDATA[#{javascript:try{
+	var viewClientes=database.getView("vUsuario");
+	if(viewClientes!=null){
+		if(!getComponent("inputText22").getValue().equals("")){
+			var docCliente=viewClientes.getDocumentByKey(getComponent("inputText22").getValue());
+			if (docCliente!=null){
+			    getComponent("inputText30").setValue(docCliente.getItemValueString('Puesto'));
+				//currentDocument.setValue("IDPuesto",docCliente.getItemValue('IDPuesto'))
+			}else{
+				getComponent("inputText30").setValue("");
+				//currentDocument.setValue("IDPuesto","")
+			}
+		}
+	}
+	}catch(e){
+		print('Error: ' + e);
+		return "";
+}}]]></xp:this.action>
+																	</xp:eventHandler>
+																</xp:inputText>
+															</xp:td>
+															<xp:td></xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td>
+																Puesto
+															</xp:td>
+															<xp:td></xp:td>
+															<xp:td>
+
+
+																<xp:inputText
+																	id="inputText29" style="width:302.0px">
+																	<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'InvitadosNombres' ).length > 1 );}]]></xp:this.rendered>
+																	<xp:this.value><![CDATA[#{document1.InvitadosPuestos[invitadosIndex]}]]></xp:this.value>
+																</xp:inputText>
+																<xp:br></xp:br>
+																<xp:inputText
+																	id="inputText30" style="width:302.0px"
+																	rendered="#{javascript:return ( document1.getItemValueArray( 'InvitadosNombres' ).length == 1 );}"
+																	value="#{document1.InvitadosPuestos}">
+																</xp:inputText>
+															</xp:td>
+															<xp:td></xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td></xp:td>
+															<xp:td></xp:td>
+															<xp:td>
+
+															</xp:td>
+															<xp:td></xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td></xp:td>
+															<xp:td></xp:td>
+															<xp:td>
+
+															</xp:td>
+															<xp:td></xp:td>
+														</xp:tr>
+													</xp:table>
+												</xp:panel>
+											</xe:dialogContent>
+											<xe:dialogButtonBar
+												id="dialogButtonBar10">
+												<xp:button value="Aceptar"
+													id="button23">
+													<xp:eventHandler
+														event="onclick" submit="true" refreshMode="partial"
+														refreshId="panel1" id="eventHandler29">
+														<xp:this.action>
+
+															<xp:actionGroup>
+
+
+
+
+
+
+
+
+
+
+
+																<xp:executeScript>
+																	<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogEditInvitado")
+c.hide()}]]></xp:this.script>
+																</xp:executeScript>
+
+
+																<xp:executeScript>
+																	<xp:this.script><![CDATA[#{javascript:
+var field = document1.getValue( 'InvitadosNombres' );
+var field2 = document1.getValue( 'InvitadosPuestos' );
+
+if( !field ){ field = []; }
+if( typeof field === 'string' ){
+	field = [ field ];
+}
+
+document1.setValue( 'InvitadosNombres', field );
+document1.setValue( 'InvitadosNombres1', field );
+
+if( !field2 ){ field2 = []; }
+if( typeof field2 === 'string' ){
+	field2 = [ field2 ];
+}
+
+document1.setValue( 'InvitadosPuestos', field2 );
+document1.setValue( 'InvitadosPuestos1', field2 );
+}]]></xp:this.script>
+																</xp:executeScript>
+															</xp:actionGroup>
+														</xp:this.action>
+													</xp:eventHandler>
+												</xp:button>
+												<xp:button id="button41"
+													value="Cancelar">
+													<xp:eventHandler
+														event="onclick" submit="false" id="eventHandler30">
+														<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogEditInvitado}')]]></xp:this.script>
+													</xp:eventHandler>
+												</xp:button>
+
+
+											</xe:dialogButtonBar>
+										</xe:dialog>
+
+									</xp:repeat>
+								</xp:td>
+							</xp:tr>
+						</xp:table>
+						<xp:inputTextarea id="InvitadosNombres"
+							value="#{document1.InvitadosNombres1}" multipleSeparator=";"
+							style="display: none;width:146.0px"
+							rendered="#{javascript:currentDocument.isEditable()}">
+						</xp:inputTextarea>
+
+
+
+						<xp:inputTextarea id="InvitadosPuestos"
+							value="#{document1.InvitadosPuestos1}" multipleSeparator=";"
+							style="display: none;width:142.0px"
+							rendered="#{javascript:currentDocument.isEditable()}">
+						</xp:inputTextarea>
+						<xp:inputText id="inputText19" rendered="false"
+							value="#{document1.InvitadosNombres}"
+							style="display: none;width">
+						</xp:inputText>
+						<xp:inputText id="inputText20" rendered="false"
+							value="#{document1.InvitadosPuestos}"
+							style="display: none;width">
+						</xp:inputText>
+					</xp:panel>
+				</xp:td>
+
+			</xp:tr>
+			<xp:tr>
+				<xp:td>
+					<xp:label value="Preside:" id="preside_Label1"
+						for="preside1">
+					</xp:label>
+				</xp:td>
+				<xp:td>
+
+					<xe:namePicker id="namePicker19" for="Preside"
+						dialogTitle="Seleccione los Nombres">
+						<xe:this.dataProvider>
+							<xe:namePickerAggregator>
+
+								<xe:this.dataProviders>
+									<xe:dominoViewNamePicker
+										label="Nombre" labelColumn="Nombre" loaded="true"
+										viewName="vUsuario">
+									</xe:dominoViewNamePicker>
+								</xe:this.dataProviders>
+							</xe:namePickerAggregator>
+						</xe:this.dataProvider>
+					</xe:namePicker>
+
+					<xe:djextNameTextBox id="Preside"
+						value="#{document1.Preside}">
+					</xe:djextNameTextBox>
+				</xp:td>
+			</xp:tr>
+			<xp:tr>
+				<xp:td>
+					<xp:label value="Secretaria:" id="secretaria_Label1"
+						for="secretaria1">
+					</xp:label>
+				</xp:td>
+				<xp:td>
+
+					<xe:namePicker id="namePicker20" for="Secretaria"
+						dialogTitle="Seleccione los Nombres">
+						<xe:this.dataProvider>
+							<xe:namePickerAggregator>
+
+								<xe:this.dataProviders>
+									<xe:dominoViewNamePicker
+										label="Nombre" labelColumn="Nombre" loaded="true"
+										viewName="vUsuario">
+									</xe:dominoViewNamePicker>
+								</xe:this.dataProviders>
+							</xe:namePickerAggregator>
+						</xe:this.dataProvider>
+					</xe:namePicker>
+
+					<xe:djextNameTextBox value="#{document1.Secretaria}"
+						id="Secretaria">
+
+					</xe:djextNameTextBox>
+				</xp:td>
+			</xp:tr>
+
+		</xp:table>
+		<xp:span style="font-size:10pt;font-weight:bold"></xp:span>
+		<xc:SwAttachmentsAll dataSource="#{javascript:currentDocument}"
+			id="SwAttachmentsAll" showSwDetach="true" showSwDelete="true"
+			showSwConvertToPDF="true" showSwSaveClose="true" showSwAdd="true"
+			showSwClose="true" showSwNew="true" showSwEdit="true"
+			swSaveDocument="true">
+		</xc:SwAttachmentsAll>
+		<xp:fileDownload rows="30" id="fileDownload2"
+			displayLastModified="false" value="#{document1.Body}"
+			hideWhen="true">
+		</xp:fileDownload>
+		<xp:label id="label1"
+			rendered="#{javascript:currentDocument.isNewNote()}"
+			value="Seleccione los Temas">
+		</xp:label>
+
+		<xp:panel id="panelTemas">
+			<xp:tabbedPanel id="tabbedPanel1" partialRefresh="false"
+				partialExecute="false">
+
+				<xp:tabPanel label="Temas Asignados" id="tabPanel2"
+					style="border-radius: 10px;border-style: solid;border-color: rgb(185,222,188);border-width:thin">
+					<xp:button value="Agregar Tema" id="button5">
+						<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable() && !currentDocument.isNewNote()&& esEditorDeCampos}]]></xp:this.rendered>
+						<xp:eventHandler event="onclick" submit="false"
+							id="eventHandler31">
+							<xp:this.script><![CDATA[XSP.openDialog('#{id:dialogTemaDisponible}')]]></xp:this.script>
+						</xp:eventHandler>
+					</xp:button>
+					<xp:button value="Agregar Tema Pendiente"
+						id="button32">
+						<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable() && !currentDocument.isNewNote() && esEditorDeCampos}]]></xp:this.rendered>
+						<xp:eventHandler event="onclick" submit="false"
+							id="eventHandler52">
+							<xp:this.script><![CDATA[XSP.openDialog('#{id:dialogTemasPendientes}')]]></xp:this.script>
+						</xp:eventHandler>
+					</xp:button>
+					<xp:button id="button3"
+						value="Marcar tema pendiente">
+						<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable() && !currentDocument.isNewNote() && esEditorDeCampos}]]></xp:this.rendered>
+						<xp:eventHandler event="onclick" submit="true"
+							id="eventHandler33" refreshMode="partial"
+							refreshId="dialogComentariosTemaPendiente">
+
+							<xp:this.script><![CDATA[//XSP.openDialog('#{id:dialogComentariosTemaPendiente}');]]></xp:this.script>
+							<xp:this.action><![CDATA[#{javascript:var viewPanel=getComponent("dataViewTemas");
+var docIDArray=viewPanel.getSelectedIds(); 
+if (docIDArray.length>0){
+	//Se valida que el tema no tenga acuerdos creados
+	for(i=0;i < docIDArray.length; i++){
+		var docId=docIDArray[i];
+		var doc:NotesDocument=database.getDocumentByID(docId);
+		if(doc!=null){
+			var vAcuerdos:NotesView=database.getView("vAcuerdos_ByTema");
+			var colAcuerdos:NotesDocumentCollection=vAcuerdos.getAllDocumentsByKey(doc.getItemValueString("IDdocTema").trim());
+			if(colAcuerdos.getCount()>0){
+				view.postScript("alert('Uno o varios de los temas seleccionados tiene acuerdos asociados, estos no se pueden marcar como pendientes.')");
+				//Tiene al menos un acuerdo asociado
+				return false;
+			}
+		}
+	}
+	document1.setValue("ComentariosWF","");
+	document1.setValue("FechaSessionTema","");
+	var unidSel=[];
+	for(i=0;i < docIDArray.length; i++){
+		var doc:NotesDocument=database.getDocumentByID(docIDArray[i]);
+		if(doc!=null){
+			unidSel[i]=doc.getUniversalID();
+		}
+	}
+	sessionScope.put("IDSel",unidSel);
+	var c = getComponent("dialogComentariosTemaPendiente")
+	c.show()
+}else{
+	view.postScript("alert('Debe seleccionar al menos un documento.')");
+} 
+
+
+
+}]]></xp:this.action>
+						</xp:eventHandler>
+					</xp:button>
+					<xp:button id="button31"
+						value="Eliminar Tema de la Orden">
+						<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable() && !currentDocument.isNewNote() && esEditorDeCampos}]]></xp:this.rendered>
+						<xp:eventHandler event="onclick" submit="true"
+							refreshMode="complete" id="eventHandler51">
+							<xp:this.action><![CDATA[#{javascript:var viewPanel=getComponent("dataViewTemas");
+var docIDArray=viewPanel.getSelectedIds(); 
+if (docIDArray.length>0){
+	for(i=0;i < docIDArray.length; i++){
+		var docId=docIDArray[i];
+		var doc:NotesDocument=database.getDocumentByID(docId); 
+		if(doc!=null){
+			doc.replaceItemValue("IDdocOrden","");
+			doc.replaceItemValue("deleteMarked","true");
+			doc.save(true,false);
+		}
+	}
+}else{
+	view.postScript("alert('Debe seleccionar al menos un documento.')");
+} 
+
+}]]></xp:this.action>
+							<xp:this.script><![CDATA[var r = confirm("Esta seguro de eliminar los temas seleccionados?");
+if (r == true) {
+    return true;
+} else {
+    return false;
+}]]></xp:this.script>
+						</xp:eventHandler>
+					</xp:button>
+					<xp:button id="button24"
+						value="Marcar/Desmarcar tema Visto">
+
+						<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable() && !currentDocument.isNewNote() && esEditorDeCampos}]]></xp:this.rendered>
+						<xp:eventHandler event="onclick" submit="true"
+							refreshMode="complete" id="eventHandler34">
+							<xp:this.action><![CDATA[#{javascript:var viewPanel=getComponent("dataViewTemas");
+var docIDArray=viewPanel.getSelectedIds();
+var user:NotesName=session.createName(@UserName()); 
+for(i=0;i < docIDArray.length; i++){
+	var docId=docIDArray[i];
+	var doc:NotesDocument=database.getDocumentByID(docId); 
+	if(doc!=null){
+		if(doc.getItemValueString("TemaVisto")!="Si"){
+			doc.replaceItemValue("TemaVisto","Si");
+			CreateBitacora(user,"Se marca el tema como visto","",doc.getItemValueString("IDDocumento"));
+			doc.save(true,false);
+		}else{
+			doc.replaceItemValue("TemaVisto","No");
+			CreateBitacora(user,"Se Desmarca el tema como visto","",doc.getItemValueString("IDDocumento"));
+			doc.save(true,false);
+		}
+	}
+}}]]></xp:this.action>
+							<xp:this.script><![CDATA[var r = confirm("Esta seguro de marcar como vistos los temas seleccionados");
+if (r == true) {
+    return true;
+} else {
+    return false;
+}]]></xp:this.script>
+						</xp:eventHandler>
+					</xp:button>
+					<xp:br></xp:br>
+					<xp:br></xp:br>
+					<xe:dialog id="dialogComentariosTemaPendiente"
+						title="Comentarios">
+						<xe:dialogButtonBar id="dialogButtonBar11">
+
+							<xp:button value="Aceptar" id="button29">
+								<xp:eventHandler event="onclick"
+									submit="true" refreshMode="partial" refreshId="dataViewTemas"
+									id="eventHandler32">
+
+									<xp:this.script><![CDATA[var msg="";
+if(!validaCampoTexto(dojo.byId("#{id:txComentariosWF}")))msg= msg + "Comentarios.\n";
+if(!validaCampoTexto(dojo.byId("#{id:djDateTextBox1}")))msg= msg + "Fecha de Sesión.\n";
+
+
+
+if(msg!=""){
+	alert("Debe incluir los siguientes Datos: \n" + msg);
+	return false;
+}
+
+
+]]></xp:this.script>
+									<xp:this.action><![CDATA[#{javascript:
+var user:NotesName=session.createName(@UserName());
+
+for(i=0;i < sessionScope.IDSel.length; i++){
+	var docId=sessionScope.IDSel[i];
+	//var doc:NotesDocument=database.getDocumentByID(docId);
+	print(">"+ sessionScope.IDSel[0]+"<");
+	var doc:NotesDocument=database.getDocumentByUNID(docId);
+	if(doc!=null){
+		doc.replaceItemValue("IDdocOrden","");
+		doc.replaceItemValue("IDdocActa","");
+		doc.replaceItemValue("Estado","Pendiente");
+		doc.replaceItemValue("LectoresAdemas","");
+		doc.replaceItemValue("FechaSession", document1.getDocument(true).getItemValue("FechaSessionTema"));
+		doc.replaceItemValue("Estado","Pendiente");
+		doc.computeWithForm(true,false);
+		//CreateBitacora();
+		doc.save(true,false);
+		CreateBitacora(user,"Marca Tema  Pendiente. Comentarios:" + document1.getItemValueString("ComentariosWF"),"",doc.getItemValueString("IDDocumento"))
+	}else{
+		print("No encuentra el documento");
+	}
+}
+var c = getComponent("dialogComentariosTemaPendiente")
+c.hide()
+
+
+}]]></xp:this.action>
+								</xp:eventHandler>
+							</xp:button>
+							<xp:button value="Cancelar" id="button30">
+								<xp:eventHandler event="onclick"
+									submit="false" id="eventHandler53">
+									<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogComentariosTemaPendiente}')]]></xp:this.script>
+								</xp:eventHandler>
+							</xp:button>
+						</xe:dialogButtonBar>
+
+						<xe:dialogContent id="dialogContent10">
+							<xp:panel>
+								<xp:table>
+
+									<xp:tr>
+										<xp:td></xp:td>
+										<xp:td>
+											<xp:label
+												value="El cambio aplica para los documenos seleccionados."
+												id="label16">
+											</xp:label>
+										</xp:td>
+									</xp:tr>
+									<xp:tr>
+										<xp:td>
+											<xp:label value="Comentario"
+												id="label17">
+											</xp:label>
+											<xp:br></xp:br>
+
+										</xp:td>
+										<xp:td>
+											<xp:inputTextarea
+												id="txComentariosWF" style="width:568.0px;height:63.0px"
+												value="#{document1.ComentariosWF}">
+											</xp:inputTextarea>
+										</xp:td>
+									</xp:tr>
+									<xp:tr>
+										<xp:td>
+											<xp:label
+												value="Fecha de Sesión" id="label18">
+											</xp:label>
+										</xp:td>
+										<xp:td>
+
+											<xe:djDateTextBox
+												id="djDateTextBox1" value="#{document1.FechaSessionTema}">
+												<xe:this.converter>
+													<xp:convertDateTime
+														type="date" dateStyle="short">
+													</xp:convertDateTime>
+												</xe:this.converter>
+											</xe:djDateTextBox>
+										</xp:td>
+									</xp:tr>
+								</xp:table>
+							</xp:panel>
+						</xe:dialogContent>
+					</xe:dialog>
+
+					<xp:table>
+						<xp:tr>
+							<xp:td style="height:20.0px;width:30.0px"></xp:td>
+							<xp:td>
+								<xe:dataView id="dataViewTemas"
+									var="rowTemas" openDocAsReadonly="true" columnTitles="true"
+									pageName="/xpTema.xsp"
+									showCheckbox="#{javascript:currentDocument.isEditable()}"
+									showItemsFlat="true">
+									<xe:this.summaryColumn>
+										<xe:viewSummaryColumn
+											columnTitle="Tema"
+											style="font-size:7pt;color:rgb(0,0,128);font-weight:bold;">
+											<xe:this.value><![CDATA[#{javascript:rowTemas.getDocument().getItemValueString("NumeroTema") +" - "+ rowTemas.getDocument().getItemValueString("Titulo")}]]></xe:this.value>
+										</xe:viewSummaryColumn>
+									</xe:this.summaryColumn>
+
+
+									<xe:this.iconColumn>
+										<xe:viewIconColumn
+											columnName="icon">
+											<xe:this.icons>
+												<xe:iconEntry
+													url="/check.png" style="width:10.0px;height:10.0px"
+													selectedValue="1">
+
+													<xe:this.selected><![CDATA[#{javascript:rowTemas.getDocument().getItemValueString("TemaVisto")=="Si"}]]></xe:this.selected>
+												</xe:iconEntry>
+												<xe:iconEntry
+													url="/pending.png" style="width:10.0px;height:10.0px"
+													selectedValue="2">
+													<xe:this.selected><![CDATA[#{javascript:rowTemas.getDocument().getItemValueString("TemaVisto")!="Si"}]]></xe:this.selected>
+												</xe:iconEntry>
+											</xe:this.icons>
+										</xe:viewIconColumn>
+									</xe:this.iconColumn>
+									<xe:this.extraColumns>
+										<xe:viewExtraColumn
+											contentType="html">
+
+
+											<xe:this.value><![CDATA[#{javascript:var urldb:String=context.getUrl().toString();
+var nIndexOf = urldb.indexOf(".nsf");
+nIndexOf=nIndexOf+4;
+urldb = urldb.substring(0, nIndexOf);
+if(rowTemas.getDocument().getItemValueString("SwAttName_1")!="")return "<img src='" + urldb + "/mail-attachment-downloader-ico.png' style='width:15.0px;height:15.0px'>"}]]></xe:this.value>
+										</xe:viewExtraColumn>
+									</xe:this.extraColumns>
+									<xp:this.facets>
+
+
+
+										<xp:pager
+											layout="Previous Group Next" partialRefresh="true"
+											id="pager2" xp:key="pagerTop">
+										</xp:pager>
+
+
+									</xp:this.facets>
+									<xe:this.data>
+										<xp:dominoView var="vTemas"
+											viewName="vTemasAsignados_ByActa">
+
+
+											<xp:this.categoryFilter><![CDATA[#{javascript:document1.getItemValueString("IDdocActa")}]]></xp:this.categoryFilter>
+										</xp:dominoView>
+									</xe:this.data>
+								</xe:dataView>
+
+							</xp:td>
+						</xp:tr>
+					</xp:table>
+				</xp:tabPanel>
+
+				<xp:tabPanel label="Bitácora de Eventos" id="tabPanel1"
+					style="border-radius: 10px;border-style: solid;border-color: rgb(185,222,188);border-width:thin">
+					<xc:ccBitacora>
+						<xc:this.key><![CDATA[#{javascript:document1.getItemValueString("IDdocumento")}]]></xc:this.key>
+					</xc:ccBitacora>
+				</xp:tabPanel>
+
+				<xp:tabPanel label="Comentarios" id="tabPanel4"
+					style="border-radius: 10px;border-style: solid;border-color: rgb(185,222,188);border-width:thin">
+					<xc:ccComentarios>
+						<xc:this.IDDocumento><![CDATA[#{javascript:document1.getItemValueString("IDdocActa")}]]></xc:this.IDDocumento>
+					</xc:ccComentarios>
+				</xp:tabPanel>
+
+				<xp:tabPanel label="Acta Generada" id="tabPanel3"
+					style="border-radius: 10px;border-style: solid;border-color: rgb(185,222,188);border-width:thin">
+
+					<xc:ccMantActaGenerada>
+						<xc:this.IDDocumento><![CDATA[#{javascript:document1.getItemValueString("IDdocumento")}]]></xc:this.IDDocumento>
+					</xc:ccMantActaGenerada>
+				</xp:tabPanel>
+			</xp:tabbedPanel>
+		</xp:panel>
+		<xe:dialog id="dialogTemasPendientes" title="Temas Disponibles"
+			tooltip="Temas Disponibles">
+			<xe:dialogButtonBar id="dialogButtonBar12">
+				<xp:button value="Agregar Tema" id="button33">
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="partial" refreshId="dataViewTemas">
+						<xp:this.action><![CDATA[#{javascript:var viewPanel=getComponent("viewPanelTemasDisponibles");
+var docIDArray=viewPanel.getSelectedIds(); 
+if (docIDArray.length>0){
+	var user:NotesName=session.createName(@UserName());
+	for(i=0;i < docIDArray.length; i++){
+		var docId=docIDArray[i];
+		var doc:NotesDocument=database.getDocumentByID(docId); 
+		if(doc!=null){
+			doc.replaceItemValue("IDdocOrden",document1.getItemValueString("IDdocOrden"));
+			doc.replaceItemValue("IDdocActa",document1.getItemValueString("IDdocActa"));
+			doc.replaceItemValue("Estado","Asignado");
+			doc.replaceItemValue("LectoresAdemas","[JuntaDirectiva]");
+			CreateBitacora(user,"Asignación de Tema Pendiente","",doc.getItemValueString("IDDocumento"));
+			doc.save(true,false);
+			var vAnexo:NotesView=database.getView("vAnexos");
+			var colAnexos:NotesDocumentCollection=vAnexo.getAllDocumentsByKey(doc.getItemValueString('IDdocTema'),true);
+			if (colAnexos.getCount()>0){
+				colAnexos.stampAll("IDdocActa",doc.getItemValueString("IDdocActa"));
+			}
+		}
+	}
+	var c = getComponent("dialogTemasPendientes")
+	c.hide()
+}else{
+	view.postScript("alert('Debe seleccionar al menos un documento.')");
+} }]]></xp:this.action>
+					</xp:eventHandler>
+				</xp:button>
+				<xp:button id="button34" value="Salir">
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="complete">
+						<xp:this.action><![CDATA[#{javascript:var c = getComponent("dialogTemasPendientes")
+c.hide()}]]></xp:this.action>
+					</xp:eventHandler>
+				</xp:button>
+
+
+
+
+
+
+			</xe:dialogButtonBar>
+			<xe:dialogContent id="dialogContent11">
+				<xp:panel>
+					<xp:viewPanel rows="30"
+						id="viewPanelTemasDisponibles">
+						<xp:this.facets>
+							<xp:pager partialRefresh="true"
+								layout="Previous Group Next" xp:key="headerPager" id="pager3">
+							</xp:pager>
+						</xp:this.facets>
+						<xp:this.data>
+							<xp:dominoView var="viewTemasDisponibles"
+								viewName="vTemasPendientes">
+							</xp:dominoView>
+						</xp:this.data>
+
+						<xp:viewColumn id="viewColumn10"
+							columnName="FechaSession" showCheckbox="true"
+							style="width:220.0px">
+							<xp:this.facets>
+								<xp:viewColumnHeader xp:key="header"
+									id="viewColumnHeader10" value="Fecha de Sesión">
+								</xp:viewColumnHeader>
+							</xp:this.facets>
+							<xp:this.converter>
+								<xp:convertDateTime type="date"></xp:convertDateTime>
+							</xp:this.converter>
+						</xp:viewColumn>
+						<xp:viewColumn columnName="Titulo"
+							id="viewColumn4" style="width:600px;font-weight:bold">
+							<xp:viewColumnHeader value="Titulo"
+								id="viewColumnHeader4">
+							</xp:viewColumnHeader>
+						</xp:viewColumn>
+					</xp:viewPanel>
+					<xp:br></xp:br>
+				</xp:panel>
+			</xe:dialogContent>
+		</xe:dialog>
+		<xp:br></xp:br>
+		<xe:dialog id="dialogTemaDisponible" tooltip="Tema"
+			title="Tema">
+
+			<xp:panel id="PanelTemasMant">
+				<xp:this.data>
+					<xp:dominoDocument var="docTema" formName="Tema"
+						computeWithForm="both" ignoreRequestParams="true">
+						<xp:this.postNewDocument><![CDATA[#{javascript:sessionScope.put("IdDocCreacion",docTema.getItemValueString("IDdocTema"));}]]></xp:this.postNewDocument>
+						<xp:this.querySaveDocument><![CDATA[#{javascript:docTema.replaceItemValue("IDdocActa",document1.getItemValueString("IDdocActa"));
+docTema.replaceItemValue("IDdocOrden",document1.getItemValueString("IDdocOrden"));
+docTema.replaceItemValue("IDdocTema",sessionScope.IdDocCreacion);
+docTema.replaceItemValue("IDDocumento",sessionScope.IdDocCreacion);}]]></xp:this.querySaveDocument>
+					</xp:dominoDocument>
+				</xp:this.data>
+				<xe:dialogButtonBar id="dialogButtonBar1">
+					<xp:button value="Salvar y Salir" id="button26">
+						<xp:eventHandler event="onclick" submit="true"
+							refreshMode="partial" refreshId="dataViewTemas">
+							<xp:this.action>
+
+								<xp:actionGroup>
+
+
+
+									<xp:executeScript>
+										<xp:this.script><![CDATA[#{javascript:var agent = database.getAgent('(SaveTema)');
+if(null != agent){
+	var document = docTema.getDocument(true);
+	if(null != document){
+		try{
+			agent.runWithDocumentContext(document);
+			//docTema.setValue("NumerOrden",document.getItemValueString("NumerOrden"));
+		}catch(e){
+			print('Error: ' + e);
+			return;
+		}
+		//document.save();
+	}
+}}]]></xp:this.script>
+									</xp:executeScript>
+									<xp:saveDocument var="docTema"></xp:saveDocument>
+
+
+
+									<xp:executeScript>
+										<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogTemaDisponible")
+c.hide()}]]></xp:this.script>
+									</xp:executeScript>
+
+
+								</xp:actionGroup>
+							</xp:this.action>
+							<xp:this.script><![CDATA[var msg="";
+if(!validaCampoTexto(dojo.byId("#{id:numeroTema1}")))msg= msg + "Numero Tema.\n";
+if(!validaCampoTexto(dojo.byId("#{id:titulo1}")))msg= msg + "Título.\n";
+
+if(msg!=""){
+	alert("Debe incluir los siguientes Datos: \n" + msg);
+	return false;
+}]]></xp:this.script>
+						</xp:eventHandler>
+					</xp:button>
+					<xp:button value="Agregar Anexo" id="button27"
+						rendered="#{javascript:currentDocument.isEditable()}">
+						<xp:eventHandler event="onclick" submit="true"
+							id="eventHandler49" refreshMode="partial"
+							refreshId="PanelTemasMant">
+
+
+
+							<xp:this.action>
+
+								<xp:actionGroup>
+
+									<xp:executeScript>
+										<xp:this.script><![CDATA[#{javascript:var agent = database.getAgent('(SaveTema)');
+if(null != agent){
+	var document = docTema.getDocument(true);
+	if(null != document){
+		try{
+			agent.runWithDocumentContext(document);
+			//docTema.setValue("NumerOrden",document.getItemValueString("NumerOrden"));
+		}catch(e){
+			print('Error: ' + e);
+			return;
+		}
+		//document.save();
+	}
+}}]]></xp:this.script>
+									</xp:executeScript>
+									<xp:saveDocument var="docTema">
+									</xp:saveDocument>
+
+
+
+
+
+									<xp:executeScript>
+										<xp:this.script><![CDATA[#{javascript:if((docTema.getDocument(true).getItemValueString("TipoArticulo")=="Modificación") || (docTema.getDocument(true).getItemValueString("TipoArticulo")=="Derogación")){
+	var docTema1:NotesDocument=database.getDocumentByUNID(docTema.getDocument(true).getItemValueString("IDTemaReferencia"));
+	if(docTema1!=null){
+		docTema1.replaceItemValue("SesionReferencia",docTema.getDocument(true).getItemValueString("NumerOrden"));
+		docTema1.replaceItemValue("ArticuloReferencia",docTema.getDocument(true).getItemValueString("NumeroTema"));
+		docTema1.replaceItemValue("IDTemaReferencia",docTema.getDocument(true).getUniversalID());
+
+		if(docTema.getDocument(true).getItemValueString("IDTemaReferenciaOLD")!=""){
+			if(docTema.getDocument(true).getItemValueString("IDTemaReferencia")!=docTema.getDocument(true).getItemValueString("IDTemaReferenciaOLD")){
+				var docTema2:NotesDocument=database.getDocumentByUNID(docTema.getDocument(true).getItemValueString("IDTemaReferenciaOLD"));
+				if(docTema2!=null){
+					docTema2.replaceItemValue("SesionReferencia","");
+					docTema2.replaceItemValue("ArticuloReferencia","");
+					docTema2.replaceItemValue("IDTemaReferencia","");
+					docTema2.replaceItemValue("IDTemaReferenciaOLD","");
+					docTema2.save(true,false);
+				}	
+			}
+		}
+
+		docTema1.replaceItemValue("IDTemaReferenciaOLD",document1.getDocument(true).getItemValueString("IDTemaReferencia"));
+		docTema1.save(true,false);
+}
+}else{
+	return false;
+}}]]></xp:this.script>
+									</xp:executeScript>
+									<xp:executeScript>
+										<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogNuevoAnexo");
+//c.hide()
+c.show();}]]></xp:this.script>
+									</xp:executeScript>
+
+								</xp:actionGroup>
+							</xp:this.action>
+							<xp:this.script><![CDATA[var msg="";
+if(!validaCampoTexto(dojo.byId("#{id:numeroTema1}")))msg= msg + "Numero Tema.\n";
+if(!validaCampoTexto(dojo.byId("#{id:titulo1}")))msg= msg + "Título.\n";
+
+if(msg!=""){
+	alert("Debe incluir los siguientes Datos: \n" + msg);
+	return false;
+}]]></xp:this.script>
+						</xp:eventHandler>
+					</xp:button>
+					<xp:button id="button28" value="Salir">
+						<xp:eventHandler event="onclick" submit="true"
+							refreshMode="partial" refreshId="dataViewTemas">
+							<xp:this.action><![CDATA[#{javascript:var c = getComponent("dialogTemaDisponible")
+c.hide()}]]></xp:this.action>
+						</xp:eventHandler>
+					</xp:button>
+
+
+
+
+
+
+
+				</xe:dialogButtonBar>
+				<xe:dialogContent id="dialogContent1">
+					<xp:panel id="panelTemasOrden">
+
+
+
+
+
+						<xp:br></xp:br>
+
+
+						<xp:table style="width:567.0px">
+							<xp:tr>
+								<xp:td style="width:163.0px">
+									<xp:label value="Número Tema:"
+										id="numeroTema_Label1" for="numeroTema1"
+										style="width:146.0px">
+									</xp:label>
+								</xp:td>
+								<xp:td>
+
+									<xe:djValidationTextBox
+										id="numeroTema1" value="#{docTema.NumeroTema}">
+										<xe:this.regExp><![CDATA[^[0-9\,.]*$]]></xe:this.regExp>
+									</xe:djValidationTextBox>
+								</xp:td>
+							</xp:tr>
+							<xp:tr>
+								<xp:td style="width:163.0px">
+									<xp:label value="Título del Tema:"
+										id="titulo_Label1" for="titulo1" style="width:103.0px">
+									</xp:label>
+								</xp:td>
+								<xp:td>
+
+									<xe:djTextarea id="titulo1"
+										value="#{docTema.Titulo}" style="width:377.0px;height:83.0px"
+										uppercase="true">
+									</xe:djTextarea>
+								</xp:td>
+							</xp:tr>
+
+
+
+
+
+							<xp:tr>
+								<xp:td>
+									<xp:label value="Descripción:"
+										id="label19">
+									</xp:label>
+								</xp:td>
+								<xp:td>
+									<xp:inputTextarea
+										id="inputTextarea1" style="width:377.0px;height:83.0px"
+										value="#{docTema.Descripcion}">
+									</xp:inputTextarea>
+								</xp:td>
+							</xp:tr>
+							<xp:tr>
+								<xp:td></xp:td>
+								<xp:td></xp:td>
+							</xp:tr>
+							<xp:tr>
+								<xp:td colspan="2"
+									style="width:688.0px">
+
+									<xp:span style="width:688.0px">
+										<xp:table>
+											<xp:tr>
+												<xp:td
+													style="width:688.0px">
+
+												</xp:td>
+											</xp:tr>
+										</xp:table>
+									</xp:span>
+								</xp:td>
+
+							</xp:tr>
+						</xp:table>
+						<xp:br></xp:br>
+						<xp:br></xp:br>
+						<xp:table>
+							<xp:tr>
+								<xp:td style="width:600.0px">
+
+
+
+
+									<xp:panel id="panelMantTemas">
+										<xe:dialog id="dialogNuevoAnexo"
+											title="Nuevo Anexo">
+											<xp:panel
+												id="panelNewAnexo">
+												<xp:text escape="true"
+													id="computedField3"
+													value="#{javascript:compositeData.IDDocumento}">
+												</xp:text>
+												<xp:br></xp:br>
+												<xp:this.data>
+													<xp:dominoDocument
+														var="newAnexo" formName="Anexo" computeWithForm="both"
+														ignoreRequestParams="true">
+
+														<xp:this.querySaveDocument><![CDATA[#{javascript:
+newAnexo.replaceItemValue("IDdocTema",docTema.getItemValueString("IDdocTema"));
+newAnexo.replaceItemValue("IDdocOrden",docTema.getItemValueString("IDdocOrden"));
+newAnexo.replaceItemValue("IDdocActa",docTema.getItemValueString("IDdocActa"));
+//}]]></xp:this.querySaveDocument>
+													</xp:dominoDocument>
+												</xp:this.data>
+												<xp:table>
+													<xp:tr>
+														<xp:td>
+															<xp:label
+																id="label3" value="Descripción">
+															</xp:label>
+														</xp:td>
+														<xp:td>
+															<xp:inputText
+																id="inputText3" value="#{newAnexo.descripcion}">
+															</xp:inputText>
+														</xp:td>
+													</xp:tr>
+													<xp:tr>
+														<xp:td>
+															<xp:label
+																id="label4" value="Anexo">
+															</xp:label>
+														</xp:td>
+														<xp:td>
+															<xp:fileUpload
+																id="fileUpload2" value="#{newAnexo.Archivos}">
+															</xp:fileUpload>
+															<xp:br></xp:br>
+
+															<xp:fileUpload
+																id="fileUpload3" value="#{newAnexo.Archivos}">
+															</xp:fileUpload>
+															<xp:br></xp:br>
+															<xp:fileUpload
+																id="fileUpload4" value="#{newAnexo.Archivos}">
+															</xp:fileUpload>
+														</xp:td>
+													</xp:tr>
+												</xp:table>
+												<xe:dialogButtonBar
+													id="dialogButtonBar2">
+													<xp:button
+														value="ok" id="button7">
+														<xp:eventHandler
+															event="onclick" submit="true" refreshMode="partial"
+															refreshId="panelAnexos">
+															<xp:this.action>
+
+																<xp:actionGroup>
+
+
+
+																	<xp:saveDocument
+																		var="newAnexo">
+																	</xp:saveDocument>
+																	<xp:executeScript>
+																		<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogNuevoAnexo")
+c.hide()}]]></xp:this.script>
+																	</xp:executeScript>
+
+																</xp:actionGroup>
+															</xp:this.action>
+														</xp:eventHandler>
+													</xp:button>
+
+													<xp:button
+														value="Cancel" id="button9">
+														<xp:eventHandler
+															event="onclick" submit="true" refreshMode="complete">
+															<xp:this.action><![CDATA[#{javascript:var c = getComponent("dialogNuevoAnexo")
+c.hide()}]]></xp:this.action>
+														</xp:eventHandler>
+													</xp:button>
+												</xe:dialogButtonBar>
+											</xp:panel>
+										</xe:dialog>
+										<xp:table border="1"
+											cellpadding="2" cellspacing="0">
+											<xp:tr>
+												<xp:td
+													style="width:124px">
+													&#160;&#160;
+													<xp:button
+														value="Nuevo  Anexo" id="button4"
+														rendered="#{javascript:currentDocument.isEditable()}">
+														<xp:eventHandler
+															event="onclick" submit="true" id="eventHandler2"
+															refreshMode="partial" refreshId="panelMantTemas">
+
+
+
+															<xp:this.action>
+
+																<xp:actionGroup>
+																	<xp:saveDocument
+																		var="docTema">
+																	</xp:saveDocument>
+
+
+
+																	<xp:executeScript>
+																		<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogNuevoAnexo");
+//c.hide()
+c.show();}]]></xp:this.script>
+																	</xp:executeScript>
+																</xp:actionGroup>
+															</xp:this.action>
+														</xp:eventHandler>
+													</xp:button>
+												</xp:td>
+												<xp:td
+													style="width:402.0px">
+
+
+												</xp:td>
+
+
+
+											</xp:tr>
+
+										</xp:table>
+										<xp:panel id="panelAnexos">
+											<xp:this.data>
+												<xp:dominoView
+													var="vAnexos" viewName="vAnexos" keysExactMatch="true">
+													<xp:this.keys><![CDATA[#{javascript:docTema.getItemValueString("IDdocTema")}]]></xp:this.keys>
+												</xp:dominoView>
+											</xp:this.data>
+
+
+											<xp:table>
+												<xp:tr>
+													<xp:td
+														style="width:550px">
+														<xp:pager
+															layout="Previous Group Next" partialRefresh="true"
+															id="pager1" for="repeatAnexos" panelPosition="left">
+														</xp:pager>
+													</xp:td>
+												</xp:tr>
+											</xp:table>
+											<xp:repeat id="repeatAnexos"
+												rows="10" value="#{vAnexos}" var="colAnexos"
+												style="height:80.0px">
+
+												<xp:table border="0"
+													cellpadding="0" cellspacing="0">
+													<xp:tr>
+														<xp:td
+															style="width:124.0px">
+															<xp:link
+																escape="true" text="Abrir" id="linkEditar"
+																style="text-decoration:underline">
+																<xp:eventHandler
+																	event="onclick" submit="false" id="eventHandler1">
+																	<xp:this.script><![CDATA[XSP.openTooltipDialog('#{id:tooltipDialogAnexo}','#{id:idAnexo}')]]></xp:this.script>
+																</xp:eventHandler>
+															</xp:link>
+															&#160;&#160;
+															<xp:link
+																escape="true" id="linkEliminar" text="Eliminar"
+																style="text-decoration:underline">
+																<xp:eventHandler
+																	event="onclick" submit="true" refreshMode="complete">
+																	<xp:this.action>
+
+																		<xp:actionGroup>
+																			<xp:confirm
+																				message="Esta seguro de Eliminar?">
+																			</xp:confirm>
+
+
+
+																			<xp:executeScript>
+																				<xp:this.script><![CDATA[#{javascript:var docEliminar=database.getDocumentByID(colAnexos.getNoteID());
+if(docEliminar!=null){
+	docEliminar.replaceItemValue("DeletedDocument","Si");
+	docEliminar.save();
+}}]]></xp:this.script>
+																			</xp:executeScript>
+																		</xp:actionGroup>
+																	</xp:this.action>
+																</xp:eventHandler>
+															</xp:link>
+														</xp:td>
+														<xp:td
+															style="width:402.0px">
+															<xp:text
+																escape="true" id="idAnexo"
+																value="#{colAnexos.descripcion}"
+																style="font-weight:bold">
+															</xp:text>
+															<xp:br></xp:br>
+															<xp:text
+																escape="true" id="idArchivos" value="#{colAnexos.$2}">
+															</xp:text>
+														</xp:td>
+
+
+
+													</xp:tr>
+												</xp:table>
+												<xe:tooltipDialog
+													id="tooltipDialogAnexo">
+													<xp:panel>
+														<xp:this.data>
+															<xp:dominoDocument
+																var="docAnexo" action="editDocument"
+																documentId="#{javascript:colAnexos.getNoteID()}"
+																formName="Anexo" ignoreRequestParams="true">
+															</xp:dominoDocument>
+														</xp:this.data>
+														<xp:table>
+															<xp:tr>
+																<xp:td></xp:td>
+																<xp:td>
+
+																</xp:td>
+															</xp:tr>
+															<xp:tr>
+																<xp:td>
+																	<xp:label
+																		id="label6" value="Descripción">
+																	</xp:label>
+																</xp:td>
+																<xp:td>
+																	<xp:inputText
+																		id="inputText1" value="#{docAnexo.descripcion}">
+																	</xp:inputText>
+																</xp:td>
+															</xp:tr>
+															<xp:tr>
+																<xp:td>
+																	<xp:label
+																		id="label2" value="Archivo">
+																	</xp:label>
+																</xp:td>
+																<xp:td>
+																	<xp:fileUpload
+																		id="fileUpload1" value="#{docAnexo.Archivos}">
+																	</xp:fileUpload>
+																	<xp:fileDownload
+																		rows="30" id="fileDownload1"
+																		displayLastModified="false"
+																		value="#{docAnexo.Archivos}" allowDelete="true">
+																	</xp:fileDownload>
+																</xp:td>
+															</xp:tr>
+															<xp:tr>
+																<xp:td></xp:td>
+																<xp:td>
+																	<xp:button
+																		id="buttonOK" value="Guardar">
+																		<xp:eventHandler
+																			event="onclick" submit="true" refreshMode="partial"
+																			refreshId="panelAnexos">
+																			<xp:this.action>
+
+																				<xp:actionGroup>
+																					<xp:saveDocument></xp:saveDocument>
+
+
+																					<xp:executeScript>
+																						<xp:this.script><![CDATA[#{javascript:var c = getComponent("tooltipDialogAnexo")
+c.hide("repeatAnexos")}]]></xp:this.script>
+																					</xp:executeScript>
+																				</xp:actionGroup>
+																			</xp:this.action>
+																		</xp:eventHandler>
+																	</xp:button>
+																	<xp:button
+																		id="buttonCancel" value="Cancel">
+																		<xp:eventHandler
+																			event="onclick" submit="true"
+																			refreshMode="complete">
+																			<xp:this.action>
+																				<xp:executeScript>
+																					<xp:this.script><![CDATA[#{javascript:var c = getComponent("tooltipDialogAnexo")
+c.hide()}]]></xp:this.script>
+																				</xp:executeScript>
+																			</xp:this.action>
+																		</xp:eventHandler>
+																	</xp:button>
+																</xp:td>
+															</xp:tr>
+														</xp:table>
+													</xp:panel>
+												</xe:tooltipDialog>
+											</xp:repeat>
+
+
+											<xp:br></xp:br>
+										</xp:panel>
+									</xp:panel>
+									<xp:br></xp:br>
+								</xp:td>
+							</xp:tr>
+						</xp:table>
+						<xp:br></xp:br>
+
+						<xp:br></xp:br>
+					</xp:panel>
+				</xe:dialogContent>
+			</xp:panel>
+
+			<xp:eventHandler event="onClose" submit="true"
+				refreshMode="partial" refreshId="dataViewTemas">
+			</xp:eventHandler>
+			<xp:eventHandler event="onHide" submit="true"
+				refreshMode="partial" refreshId="dataViewTemas">
+			</xp:eventHandler>
+		</xe:dialog>
+
+		<xp:br></xp:br>
+		<xp:br></xp:br>
+		<xp:br></xp:br>
+		<xp:br></xp:br>
+
+
+
+	</xp:panel></xp:view>

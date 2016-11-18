@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xc="http://www.ibm.com/xsp/custom" disableTheme="true">
+	<xp:this.data>
+		<xp:dominoDocument var="dominoDocumentLetter" formName="Letter"
+			action="editDocument">
+
+			<xp:this.postSaveDocument>
+				<xp:executeScript>
+					<xp:this.script><![CDATA[#{javascript:var agent = database.getAgent("SwXPagesAfterSave");
+agent.runOnServer(dominoDocumentLetter.getNoteID());}]]></xp:this.script>
+				</xp:executeScript>
+			</xp:this.postSaveDocument>
+		</xp:dominoDocument>
+	</xp:this.data>
+	<xp:this.resources>
+		<xp:script src="/SwXPagesLib.js" clientSide="true"></xp:script>
+		<xp:script src="/SwXPagesServerLib.jss" clientSide="false"></xp:script>
+	</xp:this.resources>
+
+	<xp:panel
+		style="border-color:rgb(128,128,255);border-style:solid;border-width:1px;width:980px;margin-left:auto;margin-right:auto;">
+		<xp:div style="text-align:center">
+			<xp:table style="width:930.0px">
+				<xp:tr>
+					<xp:td style="width:50px">
+						<xp:image url="/top10_1.gif" id="image2"></xp:image>
+					</xp:td>
+					<xp:td
+						style="background-color:rgb(255,221,187);border-color:rgb(255,170,85);border-style:solid;border-width:thin;padding-left:10px;font-family:Trebuchet MS,sans-serif;font-size:11pt;font-style:italic;color:rgb(89,89,89)">
+						Fill in custom Notes form fields
+					</xp:td>
+				</xp:tr>
+			</xp:table>
+		</xp:div>
+		<xp:div style="text-align:center">
+			<xp:table
+				style="width:930.0px;margin-top:15px;border-color:rgb(225,225,225);border-style:solid;border-width:1px">
+				<xp:tr>
+					<xp:td
+						style="width:120px;padding-right:5px;text-align:right;font-family:Segoe UI,sans-serif;font-size:9pt">
+						Subject:
+					</xp:td>
+					<xp:td loaded="true">
+						<xp:inputText id="Subject"
+							style="width:792.0px;font-family:Segoe UI,sans-serif;font-size:9pt"
+							value="#{dominoDocumentLetter.Subject}">
+						</xp:inputText>
+					</xp:td>
+				</xp:tr>
+			</xp:table>
+		</xp:div>
+		<xp:div style="text-align:center">
+			<xp:table
+				style="width:930.0px;margin-top:5.0px;border-color:rgb(225,225,225);border-style:solid;border-width:1px">
+				<xp:tr>
+					<xp:td
+						style="width:120px;font-family:Segoe UI,sans-serif;font-size:9pt;text-align:right;padding-right:5px">
+						First name:
+					</xp:td>
+					<xp:td style="width:345px">
+						<xp:inputText id="FirstName"
+							value="#{dominoDocumentLetter.FirstName}">
+						</xp:inputText>
+					</xp:td>
+					<xp:td
+						style="width:120px;padding-right:5px;font-family:Segoe UI,sans-serif;font-size:9pt;text-align:right">
+						Company:
+					</xp:td>
+					<xp:td style="width:345px">
+						<xp:inputText id="Company"
+							value="#{dominoDocumentLetter.Company}">
+						</xp:inputText>
+					</xp:td>
+				</xp:tr>
+				<xp:tr>
+					<xp:td
+						style="font-family:Segoe UI,sans-serif;font-size:9pt;text-align:right;padding-right:5px">
+						Last name:
+					</xp:td>
+					<xp:td>
+						<xp:inputText id="LastName"
+							value="#{dominoDocumentLetter.LastName}">
+						</xp:inputText>
+					</xp:td>
+					<xp:td
+						style="padding-right:5px;font-family:Segoe UI,sans-serif;font-size:9pt;text-align:right">
+						Address:
+					</xp:td>
+					<xp:td rowspan="2" valign="top">
+						<xp:inputText id="Address"
+							value="#{dominoDocumentLetter.Address}">
+						</xp:inputText>
+					</xp:td>
+				</xp:tr>
+				<xp:tr>
+					<xp:td
+						style="font-family:Segoe UI,sans-serif;font-size:9pt;text-align:right;padding-right:5px">
+						Job title:
+					</xp:td>
+					<xp:td>
+						<xp:inputText id="JobTitle"
+							value="#{dominoDocumentLetter.JobTitle}">
+						</xp:inputText>
+					</xp:td>
+					<xp:td
+						style="padding-right:5px;font-family:Segoe UI,sans-serif;font-size:9pt;text-align:right">
+					</xp:td>
+
+				</xp:tr>
+				<xp:tr>
+					<xp:td
+						style="font-family:Segoe UI,sans-serif;font-size:9pt;text-align:right;padding-right:5px">
+						E-mail address:
+					</xp:td>
+					<xp:td>
+						<xp:inputText id="EMail"
+							value="#{dominoDocumentLetter.EMail}">
+						</xp:inputText>
+					</xp:td>
+					<xp:td
+						style="padding-right:5px;font-family:Segoe UI,sans-serif;font-size:9pt;text-align:right">
+						Phone number:
+					</xp:td>
+					<xp:td>
+						<xp:inputText id="PhoneNumber"
+							value="#{dominoDocumentLetter.PhoneNumber}">
+						</xp:inputText>
+					</xp:td>
+				</xp:tr>
+				<xp:tr>
+					<xp:td
+						style="font-family:Segoe UI,sans-serif;font-size:9pt;text-align:right;padding-right:5px">
+					</xp:td>
+					<xp:td></xp:td>
+					<xp:td
+						style="padding-right:5px;font-family:Segoe UI,sans-serif;font-size:9pt;text-align:right">
+						Fax number:
+					</xp:td>
+					<xp:td>
+						<xp:inputText id="FaxNumber"
+							value="#{dominoDocumentLetter.FaxNumber}">
+						</xp:inputText>
+					</xp:td>
+				</xp:tr>
+			</xp:table>
+		</xp:div><xp:div style="text-align:center">
+			<xp:table style="width:930.0px;margin-top:30px">
+				<xp:tr>
+					<xp:td style="width:50px">
+						<xp:image url="/top10_2.gif" id="image3"></xp:image>
+					</xp:td>
+					<xp:td
+						style="background-color:rgb(255,221,187);border-color:rgb(255,170,85);border-style:solid;border-width:thin;padding-left:10px;font-family:Trebuchet MS,sans-serif;font-size:11pt;font-style:italic;color:rgb(89,89,89)">
+						Use SWING Integrator to create and manage Office
+						attachments
+					</xp:td>
+				</xp:tr>
+			</xp:table>
+		</xp:div>
+		
+		<xp:br></xp:br>
+
+
+		
+		<xc:SwAttachmentsAll dataSource="#{javascript:currentDocument}"
+			id="SwAttachmentsAll" showSwDelete="true" showSwDetach="true"
+			showSwSaveClose="true" showSwConvertToPDF="true" showSwClose="true"
+			showSwAdd="true" showSwNew="true">
+		</xc:SwAttachmentsAll>
+		<xp:br></xp:br>
+
+
+	</xp:panel>
+	<script language="Javascript">
+		XSP.addOnLoad(function () { SwInitializeControl("Letter", 10);
+		});
+	</script>
+
+
+	<xp:eventHandler event="onClientLoad" submit="true"
+		refreshMode="partial">
+	</xp:eventHandler>
+	<xp:this.navigationRules>
+		<xp:navigationRule outcome="xsp-success"
+			viewId="/DocumentLibrary.xsp">
+		</xp:navigationRule>
+	</xp:this.navigationRules>
+</xp:view>

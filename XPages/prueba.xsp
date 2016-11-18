@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core">
+
+	<xp:viewPanel id="viewPanel1" rows="10">
+		<xp:this.facets>
+			<xp:pager partialRefresh="true" layout="Previous Group Next" xp:key="headerPager" id="pager1">
+			</xp:pager>
+		</xp:this.facets>
+		<xp:this.data>
+			<xp:dominoView var="view1" viewName="vActas"></xp:dominoView>
+		</xp:this.data>
+		<xp:viewColumn columnName="FechaCreacion" id="viewColumn1">
+			<xp:viewColumnHeader value="Created" id="viewColumnHeader1">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+		<xp:viewColumn columnName="$5" id="viewColumn2">
+			<xp:viewColumnHeader value="Numero de Acta" id="viewColumnHeader2">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+		<xp:viewColumn columnName="FechaActa" id="viewColumn3">
+			<xp:viewColumnHeader value="Fecha del Acta" id="viewColumnHeader3">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+		<xp:viewColumn columnName="FechaOrdenLetras" id="viewColumn4">
+			<xp:viewColumnHeader value="Fecha" id="viewColumnHeader4"></xp:viewColumnHeader>
+		</xp:viewColumn>
+		<xp:viewColumn columnName="HoraSesionLetras" id="viewColumn5">
+			<xp:viewColumnHeader value="Hora" id="viewColumnHeader5"></xp:viewColumnHeader>
+		</xp:viewColumn>
+		<xp:viewColumn columnName="$7" id="viewColumn6">
+			<xp:viewColumnHeader value="Creador" id="viewColumnHeader6">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+		<xp:viewColumn columnName="Estado" id="viewColumn7">
+			<xp:viewColumnHeader value="Estado" id="viewColumnHeader7">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+	</xp:viewPanel></xp:view>

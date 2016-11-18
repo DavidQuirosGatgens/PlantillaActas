@@ -1,0 +1,1360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+
+
+	<xp:span style="font-weight:bold" rendered="false"></xp:span><xp:span rendered="false"></xp:span>
+	<xp:span rendered="false"></xp:span>
+	<xp:table>
+		<xp:tr>
+			<xp:td><xp:button id="NewDocButton" style="margin-top:15px;margin-left:25px;font-family:Segoe UI,sans-serif;font-weight:bold;font-size:8pt;height:30px;vertical-align:middle">
+			<xp:this.rendered><![CDATA[#{javascript:var db:NotesDatabase=session.getCurrentDatabase();
+var doc:NotesDocument=currentDocument.getDocument(true);
+var valString:String = "";
+
+
+if (context.getUser().getRoles().contains('[Secretaria]')) {
+
+	if(!currentDocument.isNewNote()){
+
+		if (compositeData.dataSource.isEditable()) {
+		
+			if (doc.hasItem('SWAttachment')){ // aplica para el docTema cuando se crea desde la opcion Temas Pendientes
+				var nrt:NotesRichTextItem=doc.getFirstItem('SWAttachment');
+				if (nrt!=null){
+    				var eos:java.util.Vector = nrt.getEmbeddedObjects();
+      				if (eos.isEmpty()) {
+        				valString = 'Nothing found';
+      				} else {
+          				var v;
+     	   				for (v = 0;v < eos.size();v++){  // revisa si el documento tiene un archivo adjunto
+        					var eo:NotesEmbeddedObject = eos.get(v);
+        					valString = valString + eo.getName() + ' - ' ;
+    					}
+					}
+				}	
+				if (valString=='Nothing found') {return true;}
+				return false;
+			}  // fin SWAttachment
+	
+			// para el formulario de la Orden del día & Tema
+			// ----------------------------------------------------	
+			var field = document1.getValue( 'Form' );
+			if (field=='Acta' |field=='Tema'){
+				if (doc.hasItem('SWAttachment')){
+					var nrt:NotesRichTextItem=doc.getFirstItem('SWAttachment');
+					if (nrt!=null){
+    					var eos:java.util.Vector = nrt.getEmbeddedObjects();
+      					if (eos.isEmpty()) {
+        					valString = 'Nothing found';
+      					} else {
+          					var v;
+     	   					for (v = 0;v < eos.size();v++){
+	        					var eo:NotesEmbeddedObject = eos.get(v);
+    	    					valString = valString + eo.getName() + ' - ' ;}
+						}
+					}				
+					if (valString=='Nothing found') {return true;}
+						return false;
+					}
+					else {
+						return true;
+				} // fin SWAttachment
+			} // fin documento Acta/Tema	
+			return false;
+		} // verifica que no se nuevo el documento	
+	} // verifica si es editable
+} // verifica el rol Secretaria
+
+return false;
+}]]></xp:this.rendered>
+			<xp:this.value><![CDATA[#{javascript://swing.LabelNewOfficeDocument;
+'Nuevo Documento Office';}]]></xp:this.value>
+			<xp:eventHandler event="onclick" submit="true"
+				refreshMode="complete">
+				<xp:this.script><![CDATA[document.SwControl.SW_TemplateList("");
+
+document.SwControl.SW_SubformGlobalCall(1, 0);]]></xp:this.script>
+			</xp:eventHandler>
+</xp:button></xp:td>
+			<xp:td>
+				<xp:button
+					value="#{javascript:swing.LabelAddExistingDocument}"
+					id="AddExistingButton"
+					style="margin-top:15px;margin-left:25px;font-family:Segoe UI,sans-serif;font-weight:bold;font-size:8pt;height:30px;vertical-align:middle"
+					rendered="#{javascript:return false;}">
+
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="complete">
+						<xp:this.script><![CDATA[document.SwControl.SW_AttachMultipleExistingDocuments();]]></xp:this.script>
+					</xp:eventHandler>
+				</xp:button>
+			</xp:td>
+		</xp:tr>
+	</xp:table>
+	
+	<xp:panel style="display:none"
+		rendered="#{javascript:!compositeData.dataSource.isEditable()}">
+
+
+
+
+
+
+		<xp:text escape="false" id="CategoriesRead"
+			style="display:none">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("Categories");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+
+		</xp:text>
+		<xp:br></xp:br>
+		<xp:text escape="false" id="SwInitializeRead">
+
+
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwInitialize");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:br></xp:br>
+		<xp:text escape="false" id="SwFormAliasRead">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwFormAlias");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:br></xp:br>
+		<xp:text escape="false" id="SwMaxAttachmentsRead">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwMaxAttachments");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:br></xp:br>
+		<xp:text escape="false" id="SwAllFormsRead">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAllForms");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:br></xp:br>
+		<xp:text escape="false" id="SwDocumentUNIDRead">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwDocumentUNID");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:br></xp:br>
+		<xp:text escape="false" id="SwFilePathNameRead">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwFilePathName");
+var fldValue = @Implode(fld.getValue(),";");
+
+return "<input type=\"text\" value=\"" + fldValue + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:br></xp:br>
+		<xp:text escape="false" id="SwFormNameRead">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwFormName");
+var fldValue = @Implode(fld.getValue(),";");
+return "<input type=\"text\" value=\"" + fldValue + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+
+		</xp:text>
+		<xp:br></xp:br>
+		<xp:text escape="false" id="SwTypeRead">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwType");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:br></xp:br>
+		<xp:text escape="false" id="SwDeletionListRead">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwDeletionList");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:br></xp:br>
+		<xp:text escape="false" id="SwDataSourceAttachedRead">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwDataSourceAttached");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:br></xp:br>
+		<xp:text escape="false" id="SwNameRead">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwName");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:br></xp:br>
+		<xp:text escape="false" id="SwEmbeddedObjectExistsRead">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwEmbeddedObjectExists");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:br></xp:br>
+
+		<xp:text escape="false" id="SwFileIndexRead">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwFileIndex");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:br></xp:br>
+		<xp:text escape="false" id="SwIsEditModeRead">
+			<xp:this.value><![CDATA[#{javascript:var isEditable = "";
+if (compositeData.dataSource.isEditable()){
+ isEditable = "1";
+}
+
+var fld = getComponent("SwIsEditMode");
+return "<input type=\"text\" value=\"" + isEditable + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">";}]]></xp:this.value>
+		</xp:text>
+		<xp:br></xp:br>
+		<xp:text escape="false" id="SwMMTemplateNamesRead">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwMMTemplateNames");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:br></xp:br>
+		<xp:text escape="false" id="SwRefreshFlagRead">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwRefreshFlag");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:br></xp:br>
+
+		&#160;
+		<xp:br></xp:br>
+
+		<xp:text escape="false" id="SwAttName_1Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttName_1");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:text escape="false" id="SwAttType_1Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttType_1");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:text escape="false" id="SwAttSize_1Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttSize_1");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:br></xp:br>
+
+
+		<xp:text escape="false" id="SwAttName_2Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttName_2");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:text escape="false" id="SwAttType_2Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttType_2");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:text escape="false" id="SwAttSize_2Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttSize_2");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:br></xp:br>
+		<xp:text escape="false" id="SwAttName_3Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttName_3");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:text escape="false" id="SwAttType_3Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttType_3");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:text escape="false" id="SwAttSize_3Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttSize_3");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:br></xp:br>
+		<xp:text escape="false" id="SwAttName_4Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttName_4");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:text escape="false" id="SwAttType_4Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttType_4");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:text escape="false" id="SwAttSize_4Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttSize_4");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:br></xp:br>
+
+		<xp:text escape="false" id="SwAttName_5Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttName_5");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:text escape="false" id="SwAttType_5Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttType_5");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:text escape="false" id="SwAttSize_5Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttSize_5");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:br></xp:br>
+		<xp:text escape="false" id="SwAttName_6Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttName_6");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:text escape="false" id="SwAttType_6Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttType_6");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:text escape="false" id="SwAttSize_6Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttSize_6");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:br></xp:br>
+		<xp:text escape="false" id="SwAttName_7Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttName_7");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:text escape="false" id="SwAttType_7Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttType_7");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:text escape="false" id="SwAttSize_7Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttSize_7");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+
+		<xp:br></xp:br>
+		<xp:text escape="false" id="SwAttName_8Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttName_8");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:text escape="false" id="SwAttType_8Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttType_8");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:text escape="false" id="SwAttSize_8Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttSize_8");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+
+		<xp:br></xp:br>
+		<xp:text escape="false" id="SwAttName_9Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttName_9");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:text escape="false" id="SwAttType_9Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttType_9");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:text escape="false" id="SwAttSize_9Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttSize_9");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+
+		<xp:br></xp:br>
+		<xp:text escape="false" id="SwAttName_10Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttName_10");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:text escape="false" id="SwAttType_10Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttType_10");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+		<xp:text escape="false" id="SwAttSize_10Read">
+			<xp:this.value><![CDATA[#{javascript:var fld = getComponent("SwAttSize_10");
+return "<input type=\"text\" value=\"" + fld.getValue() + "\" id=\""+ fld.getClientId(facesContext)+"\" name=\""+ fld.getClientId(facesContext)+"\" class=\"xspInputFieldEditBox\">"}]]></xp:this.value>
+		</xp:text>
+
+		<xp:br></xp:br>
+
+	</xp:panel>
+	<xp:br rendered="false"></xp:br>
+	<xp:scriptBlock id="scriptBlock1" value="var swFileNumber=0"></xp:scriptBlock>
+	<xp:panel id="panel1">
+		<xp:this.style><![CDATA[#{javascript:var style = "display:none";
+var fieldValue = getComponent("SwAttName_1").getValue();
+if(fieldValue && fieldValue != "")
+	style = "margin-left: 20px;";
+
+return style;}]]></xp:this.style>
+		<xp:link id="link1" rendered="true">
+
+			<xp:this.text><![CDATA[#{javascript:var fieldValue = getComponent("SwAttName_1").getValue();
+var fieldSize = getComponent("SwAttSize_1").getValue();
+return fieldValue + " " + fieldSize;}]]></xp:this.text>
+
+			<xp:this.value><![CDATA[#{javascript:var s= compositeData.dataSource.isEditable() && compositeData.queryOpenFile? compositeData.queryOpenFile: "";
+swFileNumber=1;
+return "javascript: " + s + "document.SwControl.SW_SubformGlobalCall(0, 1);";}]]></xp:this.value><xp:eventHandler event="onclick" submit="false"></xp:eventHandler>
+			<xp:image id="image2" style="height:18px;width:18px">
+				<xp:this.url><![CDATA[#{javascript:var imgSrc = "";
+var fieldValue = getComponent("SwAttType_1").getValue();
+if(fieldValue && fieldValue != "" && fieldValue != "OTHER"){
+	imgSrc = "/Sw" + fieldValue + "-32.gif";
+}else if(fieldValue === "OTHER"){
+	imgSrc = "/SwAttach-32.gif";
+}
+
+return imgSrc;}]]></xp:this.url>
+			</xp:image>
+			&#160;&#160;&#160;
+		</xp:link>
+		<xp:br></xp:br>
+		<xp:inputText id="SwAttName_1"
+			value="#{compositeData.dataSource.SwAttName_1}" style="display:none"
+			defaultValue="#{javascript:compositeData.dataSource.SwAttName_1}">
+		<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered></xp:inputText>
+		<xp:inputText id="SwAttType_1"
+			value="#{compositeData.dataSource.SwAttType_1}" style="display:none"
+			defaultValue="#{javascript:compositeData.dataSource.SwAttType_1}">
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onchange" submit="true"
+				refreshMode="complete">
+				<xp:this.action><![CDATA[#{javascript:var fieldValue = getComponent("SwAttType_1").getValue();
+compositeData.dataSource.setValue("SwAttType_1", fieldValue);}]]></xp:this.action>
+			</xp:eventHandler>
+		</xp:inputText>
+		<xp:inputText id="SwAttSize_1"
+			value="#{compositeData.dataSource.SwAttSize_1}" style="display:none"
+			defaultValue="#{javascript:compositeData.dataSource.SwAttSize_1}">
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onchange" submit="true">
+				<xp:this.action><![CDATA[#{javascript:var fieldValue = getComponent("SwAttSize_1").getValue();
+compositeData.dataSource.setValue("SwAttSize_1", fieldValue);}]]></xp:this.action>
+			</xp:eventHandler>
+		</xp:inputText>
+	</xp:panel>
+	<xp:panel id="panel2">
+		<xp:this.style><![CDATA[#{javascript:var style = "display:none";
+var fieldValue = getComponent("SwAttName_2").getValue();
+if(fieldValue && fieldValue != "")
+	style = "margin-left: 20px;";
+
+return style;}]]></xp:this.style>
+		<xp:link escape="true" id="link2">
+
+
+
+			<xp:this.text><![CDATA[#{javascript:var fieldValue = getComponent("SwAttName_2").getValue();
+var fieldSize = getComponent("SwAttSize_2").getValue();
+return fieldValue + " " + fieldSize;}]]></xp:this.text>
+			<xp:this.value><![CDATA[#{javascript:var s= compositeData.dataSource.isEditable() && compositeData.queryOpenFile? compositeData.queryOpenFile + ";": "";
+swFileNumber=2;
+return "javascript: " + s + "document.SwControl.SW_SubformGlobalCall(0,2);";}]]></xp:this.value><xp:image id="image1" style="height:18.0px;width:18.0px">
+				<xp:this.url><![CDATA[#{javascript:var imgSrc = "";
+var fieldValue = getComponent("SwAttType_2").getValue();
+if(fieldValue && fieldValue != "" && fieldValue != "OTHER"){
+	imgSrc = "/Sw" + fieldValue + "-32.gif";
+}else if(fieldValue === "OTHER"){
+	imgSrc = "/SwAttach-32.gif";
+}
+
+return imgSrc;}]]></xp:this.url>
+			</xp:image>
+			&#160;&#160;&#160;
+		</xp:link>
+
+		<xp:br></xp:br>
+		<xp:inputText id="SwAttName_2"
+			value="#{compositeData.dataSource.SwAttName_2}"
+			style="display:none">
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onchange" submit="true"
+				refreshMode="complete">
+				<xp:this.action><![CDATA[#{javascript:var fieldValue = getComponent("SwAttName_2").getValue();
+compositeData.dataSource.setValue("SwAttName_2", fieldValue);}]]></xp:this.action>
+			</xp:eventHandler>
+			<xp:eventHandler event="onchange" submit="true"
+				refreshMode="complete">
+				<xp:this.action><![CDATA[#{javascript:var fieldValue = getComponent("SwAttName_2").getValue();
+compositeData.dataSource.setValue("SwAttName_2", fieldValue);}]]></xp:this.action>
+			</xp:eventHandler>
+			<xp:eventHandler event="onchange" submit="true"
+				refreshMode="complete">
+				<xp:this.action><![CDATA[#{javascript:var fieldValue = getComponent("SwAttName_2").getValue();
+compositeData.dataSource.setValue("SwAttName_2", fieldValue);}]]></xp:this.action>
+			</xp:eventHandler>
+			<xp:eventHandler event="onchange" submit="true"
+				refreshMode="complete">
+				<xp:this.action><![CDATA[#{javascript:var fieldValue = getComponent("SwAttName_2").getValue();
+compositeData.dataSource.setValue("SwAttName_2", fieldValue);}]]></xp:this.action>
+			</xp:eventHandler>
+		</xp:inputText>
+		<xp:inputText id="SwAttType_2"
+			value="#{compositeData.dataSource.SwAttType_2}"
+			style="display:none">
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onchange" submit="true"
+				refreshMode="complete">
+				<xp:this.action><![CDATA[#{javascript:var fieldValue = getComponent("SwAttType_2").getValue();
+compositeData.dataSource.setValue("SwAttType_2", fieldValue);}]]></xp:this.action>
+			</xp:eventHandler>
+			<xp:eventHandler event="onchange" submit="true"
+				refreshMode="complete">
+				<xp:this.action><![CDATA[#{javascript:var fieldValue = getComponent("SwAttType_2").getValue();
+compositeData.dataSource.setValue("SwAttType_2", fieldValue);}]]></xp:this.action>
+			</xp:eventHandler>
+		</xp:inputText>
+		<xp:inputText id="SwAttSize_2"
+			value="#{compositeData.dataSource.SwAttSize_2}"
+			style="display:none">
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onchange" submit="true"
+				refreshMode="complete">
+				<xp:this.action><![CDATA[#{javascript:var fieldValue = getComponent("SwAttSize_2").getValue();
+compositeData.dataSource.setValue("SwAttSize_2", fieldValue);}]]></xp:this.action>
+			</xp:eventHandler>
+			<xp:eventHandler event="onchange" submit="true"
+				refreshMode="complete">
+				<xp:this.action><![CDATA[#{javascript:var fieldValue = getComponent("SwAttSize_2").getValue();
+compositeData.dataSource.setValue("SwAttSize_2", fieldValue);}]]></xp:this.action>
+			</xp:eventHandler>
+		</xp:inputText>
+	</xp:panel>
+	<xp:panel id="panel3">
+		<xp:link escape="true" id="link3">
+
+
+			<xp:this.text><![CDATA[#{javascript:var fieldValue = getComponent("SwAttName_3").getValue();
+var fieldSize = getComponent("SwAttSize_3").getValue();
+return fieldValue + " " + fieldSize;}]]></xp:this.text>
+			<xp:this.value><![CDATA[#{javascript:var s= compositeData.dataSource.isEditable() && compositeData.queryOpenFile? compositeData.queryOpenFile + ";": "";
+swFileNumber=3;
+return "javascript: " + s + "document.SwControl.SW_SubformGlobalCall(0,3);";}]]></xp:this.value><xp:image id="image3" style="height:18.0px;width:18.0px">
+				<xp:this.url><![CDATA[#{javascript:var imgSrc = "";
+var fieldValue = getComponent("SwAttType_3").getValue();
+if(fieldValue && fieldValue != "" && fieldValue != "OTHER"){
+	imgSrc = "/Sw" + fieldValue + "-32.gif";
+}else if(fieldValue === "OTHER"){
+	imgSrc = "/SwAttach-32.gif";
+}
+
+return imgSrc;}]]></xp:this.url>
+			</xp:image>
+			&#160;&#160;&#160;
+		</xp:link>
+
+		<xp:this.style><![CDATA[#{javascript:var style = "display:none";
+var fieldValue = getComponent("SwAttName_3").getValue();
+if(fieldValue && fieldValue != "")
+	style = "margin-left: 20px;";
+
+return style;}]]></xp:this.style><xp:br></xp:br>
+		<xp:inputText id="SwAttName_3"
+			value="#{compositeData.dataSource.SwAttName_3}"
+			style="display:none">
+		<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered></xp:inputText>
+		<xp:inputText id="SwAttType_3"
+			value="#{compositeData.dataSource.SwAttType_3}"
+			style="display:none">
+		<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered></xp:inputText>
+		<xp:inputText id="SwAttSize_3" style="display:none"
+			value="#{compositeData.dataSource.SwAttSize_3}">
+		<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered></xp:inputText>
+	</xp:panel>
+	<xp:panel id="panel4">
+		<xp:link escape="true" id="link4">
+
+
+			<xp:this.text><![CDATA[#{javascript:var fieldValue = getComponent("SwAttName_4").getValue();
+var fieldSize = getComponent("SwAttSize_4").getValue();
+return fieldValue + " " + fieldSize;}]]></xp:this.text>
+			<xp:this.value><![CDATA[#{javascript:var s= compositeData.dataSource.isEditable() && compositeData.queryOpenFile? compositeData.queryOpenFile + ";": "";
+swFileNumber=4;
+return "javascript: " + s + "document.SwControl.SW_SubformGlobalCall(0,4);";}]]></xp:this.value><xp:image id="image4" style="height:18.0px;width:18.0px">
+				<xp:this.url><![CDATA[#{javascript:var imgSrc = "";
+var fieldValue = getComponent("SwAttType_4").getValue();
+if(fieldValue && fieldValue != "" && fieldValue != "OTHER"){
+	imgSrc = "/Sw" + fieldValue + "-32.gif";
+}else if(fieldValue === "OTHER"){
+	imgSrc = "/SwAttach-32.gif";
+}
+
+return imgSrc;}]]></xp:this.url>
+			</xp:image>
+			&#160;&#160;&#160;
+		</xp:link>
+
+		<xp:this.style><![CDATA[#{javascript:var style = "display:none";
+var fieldValue = getComponent("SwAttName_4").getValue();
+if(fieldValue && fieldValue != "")
+	style = "margin-left: 20px;";
+
+return style;}]]></xp:this.style><xp:br></xp:br>
+		<xp:inputText style="display:none" id="SwAttName_4"
+			value="#{compositeData.dataSource.SwAttName_4}">
+
+
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onpropertychange" submit="true">
+				<xp:this.action><![CDATA[#{javascript:var fieldValue = getComponent("SwAttType_4").getValue();
+compositeData.dataSource.setValue("SwAttType_4", fieldValue);
+fieldValue = getComponent("SwAttName_4").getValue();
+compositeData.dataSource.setValue("SwAttName_4", fieldValue);
+fieldValue = getComponent("SwAttSize_4").getValue();
+compositeData.dataSource.setValue("SwAttSize_4", fieldValue);}]]></xp:this.action>
+			</xp:eventHandler>
+		</xp:inputText>
+		<xp:inputText id="SwAttType_4" style="display:none"
+			value="#{compositeData.dataSource.SwAttType_4}">
+
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onchange" submit="true">
+			</xp:eventHandler>
+			<xp:eventHandler event="onchange" submit="true">
+			</xp:eventHandler>
+		</xp:inputText>
+		<xp:inputText id="SwAttSize_4" style="display:none"
+			value="#{compositeData.dataSource.SwAttSize_4}">
+
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onchange" submit="true"
+				refreshMode="norefresh">
+			</xp:eventHandler>
+			<xp:eventHandler event="onchange" submit="true"
+				refreshMode="norefresh">
+			</xp:eventHandler>
+		</xp:inputText>
+	</xp:panel>
+	<xp:panel id="panel5">
+		<xp:this.style><![CDATA[#{javascript:var style = "display:none";
+var fieldValue = getComponent("SwAttName_5").getValue();
+if(fieldValue && fieldValue != "")
+	style = "margin-left: 20px;";
+
+return style;}]]></xp:this.style>
+		<xp:link escape="true" id="link5">
+
+
+			<xp:this.text><![CDATA[#{javascript:var fieldValue = getComponent("SwAttName_5").getValue();
+var fieldSize = getComponent("SwAttSize_5").getValue();
+return fieldValue + " " + fieldSize;}]]></xp:this.text>
+			<xp:this.value><![CDATA[#{javascript:var s= compositeData.dataSource.isEditable() && compositeData.queryOpenFile? compositeData.queryOpenFile + ";": "";
+swFileNumber=5;
+return "javascript: " + s + "document.SwControl.SW_SubformGlobalCall(0,5);";}]]></xp:this.value><xp:image id="image5" style="height:18.0px;width:18.0px">
+				<xp:this.url><![CDATA[#{javascript:var imgSrc = "";
+var fieldValue = getComponent("SwAttType_5").getValue();
+if(fieldValue && fieldValue != "" && fieldValue != "OTHER")
+	imgSrc = "/Sw" + fieldValue + "-32.gif";
+
+return imgSrc;}]]></xp:this.url>
+			</xp:image>
+			&#160;&#160;&#160;
+		</xp:link>
+
+		<xp:br></xp:br>
+		<xp:inputText style="display:none" id="SwAttName_5"
+			value="#{compositeData.dataSource.SwAttName_5}">
+
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onpropertychange" submit="true">
+				<xp:this.action><![CDATA[#{javascript:var fieldValue = getComponent("SwAttType_5").getValue();
+compositeData.dataSource.setValue("SwAttType_5", fieldValue);
+fieldValue = getComponent("SwAttName_5").getValue();
+compositeData.dataSource.setValue("SwAttName_5", fieldValue);
+fieldValue = getComponent("SwAttSize_55").getValue();
+compositeData.dataSource.setValue("SwAttSize_5", fieldValue);}]]></xp:this.action>
+			</xp:eventHandler>
+		</xp:inputText>
+		<xp:inputText id="SwAttType_5" style="display:none"
+			value="#{compositeData.dataSource.SwAttType_5}">
+
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onchange" submit="true">
+			</xp:eventHandler>
+			<xp:eventHandler event="onchange" submit="true">
+			</xp:eventHandler>
+		</xp:inputText>
+		<xp:inputText id="SwAttSize_5" style="display:none"
+			value="#{compositeData.dataSource.SwAttSize_5}">
+
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onchange" submit="true"
+				refreshMode="norefresh">
+			</xp:eventHandler>
+			<xp:eventHandler event="onchange" submit="true"
+				refreshMode="norefresh">
+			</xp:eventHandler>
+		</xp:inputText>
+	</xp:panel>
+
+
+	<xp:panel id="panel6">
+		<xp:link escape="true" id="link6">
+
+
+			<xp:this.text><![CDATA[#{javascript:var fieldValue = getComponent("SwAttName_6").getValue();
+var fieldSize = getComponent("SwAttSize_6").getValue();
+return fieldValue + " " + fieldSize;}]]></xp:this.text>
+			<xp:this.value><![CDATA[#{javascript:var s= compositeData.dataSource.isEditable() && compositeData.queryOpenFile? compositeData.queryOpenFile + ";": "";
+swFileNumber=6;
+return "javascript: " + s + "document.SwControl.SW_SubformGlobalCall(0,6);";}]]></xp:this.value><xp:image id="image6" style="height:18.0px;width:18.0px">
+				<xp:this.url><![CDATA[#{javascript:var imgSrc = "";
+var fieldValue = getComponent("SwAttType_6").getValue();
+if(fieldValue && fieldValue != "" && fieldValue != "OTHER")
+	imgSrc = "/Sw" + fieldValue + "-32.gif";
+
+return imgSrc;}]]></xp:this.url>
+			</xp:image>
+			&#160;&#160;&#160;
+		</xp:link>
+
+		&#160;
+
+
+		<xp:this.style><![CDATA[#{javascript:var style = "display:none";
+var fieldValue = getComponent("SwAttName_6").getValue();
+if(fieldValue && fieldValue != "")
+	style = "margin-left: 20px;";
+
+return style;}]]></xp:this.style><xp:br></xp:br>
+		<xp:inputText style="display:none" id="SwAttName_6"
+			value="#{compositeData.dataSource.SwAttName_6}">
+
+
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onpropertychange" submit="true">
+				<xp:this.action><![CDATA[#{javascript:var fieldValue = getComponent("SwAttType_6").getValue();
+compositeData.dataSource.setValue("SwAttType_6", fieldValue);
+fieldValue = getComponent("SwAttName_6").getValue();
+compositeData.dataSource.setValue("SwAttName_6", fieldValue);
+fieldValue = getComponent("SwAttSize_6").getValue();
+compositeData.dataSource.setValue("SwAttSize_6", fieldValue);}]]></xp:this.action>
+			</xp:eventHandler>
+		</xp:inputText>
+		<xp:inputText id="SwAttType_6" style="display:none"
+			value="#{compositeData.dataSource.SwAttType_6}">
+
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onchange" submit="true">
+			</xp:eventHandler>
+			<xp:eventHandler event="onchange" submit="true">
+			</xp:eventHandler>
+		</xp:inputText>
+		<xp:inputText id="SwAttSize_6" style="display:none"
+			value="#{compositeData.dataSource.SwAttSize_6}">
+
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onchange" submit="true"
+				refreshMode="norefresh">
+			</xp:eventHandler>
+			<xp:eventHandler event="onchange" submit="true"
+				refreshMode="norefresh">
+			</xp:eventHandler>
+		</xp:inputText>
+	</xp:panel>
+
+
+	<xp:panel id="panel7">
+		<xp:this.style><![CDATA[#{javascript:var style = "display:none";
+var fieldValue = getComponent("SwAttName_7").getValue();
+if(fieldValue && fieldValue != "")
+	style = "margin-left: 20px;";
+
+return style;}]]></xp:this.style>
+		<xp:link escape="true" id="link7">
+
+
+			<xp:this.text><![CDATA[#{javascript:var fieldValue = getComponent("SwAttName_7").getValue();
+var fieldSize = getComponent("SwAttSize_7").getValue();
+return fieldValue + " " + fieldSize;}]]></xp:this.text>
+			<xp:this.value><![CDATA[#{javascript:var s= compositeData.dataSource.isEditable() && compositeData.queryOpenFile? compositeData.queryOpenFile + ";": "";
+swFileNumber=7;
+return "javascript: " + s + "document.SwControl.SW_SubformGlobalCall(0,7);";}]]></xp:this.value><xp:image id="image7" style="height:18.0px;width:18.0px">
+				<xp:this.url><![CDATA[#{javascript:var imgSrc = "";
+var fieldValue = getComponent("SwAttType_7").getValue();
+if(fieldValue && fieldValue != "" && fieldValue != "OTHER")
+	imgSrc = "/Sw" + fieldValue + "-32.gif";
+
+return imgSrc;}]]></xp:this.url>
+			</xp:image>
+			&#160;&#160;&#160;
+		</xp:link>
+
+		&#160;
+
+
+		<xp:br></xp:br>
+		<xp:inputText style="display:none" id="SwAttName_7"
+			value="#{compositeData.dataSource.SwAttName_7}">
+
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onpropertychange" submit="true">
+				<xp:this.action><![CDATA[#{javascript:var fieldValue = getComponent("SwAttType_7").getValue();
+compositeData.dataSource.setValue("SwAttType_7", fieldValue);
+fieldValue = getComponent("SwAttName_7").getValue();
+compositeData.dataSource.setValue("SwAttName_7", fieldValue);
+fieldValue = getComponent("SwAttSize_7").getValue();
+compositeData.dataSource.setValue("SwAttSize_7", fieldValue);}]]></xp:this.action>
+			</xp:eventHandler>
+		</xp:inputText>
+		<xp:inputText id="SwAttType_7" style="display:none"
+			value="#{compositeData.dataSource.SwAttType_7}">
+
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onchange" submit="true">
+			</xp:eventHandler>
+			<xp:eventHandler event="onchange" submit="true">
+			</xp:eventHandler>
+		</xp:inputText>
+		<xp:inputText id="SwAttSize_7" style="display:none"
+			value="#{compositeData.dataSource.SwAttSize_7}">
+
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onchange" submit="true"
+				refreshMode="norefresh">
+			</xp:eventHandler>
+			<xp:eventHandler event="onchange" submit="true"
+				refreshMode="norefresh">
+			</xp:eventHandler>
+		</xp:inputText>
+	</xp:panel>
+
+
+	<xp:panel id="panel8">
+		<xp:this.style><![CDATA[#{javascript:var style = "display:none";
+var fieldValue = getComponent("SwAttName_8").getValue();
+if(fieldValue && fieldValue != "")
+	style = "margin-left: 20px;";
+
+return style;}]]></xp:this.style>
+		<xp:link escape="true" id="link8">
+
+
+			<xp:this.text><![CDATA[#{javascript:var fieldValue = getComponent("SwAttName_8").getValue();
+var fieldSize = getComponent("SwAttSize_8").getValue();
+return fieldValue + " " + fieldSize;}]]></xp:this.text>
+			<xp:this.value><![CDATA[#{javascript:var s= compositeData.dataSource.isEditable() && compositeData.queryOpenFile? compositeData.queryOpenFile + ";": "";
+swFileNumber=8;
+return "javascript: " + s + "document.SwControl.SW_SubformGlobalCall(0,8);";}]]></xp:this.value><xp:image id="image8" style="height:18.0px;width:18.0px">
+				<xp:this.url><![CDATA[#{javascript:var imgSrc = "";
+var fieldValue = getComponent("SwAttType_8").getValue();
+if(fieldValue && fieldValue != "" && fieldValue != "OTHER")
+	imgSrc = "/Sw" + fieldValue + "-32.gif";
+
+return imgSrc;}]]></xp:this.url>
+			</xp:image>
+			&#160;&#160;&#160;
+		</xp:link>
+
+		&#160;
+
+
+		<xp:br></xp:br>
+		<xp:inputText style="display:none" id="SwAttName_8"
+			value="#{compositeData.dataSource.SwAttName_8}">
+
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onpropertychange" submit="true">
+				<xp:this.action><![CDATA[#{javascript:var fieldValue = getComponent("SwAttType_8").getValue();
+compositeData.dataSource.setValue("SwAttType_8", fieldValue);
+fieldValue = getComponent("SwAttName_8").getValue();
+compositeData.dataSource.setValue("SwAttName_8", fieldValue);
+fieldValue = getComponent("SwAttSize_8").getValue();
+compositeData.dataSource.setValue("SwAttSize_8", fieldValue);}]]></xp:this.action>
+			</xp:eventHandler>
+		</xp:inputText>
+		<xp:inputText id="SwAttType_8" style="display:none"
+			value="#{compositeData.dataSource.SwAttType_8}">
+
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onchange" submit="true">
+			</xp:eventHandler>
+			<xp:eventHandler event="onchange" submit="true">
+			</xp:eventHandler>
+			<xp:eventHandler event="onclick" submit="false"></xp:eventHandler>
+		</xp:inputText>
+		<xp:inputText id="SwAttSize_8" style="display:none"
+			value="#{compositeData.dataSource.SwAttSize_8}">
+
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onchange" submit="true"
+				refreshMode="norefresh">
+			</xp:eventHandler>
+			<xp:eventHandler event="onchange" submit="true"
+				refreshMode="norefresh">
+			</xp:eventHandler>
+		</xp:inputText>
+	</xp:panel>
+	<xp:panel id="panel9">
+		<xp:this.style><![CDATA[#{javascript:var style = "display:none";
+var fieldValue = getComponent("SwAttName_9").getValue();
+if(fieldValue && fieldValue != "")
+	style = "margin-left: 20px;";
+
+return style;}]]></xp:this.style>
+		<xp:link escape="true" id="link9">
+
+
+			<xp:this.text><![CDATA[#{javascript:var fieldValue = getComponent("SwAttName_9").getValue();
+var fieldSize = getComponent("SwAttSize_9").getValue();
+return fieldValue + " " + fieldSize;}]]></xp:this.text>
+			<xp:this.value><![CDATA[#{javascript:var s= compositeData.dataSource.isEditable() && compositeData.queryOpenFile? compositeData.queryOpenFile + ";": "";
+swFileNumber=9;
+return "javascript: " + s + "document.SwControl.SW_SubformGlobalCall(0,9);";}]]></xp:this.value><xp:image id="image9" style="height:18.0px;width:18.0px">
+				<xp:this.url><![CDATA[#{javascript:var imgSrc = "";
+var fieldValue = getComponent("SwAttType_9").getValue();
+if(fieldValue && fieldValue != "" && fieldValue != "OTHER")
+	imgSrc = "/Sw" + fieldValue + "-32.gif";
+
+return imgSrc;}]]></xp:this.url>
+			</xp:image>
+			&#160;&#160;&#160;
+		</xp:link>
+
+		<xp:br></xp:br>
+		<xp:inputText style="display:none" id="SwAttName_9"
+			value="#{compositeData.dataSource.SwAttName_9}">
+
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onpropertychange" submit="true">
+				<xp:this.action><![CDATA[#{javascript:var fieldValue = getComponent("SwAttType_9").getValue();
+compositeData.dataSource.setValue("SwAttType_9", fieldValue);
+fieldValue = getComponent("SwAttName_9").getValue();
+compositeData.dataSource.setValue("SwAttName_9", fieldValue);
+fieldValue = getComponent("SwAttSize_9").getValue();
+compositeData.dataSource.setValue("SwAttSize_9", fieldValue);}]]></xp:this.action>
+			</xp:eventHandler>
+		</xp:inputText>
+		<xp:inputText id="SwAttType_9" style="display:none"
+			value="#{compositeData.dataSource.SwAttType_9}">
+
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onchange" submit="true">
+			</xp:eventHandler>
+			<xp:eventHandler event="onchange" submit="true">
+			</xp:eventHandler>
+		</xp:inputText>
+		<xp:inputText id="SwAttSize_9" style="display:none"
+			value="#{compositeData.dataSource.SwAttSize_9}">
+
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onchange" submit="true"
+				refreshMode="norefresh">
+			</xp:eventHandler>
+			<xp:eventHandler event="onchange" submit="true"
+				refreshMode="norefresh">
+			</xp:eventHandler>
+		</xp:inputText>
+	</xp:panel>
+	<xp:panel id="panel10">
+		<xp:this.style><![CDATA[#{javascript:var style = "display:none";
+var fieldValue = getComponent("SwAttName_10").getValue();
+if(fieldValue && fieldValue != "")
+	style = "margin-left: 20px;";
+
+return style;}]]></xp:this.style>
+		<xp:link escape="true" id="link10">
+
+
+			<xp:this.text><![CDATA[#{javascript:var fieldValue = getComponent("SwAttName_10").getValue();
+var fieldSize = getComponent("SwAttSize_10").getValue();
+return fieldValue + " " + fieldSize;}]]></xp:this.text>
+			<xp:this.value><![CDATA[#{javascript:var s= compositeData.dataSource.isEditable() && compositeData.queryOpenFile? compositeData.queryOpenFile + ";": "";
+swFileNumber=10;
+return "javascript: " + s + "document.SwControl.SW_SubformGlobalCall(0,10);";}]]></xp:this.value><xp:image id="image10" style="height:18.0px;width:18.0px">
+				<xp:this.url><![CDATA[#{javascript:var imgSrc = "";
+var fieldValue = getComponent("SwAttType_10").getValue();
+if(fieldValue && fieldValue != "" && fieldValue != "OTHER")
+	imgSrc = "/Sw" + fieldValue + "-32.gif";
+
+return imgSrc;}]]></xp:this.url>
+			</xp:image>
+			&#160;&#160;&#160;
+		</xp:link>
+
+		<xp:br></xp:br>
+		<xp:inputText style="display:none" id="SwAttName_10"
+			value="#{compositeData.dataSource.SwAttName_10}">
+
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onpropertychange" submit="true">
+				<xp:this.action><![CDATA[#{javascript:var fieldValue = getComponent("SwAttType_10").getValue();
+compositeData.dataSource.setValue("SwAttType_10", fieldValue);
+fieldValue = getComponent("SwAttName_10").getValue();
+compositeData.dataSource.setValue("SwAttName_10", fieldValue);
+fieldValue = getComponent("SwAttSize_10").getValue();
+compositeData.dataSource.setValue("SwAttSize_10", fieldValue);}]]></xp:this.action>
+			</xp:eventHandler>
+		</xp:inputText>
+		<xp:inputText id="SwAttType_10" style="display:none"
+			value="#{compositeData.dataSource.SwAttType_10}">
+
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onchange" submit="true">
+			</xp:eventHandler>
+			<xp:eventHandler event="onchange" submit="true">
+			</xp:eventHandler>
+		</xp:inputText>
+		<xp:inputText id="SwAttSize_10" style="display:none"
+			value="#{compositeData.dataSource.SwAttSize_10}">
+
+			<xp:this.rendered><![CDATA[#{javascript:if(compositeData.dataSource.isEditable()){
+return true;
+}
+return false;}]]></xp:this.rendered><xp:eventHandler event="onchange" submit="true"
+				refreshMode="norefresh">
+			</xp:eventHandler>
+			<xp:eventHandler event="onchange" submit="true"
+				refreshMode="norefresh">
+			</xp:eventHandler>
+		</xp:inputText>
+	</xp:panel>
+	<xp:br></xp:br>
+
+
+	<xp:table>
+
+
+
+		<xp:this.style><![CDATA[#{javascript:var fieldName = "";
+	if(compositeData.dataSource.isEditable()){
+		for(i=1; i<=10; i++){
+			fieldName = "SwAttName_" + i;
+			if (getComponent(fieldName).getValue()!= null){
+				return "display:block; margin-left:20px;";
+			}
+		}
+	}
+return "display:none";
+}
+]]></xp:this.style>
+		<xp:tr>
+			<xp:td>
+
+			</xp:td>
+			<xp:td>
+
+
+			</xp:td>
+			<xp:td>
+				<xp:link escape="true"
+					text="#{javascript:swing.LabelDetach}" id="linkDetach"
+					rendered="#{javascript://return compositeData.showSwDetach;}">
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="complete" id="eventHandler1">
+						<xp:this.script><![CDATA[document.SwControl.SW_DetachAttachment();]]></xp:this.script>
+					</xp:eventHandler>
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="complete" id="eventHandler2">
+						<xp:this.script><![CDATA[document.SwControl.SW_DetachAttachment();]]></xp:this.script>
+					</xp:eventHandler>
+				</xp:link>
+			</xp:td>
+			<xp:td>
+				<xp:link escape="true" id="linkDelete"
+					text="#{javascript:swing.LabelDelete}">
+					<xp:this.rendered><![CDATA[#{javascript:
+return compositeData.showSwDelete && currentDocument.isEditable() && esEditorDeCampos && !currentDocument.isNewNote()}]]></xp:this.rendered>
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="complete" id="eventHandler3">
+						<xp:this.script><![CDATA[document.SwControl.SW_DeleteAttachment();
+alert("Utilice la opción 'Guardar datos en el Documento Office' para confirmar la eliminación.")]]></xp:this.script>
+						
+					</xp:eventHandler>
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="complete" id="eventHandler4">
+						<xp:this.script><![CDATA[document.SwControl.SW_DeleteAttachment();]]></xp:this.script>
+					</xp:eventHandler>
+				</xp:link>
+			</xp:td>
+			<xp:td>
+				<xp:link escape="true"
+					text="#{javascript:swing.LabelConvertToPDF}" id="linkConvert"
+					rendered="#{javascript://return compositeData.showSwConvertToPDF;}">
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="complete" id="eventHandler5">
+						<xp:this.script><![CDATA[//document.SwControl.SW_Convert2PDFAndAttach(1, 'PROMPT', '', '');
+document.SwControl.SW_Convert2PDFAttachments('PROMPT', '', '');
+//document.SwControl.SW_AttSubQuerySave();
+//document.SwControl.SW_AttSubQueryClose(1);]]></xp:this.script>
+					</xp:eventHandler>
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="partial" id="eventHandler6">
+						<xp:this.script><![CDATA[document.SwControl.SW_Convert2PDFAttachments('PROMPT', '', '');]]></xp:this.script>
+					</xp:eventHandler>
+				</xp:link>
+			</xp:td>
+
+		</xp:tr>
+	</xp:table>
+	<xp:br></xp:br>
+	<xp:button value="#{javascript:swing.LabelClose}" id="SwClose"
+		style="margin-right:50px" rendered="#{javascript:return false;}">
+		<xp:eventHandler event="onclick" submit="true" immediate="false"
+			save="true" refreshMode="complete">
+			<xp:this.script><![CDATA[if (confirm("Are you sure you want to navigate away from this page?\n\n"+
+	"You are editing the document!\n\n"+
+	"Press OK to continue, or Cancel to stay on the current page.")){
+	document.SwControl.SW_AttSubQueryClose(0);
+	SwSkipClosePrompt=1;
+}]]></xp:this.script>
+
+
+			<xp:this.action>
+				<xp:executeScript
+					script="#{javascript:compositeData.swSaveDocument = false;}">
+				</xp:executeScript>
+			</xp:this.action>
+		</xp:eventHandler>
+	</xp:button>
+	<xp:button id="SwSubmit" style="margin-right:50px">
+
+
+
+		<xp:this.rendered><![CDATA[#{javascript:if (context.getUser().getRoles().contains('[Secretaria]')) {
+	if(!currentDocument.isNewNote()){
+		if(compositeData.dataSource.isEditable()){return true;}
+	};
+}
+return false;}]]></xp:this.rendered>
+		<xp:this.value><![CDATA[#{javascript://swing.LabelSaveAndClose
+'Guardar datos en el Documento Office'}]]></xp:this.value>
+		<xp:eventHandler event="onclick" submit="true" immediate="false"
+			save="true" refreshMode="complete">
+			<xp:this.script><![CDATA[document.SwControl.SW_AttSubQuerySave();
+document.SwControl.SW_AttSubQueryClose(1);
+SwSkipClosePrompt=1;]]></xp:this.script>
+		</xp:eventHandler>
+		<xp:eventHandler event="onclick" submit="true" immediate="false"
+			save="true" refreshMode="complete">
+			<xp:this.script><![CDATA[document.SwControl.SW_AttSubQuerySave();
+document.SwControl.SW_AttSubQueryClose(1);
+SwSkipClosePrompt=1;]]></xp:this.script>
+		</xp:eventHandler>
+	</xp:button>
+	<xp:eventHandler event="onClientLoad" submit="true"
+		refreshMode="norefresh">
+	</xp:eventHandler>
+
+	<xp:br></xp:br>
+	<xp:br></xp:br>
+	<xp:panel
+		style="border-color:rgb(255,255,0);border-style:dotted;border-width:thin;background-color:rgb(241,249,243)">
+		<xp:this.rendered><![CDATA[#{javascript:if (context.getUser().getRoles().contains('[Secretaria]')) {
+	if(!currentDocument.isNewNote()){
+		if(compositeData.dataSource.isEditable()){return true;}
+	};
+}
+return false;}]]></xp:this.rendered>
+		<xp:image url="/warning_amber_18x18.png" id="image11">
+
+		</xp:image>
+		&#160;
+		
+
+		<xp:label id="label2" value="Recuerde utilizar la opción 'Guardar datos en el Documento Office' al crear, modificar o eliminar el documento de la plantilla" style="color:rgb(72,72,72);font-style:italic"></xp:label></xp:panel>
+	&#160;<xp:this.resources>
+		<xp:script src="/SwXPagesLib.js" clientSide="true"></xp:script>
+		<xp:script src="/SwXPagesServerLib.jss" clientSide="false"></xp:script>
+		<xp:bundle src="/Swing.properties" var="swing"></xp:bundle>
+	</xp:this.resources><xp:span style="font-family:Trebuchet MS,sans-serif;font-size:11pt"
+		rendered="false"></xp:span><xp:br></xp:br>
+	<xp:text escape="false" id="SwObjectTag">
+		<xp:this.value><![CDATA[#{javascript:var cgi = new SwCGIVariables();
+var HTTPS = cgi.HTTPS;
+var http = (HTTPS == "ON") ? "https" : "http";
+var dbPath = @ReplaceSubstring(@ReplaceSubstring(@Subset(@DbName(), -1)," ","+"),"\\","/");
+var url = http + "://" + cgi.SERVER_NAME + ":" + cgi.SERVER_PORT + "/" + dbPath;
+var html = '<OBJECT style="DISPLAY: none;" CLASSID="CLSID:9FDA91CD-0583-428C-8659-2D13FF991664" ';
+html += 'CODEBASE="' + url + '/SwIntOfficeWeb.cab/$File/Integrator5.CAB#version=0,0,0,93" ';
+html += 'id="SwControl">\n\r';
+html += '<SPAN STYLE="color:red; font-family:Tahoma,Arial; font-size:8pt; font-weight:bold">\n\r';
+html += 'SWING.Integrator5 ActiveX control failed to load! Some functions on the form might not work properly.<BR />\n\r';
+html += 'Please check browser security settings.\n\r</SPAN></OBJECT>';
+html += '<OBJECT style="DISPLAY: none" CLASSID="CLSID:ED8C108E-4349-11D2-91A4-00C04F7969E8" id=SwConnection>';
+html += '<SPAN STYLE="color:red; font-family:Tahoma,Arial; font-size:8pt; font-weight:bold">SwHttp control failed to load! Some functions on the form might not work properly.<BR> Please check browser security settings.</SPAN>';
+html += '</OBJECT>';
+
+return html;
+}]]></xp:this.value>
+	</xp:text>
+
+
+	&#160;
+	<xp:br></xp:br>
+	<xp:text escape="false" id="SwIdMappings" style="display:none">
+		<xp:this.value><![CDATA[#{javascript:function getChildComponentsIds(component:javax.faces.component.UIComponent) {
+	var ret = "";
+
+	if(component.getFamily() == "javax.faces.Input" || component.getFamily() == "javax.faces.SelectMany" || component.getFamily() == "javax.faces.SelectOne")
+	{
+		ret = component.getId() + "~" + getClientId(component.getId()) + "|";
+	}
+
+	if(component.getChildCount() > 0)
+	{
+		var children:java.util.List = component.getChildren();
+		var componentChild:javax.faces.component.UIComponent;
+		for(var i=0; i < component.getChildCount(); i++) {
+			componentChild = children.get(i);
+			ret += getChildComponentsIds(componentChild);
+		}
+	}
+
+	return ret;
+}
+
+var ret = "";
+var view:javax.faces.component.UIViewRoot = getView();
+ret = "<DIV id='SwIdMappingsDiv' style='width: 500px;word-wrap:break-word;'>|" + getChildComponentsIds(view) + "</DIV>";
+
+return ret;}]]></xp:this.value>
+	</xp:text>
+
+	<xp:br></xp:br>
+	<xp:text escape="false" id="SwEvaluate" style="display:none">
+		<xp:this.value><![CDATA[#{javascript:var html = '<INPUT id="SwEvaluate" type="text" value="">';
+return html;}]]></xp:this.value>
+	</xp:text>
+
+
+	<xp:br></xp:br>
+	<xp:panel style="display:none">
+
+		<xp:inputText id="Categories"
+			value="#{compositeData.dataSource.Categories}">
+		</xp:inputText>
+
+		<xp:br></xp:br>
+		<xp:inputText id="SwInitialize"
+			value="#{compositeData.dataSource.SwInitialize}">
+			<xp:this.defaultValue><![CDATA[${javascript:var res = "";
+if(@IsNewDoc())
+	res = "1";
+
+return res;}]]></xp:this.defaultValue>
+			<xp:this.converter>
+				<xp:convertNumber type="number"></xp:convertNumber>
+			</xp:this.converter>
+		</xp:inputText>
+		<xp:br></xp:br>
+		<xp:inputText id="SwFormAlias"
+			value="#{compositeData.dataSource.SwFormAlias}">
+		</xp:inputText>
+		<xp:br></xp:br>
+		<xp:inputText id="SwMaxAttachments"
+			value="#{compositeData.dataSource.SwMaxAttachments}"
+			defaultValue="10">
+		</xp:inputText>
+		<xp:br></xp:br>
+		<xp:inputText id="SwAllForms"
+			value="#{compositeData.dataSource.SwAllForms}"
+			multipleSeparator=";">
+		</xp:inputText>
+		<xp:br></xp:br>
+		<xp:inputText id="SwDocumentUNID">
+
+			<xp:this.defaultValue><![CDATA[#{javascript:var res = "";
+if(!@IsNewDoc()) res = compositeData.dataSource.getDocument().getUniversalID();
+return res;}]]></xp:this.defaultValue>
+		</xp:inputText>
+		<xp:br></xp:br>
+
+		<xp:inputText id="SwFilePathName" multipleSeparator=";"
+			value="#{compositeData.dataSource.SwFilePathName}">
+		</xp:inputText>
+		<xp:br></xp:br>
+		<xp:inputText id="SwFormName" multipleSeparator=";"
+			value="#{compositeData.dataSource.SwFormName}">
+		</xp:inputText>
+		<xp:br></xp:br>
+
+		<xp:inputText id="SwType"
+			value="#{compositeData.dataSource.SwType}">
+		</xp:inputText>
+		<xp:br></xp:br>
+		<xp:inputText id="SwDeletionList"
+			value="#{compositeData.dataSource.SwDeletionList}"
+			multipleSeparator=";">
+		</xp:inputText>
+		<xp:br></xp:br>
+		<xp:inputText id="SwDataSourceAttached"
+			value="#{compositeData.dataSource.SwDataSourceAttached}">
+			<xp:this.defaultValue><![CDATA[#{javascript:var res = "";
+if(@IsMember("SW_data.tmp", @AttachmentNames())) res = "True";
+
+return res;}]]></xp:this.defaultValue>
+		</xp:inputText>
+		<xp:br></xp:br>
+
+		<xp:inputText id="SwName"
+			value="#{compositeData.dataSource.SwName}">
+		</xp:inputText>
+		<xp:br></xp:br>
+		<xp:inputText id="SwEmbeddedObjectExists"
+			value="#{compositeData.dataSource.SwEmbeddedObjectExists}">
+			<xp:this.defaultValue><![CDATA[#{javascript:"NO"}]]></xp:this.defaultValue>
+		</xp:inputText>
+		<xp:br></xp:br>
+		<xp:inputText id="SwFileIndex"
+			value="#{compositeData.dataSource.SwFileIndex}"
+			multipleSeparator=";">
+		</xp:inputText>
+		<xp:br></xp:br>
+
+		<xp:inputText id="SwIsEditMode"
+			value="#{compositeData.dataSource.SwIsEditMode}">
+
+			<xp:this.defaultValue><![CDATA[#{javascript:var res = "";
+if(compositeData.dataSource.isEditable())
+	res = "1";
+
+return res;}]]></xp:this.defaultValue>
+		</xp:inputText>
+		<xp:br></xp:br>
+		<xp:inputText id="SwMMTemplateNames" multipleSeparator=";"
+			value="#{compositeData.dataSource.SwMMTemplateNames}">
+		</xp:inputText>
+		<xp:br></xp:br>
+
+		<xp:inputText id="SwRefreshFlag"
+			value="#{compositeData.dataSource.SwRefreshFlag}"
+			defaultValue="False">
+		</xp:inputText>
+		<xp:br></xp:br>
+		<xp:inputText id="SwServerName">
+		<xp:this.value><![CDATA[#{javascript:doc=currentDocument.getDocument();
+doc.getParentDatabase().getServer();}]]></xp:this.value></xp:inputText>
+		<xp:br></xp:br>
+		<xp:inputText id="SwDbFilePath">
+		<xp:this.value><![CDATA[#{javascript:doc=currentDocument.getDocument();
+doc.getParentDatabase().getFilePath();}]]></xp:this.value></xp:inputText></xp:panel>
+	</xp:view>

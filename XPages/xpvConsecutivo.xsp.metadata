@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><note class="form" maintenanceversion="1.0" replicaid="0625806D0062AD0E" version="9.0" xmlns="http://www.lotus.com/dxl">
+<noteinfo noteid="128a" sequence="63" unid="15592532ECE612F706257DC70059F0D1">
+<created><datetime>20150108T102223,53-06</datetime></created>
+<modified><datetime>20161118T102858,41-06</datetime></modified>
+<revised><datetime>20161118T102858,40-06</datetime></revised>
+<lastaccessed><datetime>20161118T102858,41-06</datetime></lastaccessed>
+<addedtofile><datetime>20161116T115800,75-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Johan Arroyo/O=CV3</name><name>CN=CV3JOHAN/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=SJODOMDES/OU=SVR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localJohan/OU=DEV/O=CV3</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localCristhian/OU=DEV/O=CV3</name></updatedby>
+<wassignedby><name>CN=localCristhian/OU=DEV/O=CV3</name></wassignedby>
+<item name="$Flags"><text>gC~4K</text></item>
+<item name="$TITLE" sign="true"><text>xpvConsecutivo.xsp</text></item>
+
+<item name="$DesignerVersion" sign="true"><text>8.5.1</text></item>
+
+
+
+
+<item name="$FileNames" sign="true"><text>xpvConsecutivo.xsp</text></item>
+
+</note>

@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex" dojoTheme="true"
+	dojoParseOnLoad="true" dojoForm="true">
+
+
+
+
+	<xp:this.dataContexts>
+		<xp:dataContext var="isEditParent"
+			value="#{javascript:currentDocument.isEditable() }">
+		</xp:dataContext>
+	</xp:this.dataContexts>
+	<xp:table style="width:610.0px">
+		<xp:tr>
+			<xp:td style="width:600.0px">
+
+
+
+
+				<xp:panel id="panel1">
+					<xe:dialog id="dialogNuevoAnexo"
+						title="Nuevo Anexo">
+						<xp:panel id="panelNewAnexo">
+							
+							<xp:this.data>
+								<xp:dominoDocument var="newAnexo" formName="Anexo" computeWithForm="both" ignoreRequestParams="true">
+
+									<xp:this.querySaveDocument><![CDATA[#{javascript:print(compositeData.IDDocumento);
+newAnexo.replaceItemValue("IDdocTema", compositeData.IDDocumento);}]]></xp:this.querySaveDocument>
+								</xp:dominoDocument>
+							</xp:this.data><xp:table>
+								<xp:tr>
+									<xp:td>
+										<xp:label id="label3"
+											value="Descripción">
+										</xp:label>
+									</xp:td>
+									<xp:td>
+										<xp:inputText id="inputText3"
+											value="#{newAnexo.descripcion}">
+										</xp:inputText>
+									</xp:td>
+								</xp:tr>
+								<xp:tr>
+									<xp:td>
+										<xp:label id="label4"
+											value="Anexo">
+										</xp:label>
+									</xp:td>
+									<xp:td>
+										<xp:fileUpload id="fileUpload2"
+											value="#{newAnexo.Archivos}">
+										</xp:fileUpload>
+										<xp:br></xp:br><xp:fileUpload id="fileUpload5" value="#{newAnexo.Archivos}">
+										</xp:fileUpload>
+										<xp:br></xp:br><xp:fileUpload id="fileUpload6" value="#{newAnexo.Archivos}">
+										</xp:fileUpload>
+									</xp:td>
+								</xp:tr>
+							</xp:table>
+							<xe:dialogButtonBar id="dialogButtonBar1">
+								<xp:button value="Aceptar" id="button2">
+									<xp:eventHandler event="onclick"
+										submit="true" refreshMode="partial" refreshId="panelAnexos">
+										<xp:this.action>
+
+											<xp:actionGroup>
+
+
+
+												<xp:saveDocument
+													var="newAnexo">
+												</xp:saveDocument>
+												<xp:executeScript>
+													<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogNuevoAnexo")
+c.hide()}]]></xp:this.script>
+												</xp:executeScript>
+
+											</xp:actionGroup>
+										</xp:this.action>
+									</xp:eventHandler>
+								</xp:button>
+								
+								<xp:button value="Cancel"
+									id="button1">
+									<xp:eventHandler event="onclick"
+										submit="true" refreshMode="complete">
+										<xp:this.action><![CDATA[#{javascript:var c = getComponent("dialogNuevoAnexo")
+c.hide()}]]></xp:this.action>
+									</xp:eventHandler>
+								</xp:button>
+							</xe:dialogButtonBar>
+						</xp:panel>
+					</xe:dialog>
+					<xp:table border="0" cellpadding="0"
+						cellspacing="0">
+						<xp:tr>
+							<xp:td style="width:124px">
+								&#160;&#160;
+								<xp:button value="Nuevo  Anexo"
+									id="button3">
+									<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable()  && !currentDocument.isNewNote()}]]></xp:this.rendered><xp:eventHandler event="onclick"
+										submit="false" id="eventHandler2">
+
+										<xp:this.action><![CDATA[#{javascript:currentDocument.save();}]]></xp:this.action>
+										<xp:this.script>
+											<xp:executeClientScript
+												script="XSP.openDialog('#{id:dialogNuevoAnexo}')">
+											</xp:executeClientScript>
+										</xp:this.script>
+									</xp:eventHandler>
+								</xp:button>
+							</xp:td>
+							<xp:td style="width:402.0px">
+
+
+							</xp:td>
+
+
+
+						</xp:tr>
+
+					</xp:table>
+					<xp:panel id="panelAnexos" style="overflow: auto">
+						<xp:this.data>
+							<xp:dominoView var="vAnexos"
+								viewName="vAnexos"
+								keys="#{javascript:compositeData.IDDocumento}"
+								keysExactMatch="true">
+							</xp:dominoView>
+						</xp:this.data>
+
+
+						<xp:table>
+							<xp:tr>
+								<xp:td style="width:550px">
+									<xp:pager
+										layout="Previous Group Next" partialRefresh="true" id="pager1"
+										for="repeatAnexos" panelPosition="left">
+									</xp:pager>
+								</xp:td>
+							</xp:tr>
+						</xp:table>
+						<xp:repeat id="repeatAnexos" rows="10"
+							value="#{vAnexos}" var="colAnexos" style="height:80.0px">
+
+							<xp:table style="width:565.0px">
+								<xp:tr>
+									<xp:td>
+										<xp:table
+											style="width:554.0px">
+											<xp:tr>
+												<xp:td>
+													<xp:link
+														escape="true" text="Abrir" id="linkEditar"
+														style="text-decoration:underline">
+														<xp:eventHandler
+															event="onclick" submit="false" id="eventHandler1">
+															<xp:this.script><![CDATA[//XSP.openTooltipDialog('#{id:tooltipDialogAnexo}','#{id:computedField1}')
+XSP.openDialog('#{id:dialogEditAnexo}')]]></xp:this.script>
+														</xp:eventHandler>
+													</xp:link>
+													<xp:br></xp:br>
+													<xp:link
+														escape="true" id="linkEliminar" text="Eliminar"
+														style="text-decoration:underline"
+														rendered="#{javascript:currentDocument.isEditable() }">
+														<xp:eventHandler
+															event="onclick" submit="true" refreshMode="partial"
+															refreshId="panelAnexos">
+															<xp:this.action>
+
+																<xp:actionGroup>
+																	<xp:confirm
+																		message="Esta seguro de Eliminar?">
+																	</xp:confirm>
+
+
+
+
+
+
+																	<xp:executeScript>
+																		<xp:this.script><![CDATA[#{javascript:var docEliminar:NotesDocument=database.getDocumentByID(colAnexos.getNoteID());
+if(docEliminar!=null){
+	//docEliminar.removePermanently(true)
+	docEliminar.replaceItemValue("DeletedDocument","Si");
+	docEliminar.save();
+}}]]></xp:this.script>
+																	</xp:executeScript>
+																</xp:actionGroup>
+															</xp:this.action>
+														</xp:eventHandler>
+													</xp:link>
+												</xp:td>
+												<xp:td
+													style="width:466.0px">
+													<xp:text
+														escape="true" id="computedField2"
+														value="#{colAnexos.descripcion}"
+														style="font-weight:bold">
+													</xp:text>
+													<xp:table>
+														<xp:tr>
+															<xp:td
+																style="width:402.0px">
+																<xp:text
+																	escape="true" id="computedField1"
+																	value="#{colAnexos.$2}">
+																</xp:text>
+															</xp:td>
+														</xp:tr>
+													</xp:table>
+												</xp:td>
+
+
+
+											</xp:tr>
+										</xp:table></xp:td>
+								</xp:tr>
+							</xp:table>
+							
+							<xe:dialog id="dialogEditAnexo" title="Anexo">
+								
+								<xp:panel readonly="#{javascript:!currentDocument.isEditable() }">
+									<xe:dialogButtonBar id="dialogButtonBar2">
+								<xp:button value="Aceptar" id="button5">
+									<xp:eventHandler event="onclick" submit="true" refreshMode="partial" refreshId="panelAnexos">
+										<xp:this.action>
+
+											<xp:actionGroup>
+
+
+
+
+
+
+												<xp:saveDocument
+													var="docAnexo">
+												</xp:saveDocument>
+												<xp:executeScript>
+													<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogEditAnexo")
+c.hide()}]]></xp:this.script>
+												</xp:executeScript>
+											</xp:actionGroup>
+										</xp:this.action>
+									</xp:eventHandler>
+								</xp:button>
+								
+								<xp:button value="Cancel" id="button6">
+									<xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+										<xp:this.action><![CDATA[#{javascript:var c = getComponent("dialogNuevoAnexo")
+c.hide()}]]></xp:this.action>
+									</xp:eventHandler>
+								</xp:button>
+							</xe:dialogButtonBar>
+									<xp:this.data>
+										<xp:dominoDocument var="docAnexo" action="editDocument" documentId="#{javascript:colAnexos.getNoteID()}" formName="Anexo" ignoreRequestParams="true">
+										</xp:dominoDocument>
+									</xp:this.data>
+
+									<xp:table>
+										<xp:tr>
+											<xp:td></xp:td>
+											<xp:td>
+
+
+											</xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td>
+												<xp:label id="label1" value="Descripción">
+												</xp:label>
+											</xp:td>
+											<xp:td>
+												<xp:inputText id="inputText1" value="#{docAnexo.descripcion}">
+												</xp:inputText>
+											</xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td>
+												<xp:label id="label2" value="Archivo ">
+												</xp:label>
+											</xp:td>
+											<xp:td>
+												<xp:fileUpload id="fileUpload1" value="#{docAnexo.Archivos}">
+												</xp:fileUpload>
+												<xp:br></xp:br>
+												<xp:fileUpload id="fileUpload3" value="#{docAnexo.Archivos}">
+												</xp:fileUpload>
+												<xp:br></xp:br>
+												<xp:fileUpload id="fileUpload4" value="#{docAnexo.Archivos}">
+												</xp:fileUpload>
+												<xp:fileDownload rows="30" id="fileDownload1" displayLastModified="false" value="#{docAnexo.Archivos}" allowDelete="${javascript:currentDocument.isEditable() }">
+												</xp:fileDownload>
+											</xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td></xp:td>
+											<xp:td>
+												
+												
+											</xp:td>
+										</xp:tr>
+									</xp:table>
+								</xp:panel></xe:dialog>
+							
+							<hr></hr></xp:repeat>
+
+
+					</xp:panel>
+				</xp:panel>
+				
+			</xp:td>
+		</xp:tr>
+	</xp:table>
+</xp:view>

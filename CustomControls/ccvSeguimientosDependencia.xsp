@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core">
+	<xp:this.data>
+		<xp:dominoView var="view1"
+			viewName="SeguimientosAcuerdosActivos">
+		</xp:dominoView>
+	</xp:this.data>
+	<xp:panel>
+		<xp:button value="Generar Reporte" id="button1"><xp:this.rendered><![CDATA[#{javascript:context.getUser().getRoles().contains('[Secretaria]')}]]></xp:this.rendered>
+			<xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+				<xp:this.action>
+
+					<xp:actionGroup>
+
+						<xp:confirm
+							message="Desea generar un reporte de Seguimientos por Dependencia?">
+						</xp:confirm>
+
+
+
+
+						<xp:executeScript>
+							<xp:this.script><![CDATA[#{javascript:
+	var doc:NotesDocument=database.createDocument(); 
+	if(doc!=null){
+		doc.replaceItemValue("Form","SolicitudReporte");
+		doc.computeWithForm(true,false);
+		doc.replaceItemValue("PlantillaReporte","ReporteSeguimiento");
+		doc.save(true);
+		view.postScript("alert('El reporte será enviado dentro de unos minutos a su buzón de correo.')");
+	}
+}]]></xp:this.script>
+						</xp:executeScript>
+					</xp:actionGroup>
+				</xp:this.action></xp:eventHandler></xp:button>
+		<xp:br></xp:br><xp:link text="Colapsar" id="linkCollapseAll" themeId="Link.collapse">
+						<xp:eventHandler event="onclick" submit="true" refreshMode="complete" immediate="true">
+							<xp:this.action><![CDATA[#{javascript:sessionScope.viewMode = 1;
+context.reloadPage();}]]></xp:this.action>
+						</xp:eventHandler>
+</xp:link>&#160;&#160;&#160;&#160;&#160;&#160;<xp:link text="Expandir" id="linkExpandAll" themeId="Link.expand">
+						<xp:eventHandler event="onclick" submit="true" refreshMode="complete" immediate="true">
+							<xp:this.action><![CDATA[#{javascript:sessionScope.viewMode = 0;
+context.reloadPage()}]]></xp:this.action>
+						</xp:eventHandler>
+</xp:link></xp:panel>
+
+	<xp:viewPanel rows="30" id="viewPanel1">
+		<xp:this.facets>
+			<xp:pager partialRefresh="true" layout="Previous Group Next"
+				xp:key="headerPager" id="pager1">
+			</xp:pager>
+		</xp:this.facets>
+		<xp:this.data>
+			<xp:dominoView var="view2"
+				viewName="SeguimientosDependencia"
+				expandLevel="#{javascript:return parseInt(sessionScope.viewMode);}">
+			</xp:dominoView>
+		</xp:this.data>
+		<xp:viewColumn columnName="Dependencia" id="viewColumn1" style="font-weight:bold;text-decoration:underline">
+			<xp:viewColumnHeader value="Dependencia"
+				id="viewColumnHeader1">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+		<xp:viewColumn columnName="Descripcion" id="viewColumn2"
+			displayAs="link" openDocAsReadonly="true">
+
+			<xp:viewColumnHeader value="Descripción"
+				id="viewColumnHeader2">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+		<xp:viewColumn columnName="Estado" id="viewColumn3">
+			<xp:viewColumnHeader value="Estado"
+				id="viewColumnHeader3">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+	</xp:viewPanel></xp:view>

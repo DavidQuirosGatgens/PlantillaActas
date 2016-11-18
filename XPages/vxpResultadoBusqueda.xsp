@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xc="http://www.ibm.com/xsp/custom"
+	xmlns:xe="http://www.ibm.com/xsp/coreex"
+	pageTitle="#{javascript:database.getTitle()}">
+
+	<xp:this.resources>
+		<xp:script src="/GeneralSSJS.jss" clientSide="false"></xp:script>
+	</xp:this.resources>
+	<xp:this.beforePageLoad><![CDATA[#{javascript:InitRedirect();}]]></xp:this.beforePageLoad>
+	<xc:Plantilla>
+		<xp:this.facets>
+			<xe:formTable id="formTable1" xp:key="facetMiddle"
+				formTitle="Resultados de Busqueda">
+				<xe:formRow id="formRow1" labelPosition="none">
+					<xc:ccResultadoConsulta
+						viewName="#{javascript:'ConsultasFolder'}">
+					</xc:ccResultadoConsulta>
+					<xp:this.facets></xp:this.facets>
+				</xe:formRow>
+
+
+				<xe:this.formDescription><![CDATA[#{javascript:var vParam=database.getView("(Parametros)");
+var docParam=vParam.getFirstDocument();
+if(docParam!=null){
+	return docParam.getItemValueString("Empresa");
+}
+}]]></xe:this.formDescription>
+			</xe:formTable>
+
+
+			<xc:Menu xp:key="facetLeft"></xc:Menu>
+		</xp:this.facets>
+	</xc:Plantilla>
+</xp:view>

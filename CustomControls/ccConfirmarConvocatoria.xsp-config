@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config>
+  <faces-config-extension>
+    <namespace-uri>http://www.ibm.com/xsp/custom</namespace-uri>
+    <default-prefix>xc</default-prefix>
+  </faces-config-extension>
+  <composite-component>
+    <component-type>ccConfirmarConvocatoria</component-type>
+    <composite-name>ccConfirmarConvocatoria</composite-name>
+    <composite-file>/ccConfirmarConvocatoria.xsp</composite-file>
+    <composite-extension>
+      <designer-extension>
+        <in-palette>true</in-palette>
+        <render-markup>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&#xd;
+&lt;xp:view xmlns:xp="http://www.ibm.com/xsp/core"&gt;&#xd;
+&lt;xp:image url="/ConfirmarAsistencia.jpg"&gt;&lt;/xp:image&gt;&#xd;
+&lt;/xp:view&gt;</render-markup>
+      </designer-extension>
+    </composite-extension>
+    <property>
+      <property-name>redirectTo</property-name>
+      <property-class>string</property-class>
+      <display-name>redirectTo</display-name>
+    </property>
+    <property>
+      <property-name>IDDocumentoAsociado</property-name>
+      <property-class>string</property-class>
+      <display-name>IDDocumentoAsociado</display-name>
+    </property>
+  </composite-component>
+</faces-config>

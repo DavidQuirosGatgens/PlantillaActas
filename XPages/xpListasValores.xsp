@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xc="http://www.ibm.com/xsp/custom"
+	xmlns:xe="http://www.ibm.com/xsp/coreex"
+	pageTitle="#{javascript:database.getTitle()}">
+	<xp:this.data>
+		<xp:dominoDocument formName="ListaValores"
+			var="DocListaValores">
+		</xp:dominoDocument>
+	</xp:this.data>
+
+	<xc:Plantilla>
+		<xp:this.facets>
+			<xe:formTable id="formTable1"
+				formTitle="Administración / Lista de Valores" labelPosition="above"
+				xp:key="facetMiddle">
+				<xe:this.formDescription><![CDATA[#{javascript:var vParam=database.getView("(Parametros)");
+var docParam=vParam.getFirstDocument();
+if(docParam!=null){
+	return docParam.getItemValueString("Empresa");
+}
+}]]></xe:this.formDescription>
+				<xp:panel>
+
+
+
+					<xe:formRow id="formRow3">
+						<xp:panel>
+							<xp:button value="Guardar y Salir"
+								id="btnSalvar"
+								rendered="#{javascript:currentDocument.isEditable() }">
+								<xp:eventHandler event="onclick"
+									submit="true" refreshMode="complete" immediate="false"
+									save="true" id="eventHandler1">
+									<xp:this.script>
+										<xp:executeClientScript>
+											<xp:this.script><![CDATA[var elementtitulo = dojo.byId("#{id:Llave}");
+
+	if(null != elementtitulo){
+		if(elementtitulo.value == ""){
+			alert("Debe indicar la descripción o llave de la lista");
+			return false;
+		}
+	}]]></xp:this.script>
+										</xp:executeClientScript>
+									</xp:this.script>
+								</xp:eventHandler>
+							</xp:button>
+							<xp:button value="Editar" id="button11"
+								rendered="#{javascript:!currentDocument.isEditable()}">
+								<xp:eventHandler event="onclick"
+									submit="true" refreshMode="complete">
+									<xp:this.action>
+										<xp:changeDocumentMode
+											mode="edit" var="document1">
+										</xp:changeDocumentMode>
+									</xp:this.action>
+								</xp:eventHandler>
+							</xp:button>
+							<xp:button id="btnSalir" value="Salir">
+								<xp:eventHandler event="onclick"
+									submit="true" refreshMode="complete" immediate="true"
+									save="false" id="eventHandler2">
+									<xp:this.action>
+										<xp:openPage
+											name="$$PreviousPage">
+										</xp:openPage>
+									</xp:this.action>
+								</xp:eventHandler>
+							</xp:button>
+						</xp:panel>
+					</xe:formRow>
+					<xe:formRow id="formRow1" labelPosition="inherit">
+						<xp:inputText id="Llave"
+							value="#{DocListaValores.key}">
+						</xp:inputText>
+						<xp:this.facets>
+							<xp:label value="Llave" id="label1"
+								xp:key="label" style="font-weight:bold">
+							</xp:label>
+						</xp:this.facets>
+					</xe:formRow>
+					<xe:formRow id="formRow2" labelPosition="inherit">
+						<xp:inputTextarea id="inputTextarea1"
+							style="width:300px;height:100px"
+							value="#{DocListaValores.values}">
+							<xp:this.multipleSeparator><![CDATA[#{javascript:"\n"}]]></xp:this.multipleSeparator>
+						</xp:inputTextarea>
+
+						<xp:this.facets>
+							<xp:label value="Valores" id="label2"
+								xp:key="label" style="font-weight:bold">
+							</xp:label>
+						</xp:this.facets>
+					</xe:formRow>
+				</xp:panel>
+
+
+			</xe:formTable>
+
+			<xc:Menu xp:key="facetLeft"></xc:Menu>
+		</xp:this.facets>
+	</xc:Plantilla>
+</xp:view>

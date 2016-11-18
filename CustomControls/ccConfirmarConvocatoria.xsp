@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex"><xp:this.resources>
+		<xp:script src="/ClientSideValidationV1.js" clientSide="true"></xp:script>
+	</xp:this.resources><xp:this.data>
+		<xp:dominoDocument var="curDocument" formName="OrdenDelDia"></xp:dominoDocument>
+	</xp:this.data><xp:this.afterPageLoad>
+		<xp:changeDocumentMode mode="edit" var="curDocument"></xp:changeDocumentMode>
+	</xp:this.afterPageLoad>
+	<xp:button value="Confirmar Asistencia" id="button1">
+		<xp:this.rendered><![CDATA[#{javascript:if((document1.getDocument(true).getItemValueString("Estado")=="Convocado")
+&&( context.getUser().getRoles().contains('[JuntaDirectiva]')) ) 
+return true;
+
+
+}]]></xp:this.rendered>
+		<xp:eventHandler event="onclick" submit="true"
+			refreshMode="complete">
+			<xp:this.action><![CDATA[#{javascript:viewScope.AccionWF="Aprobar";
+var c = getComponent("dialogComentarios");
+currentDocument.setValue("ComentariosWF","");;
+c.show();
+}]]></xp:this.action>
+		</xp:eventHandler>
+	</xp:button>
+	
+	
+	&#160;
+	
+	
+	<xe:dialog id="dialogComentarios" title="Comentarios de Confirmación">
+		<xe:dialogButtonBar id="dialogButtonBar3">
+
+			<xp:button value="Aceptar" id="button3">
+				<xp:eventHandler event="onclick" submit="true"
+					refreshMode="complete">
+					
+					<xp:this.script><![CDATA[var msg="";
+if(!validaCampoTexto(dojo.byId("#{id:txComentariosWF}")))msg= msg + "Comentarios.\n";
+
+
+
+if(msg!=""){
+	alert("Debe incluir los siguientes Datos: \n" + msg);
+	return false;
+}
+
+
+]]></xp:this.script>
+					<xp:this.action>
+						<xp:actionGroup>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+							<xp:executeScript>
+								<xp:this.script><![CDATA[#{javascript:var docAprob:NotesDocument;
+docAprob=database.createDocument();
+docAprob.replaceItemValue("form","ConfirmarAsistencia");
+docAprob.replaceItemValue("IDDocumentoAsociado",compositeData.IDDocumentoAsociado);
+docAprob.replaceItemValue("Comentarios",curDocument.getItemValueString("ComentariosWF"));
+//TODO generar notificacion a Secretaría
+docAprob.computeWithForm(false,false);
+docAprob.save(true,false);
+}]]></xp:this.script>
+							</xp:executeScript>
+							<xp:openPage
+								name="#{javascript:compositeData.redirectTo}">
+							</xp:openPage>
+						</xp:actionGroup>
+					</xp:this.action></xp:eventHandler>
+			</xp:button>
+			<xp:button value="Cancelar" id="button2">
+				<xp:eventHandler event="onclick" submit="false">
+					<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogComentarios}')]]></xp:this.script>
+				</xp:eventHandler>
+			</xp:button>
+		</xe:dialogButtonBar>
+
+		<xe:dialogContent id="dialogContent5">
+			<xp:panel id="panelConfirmar">
+				<xp:table>
+
+					<xp:tr>
+						<xp:td>
+							<xp:label value="Comentario" id="label5"></xp:label>
+							<xp:br></xp:br>
+
+						</xp:td>
+						<xp:td>
+							<xp:inputTextarea id="txComentariosWF"
+								style="width:568.0px;height:63.0px"
+								value="#{curDocument.ComentariosWF}">
+							</xp:inputTextarea>
+						</xp:td>
+					</xp:tr>
+					
+					
+				</xp:table>
+			</xp:panel>
+		</xe:dialogContent>
+	</xe:dialog>
+</xp:view>

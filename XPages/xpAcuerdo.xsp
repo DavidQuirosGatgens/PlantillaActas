@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xc="http://www.ibm.com/xsp/custom"
+	xmlns:xe="http://www.ibm.com/xsp/coreex"
+	pageTitle="#{javascript:database.getTitle()}">
+
+	<xc:Plantilla>
+		<xp:this.facets>
+			<xp:panel xp:key="facetMiddle">
+				<xe:formTable id="formTable1" labelPosition="above"
+					formTitle="Formulario de Acuerdo">
+					<xe:this.formDescription><![CDATA[#{javascript:var vParam=database.getView("(Parametros)");
+var docParam=vParam.getFirstDocument();
+if(docParam!=null){
+	return docParam.getItemValueString("Empresa");
+}
+}]]></xe:this.formDescription>
+					<xp:panel>
+
+
+
+
+
+
+						<xe:formRow id="formRow1">
+							<xc:ccAcuerdo></xc:ccAcuerdo>
+						</xe:formRow>
+					</xp:panel>
+
+
+				</xe:formTable>
+				<xp:br></xp:br>
+				<xp:br></xp:br>
+				<xp:panel></xp:panel>
+			</xp:panel>
+
+
+
+			<xc:Menu xp:key="facetLeft"></xc:Menu>
+		</xp:this.facets>
+	</xc:Plantilla>
+</xp:view>

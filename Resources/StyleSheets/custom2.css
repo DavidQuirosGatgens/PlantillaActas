@@ -1,0 +1,7 @@
+.lotusPlaceBar .lotusBtnContainer {
+	margin:0;
+}
+var applicationLogo= dojo.query('.applicationLogo')[0];
+applicationLogo.onclick = function() {
+            alert('clicked on logo');
+} 

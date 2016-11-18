@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:xe="http://www.ibm.com/xsp/coreex">
+	<xp:button value="Nuevo Tema" id="button1"><xp:this.rendered><![CDATA[#{javascript:context.getUser().getRoles().contains('[Secretaria]')}]]></xp:this.rendered><xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+	<xp:this.action>
+		<xp:openPage name="/xpTema.xsp" target="newDocument"></xp:openPage>
+	</xp:this.action></xp:eventHandler></xp:button>
+
+	<xp:this.data>
+		<xp:dominoView var="view1" viewName="vTemasPendientes"></xp:dominoView>
+	</xp:this.data>
+	<xp:button value="Eliminar" id="button2">
+			
+		<xp:this.rendered><![CDATA[#{javascript:context.getUser().getRoles().contains('[Secretaria]')}]]></xp:this.rendered><xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+			<xp:this.action>
+
+				<xp:actionGroup>
+
+
+
+
+					<xp:confirm
+						message="Esta Seguro? Se eliminaran el documento seleccionado y todos los documentos asociados.">
+					</xp:confirm>
+
+
+
+
+
+
+
+					<xp:executeScript>
+						<xp:this.script><![CDATA[#{javascript:var agent = database.getAgent('(EliminaDocsRelacionados)');
+var viewPanel=getComponent("viewPanel1");
+var docIDArray=viewPanel.getSelectedIds(); 
+if (docIDArray.length>0){
+	for(i=0;i < docIDArray.length; i++){
+		var docId=docIDArray[i];
+		var doc:NotesDocument=database.getDocumentByID(docId); 
+		if(doc!=null){
+			agent.runWithDocumentContext(doc);
+			//view.postScript("alert('Se selecciono un documento.')");
+		}
+	}
+}else{
+	view.postScript("alert('Debe seleccionar al menos un documento.')");
+} }]]></xp:this.script>
+					</xp:executeScript>
+				</xp:actionGroup>
+			</xp:this.action></xp:eventHandler></xp:button><xp:br></xp:br>
+	<xp:viewPanel rows="30" value="#{view1}" id="viewPanel1" pageName="/xpTema.xsp">
+		<xp:this.facets>
+			<xp:pager partialRefresh="true" layout="Previous Group Next"
+				xp:key="headerPager" id="pager1">
+			</xp:pager>
+		</xp:this.facets>
+		<xp:viewColumn columnName="FechaSession" id="viewColumn1"
+			style="width:178.0px" displayAs="link" openDocAsReadonly="true">
+			<xp:this.showCheckbox><![CDATA[${javascript:context.getUser().getRoles().contains('[Secretaria]')}]]></xp:this.showCheckbox>
+			<xp:this.converter>
+				<xp:convertDateTime type="date"></xp:convertDateTime>
+			</xp:this.converter>
+			<xp:viewColumnHeader value="Fecha session"
+				id="viewColumnHeader1" style="font-weight:bold">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+		<xp:viewColumn columnName="Titulo" id="viewColumn2"
+			style="width:598.0px" displayAs="link" openDocAsReadonly="true">
+			<xp:viewColumnHeader value="Título"
+				id="viewColumnHeader2" style="font-weight:bold">
+			</xp:viewColumnHeader>
+		</xp:viewColumn>
+	</xp:viewPanel></xp:view>

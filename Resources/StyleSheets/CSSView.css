@@ -1,0 +1,53 @@
+TABLE
+{
+	font-size: 8pt;
+	font-family: Tahoma, Verdana, Arial;
+	width: 100%;
+}
+
+TR
+{
+	line-height: 14pt;
+	color: gray;
+}
+
+.clsNavigationTable
+{
+	font-size: 8pt;
+	font-family: Tahoma, Verdana, Arial;
+	border-collapse: collapse;
+	border: 1;
+	width: 350;
+	text-align: center;
+}
+.clsHeaderRow
+{
+	color: red;
+}
+
+.clsOddRow
+{
+	background-color: white;
+}
+
+.clsEvenRow
+{
+	background-color: #f7f7f7;
+}
+
+.clsCat
+{
+	color: #0c4b7b;
+	font-weight: bold;
+}
+
+A, A:link, A:active, A:visited
+{
+	color: blue;
+	text-decoration: none;
+}
+
+A:hover
+{
+	color: #ed7320;
+}

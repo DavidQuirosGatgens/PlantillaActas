@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xc="http://www.ibm.com/xsp/custom"
+	pageTitle="#{javascript:database.getTitle()}">
+	<xp:this.data>
+		<xp:dominoDocument var="document1" formName="ActaTmp"></xp:dominoDocument>
+	</xp:this.data>
+
+	<xp:br></xp:br>
+	<xp:br></xp:br>
+	<xc:ccMantActaGenerada></xc:ccMantActaGenerada>
+</xp:view>

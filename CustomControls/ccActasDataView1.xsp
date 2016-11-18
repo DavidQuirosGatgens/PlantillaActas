@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:xe="http://www.ibm.com/xsp/coreex">
+	<xp:panel>
+		
+		
+		<xp:button value="Eliminar" id="button2">
+			
+		<xp:this.rendered><![CDATA[#{javascript:context.getUser().getRoles().contains('[Secretaria]')}]]></xp:this.rendered><xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+			<xp:this.action>
+
+				<xp:actionGroup>
+
+
+
+
+					<xp:confirm
+						message="Esta Seguro? Se eliminaran el documento seleccionado y todos los documentos asociados.">
+					</xp:confirm>
+
+
+
+
+					<xp:executeScript>
+						<xp:this.script><![CDATA[#{javascript:var agent = database.getAgent('(EliminaDocsRelacionados)');
+var viewPanel=getComponent("dataView1");
+var docIDArray=viewPanel.getSelectedIds(); 
+if (docIDArray.length>0){
+	for(i=0;i < docIDArray.length; i++){
+		var docId=docIDArray[i];
+		var doc:NotesDocument=database.getDocumentByID(docId); 
+		if(doc!=null){
+			agent.runWithDocumentContext(doc);
+			//view.postScript("alert('Se selecciono un documento.')");
+		}
+	}
+}else{
+	view.postScript("alert('Debe seleccionar al menos un documento.')");
+} }]]></xp:this.script>
+					</xp:executeScript>
+				</xp:actionGroup>
+			</xp:this.action></xp:eventHandler></xp:button>
+	</xp:panel>
+	<xe:dataView id="dataView1" collapsibleDetail="true"
+		columnTitles="true" var="rowHandle" pageName="/xpActa.xsp"
+		openDocAsReadonly="true">
+		<xe:this.summaryColumn>
+			<xe:viewSummaryColumn columnName="$5"
+				columnTitle="Número">
+			</xe:viewSummaryColumn>
+		</xe:this.summaryColumn>
+		<xe:this.extraColumns>
+			<xe:viewExtraColumn columnName="FechaOrdenLetras"
+				columnTitle="Fecha" style="width:200.0px">
+			</xe:viewExtraColumn>
+			<xe:viewExtraColumn columnName="HoraSesionLetras"
+				columnTitle="Hora">
+			</xe:viewExtraColumn>
+			<xe:viewExtraColumn columnName="$7" columnTitle="Creador"></xe:viewExtraColumn>
+			<xe:viewExtraColumn columnName="FechaCreacion"
+				columnTitle="Creación">
+			</xe:viewExtraColumn>
+
+		</xe:this.extraColumns>
+		<xe:this.showCheckbox><![CDATA[#{javascript:context.getUser().getRoles().contains('[Secretaria]')}]]></xe:this.showCheckbox>
+		<xp:this.facets>
+			<xp:pager layout="Previous Group Next" partialRefresh="true"
+				id="pager2" xp:key="pagerBottomRight">
+			</xp:pager>
+			<xp:pager layout="Previous Group Next" partialRefresh="true"
+				id="pager1" xp:key="pagerTop">
+			</xp:pager>
+			<xe:pagerAddRows id="pagerAddRows1" xp:key="pagerBottom"
+				for="dataView1" partialRefresh="true" refreshPage="true">
+			</xe:pagerAddRows>
+			<xp:panel xp:key="detail">
+
+				<xp:label value="Tipo sesión:" id="label8"
+					for="tipoSesion1" style="font-weight:bold">
+				</xp:label>
+				&#160;
+				<xp:text escape="true" id="computedField3">
+					<xp:this.value><![CDATA[#{javascript:rowHandle.getDocument().getItemValueString("TipoSesion")}]]></xp:this.value>
+				</xp:text>
+				<xp:br></xp:br>
+				<xp:label value="Lugar:" id="label1" for="tipoSesion1"
+					style="font-weight:bold">
+				</xp:label>
+				&#160;
+				<xp:text escape="true" id="computedField2">
+					<xp:this.value><![CDATA[#{javascript:rowHandle.getDocument().getItemValueString("Lugar")}]]></xp:this.value>
+				</xp:text>
+
+
+				<xp:table>
+					<xp:tr>
+						<xp:td style="height:20.0px;width:30.0px"></xp:td>
+						<xp:td>
+							<xe:dataView id="dataViewTemas"
+								collapsibleDetail="true" var="rowTemas" openDocAsReadonly="true"
+								columnTitles="true" pageName="/xpTema.xsp"
+								showCheckbox="false">
+								<xe:this.summaryColumn>
+									<xe:viewSummaryColumn
+										columnTitle="Tema"
+										style="font-size:8pt;color:rgb(0,0,128);font-weight:bold">
+										<xe:this.value><![CDATA[#{javascript:rowTemas.getDocument().getItemValueString("NumeroTema") +" - "+ rowTemas.getDocument().getItemValueString("Titulo")}]]></xe:this.value>
+									</xe:viewSummaryColumn>
+								</xe:this.summaryColumn>
+								<xe:this.iconColumn>
+									<xe:viewIconColumn>
+										<xe:this.icons>
+											<xe:iconEntry
+												url="/check.png" selectedValue="1"
+												style="width:10.0px;height:10.0px">
+												<xe:this.selected><![CDATA[#{javascript:rowTemas.getDocument().getItemValueString("TemaVisto")=="Si"}]]></xe:this.selected>
+											</xe:iconEntry>
+											<xe:iconEntry
+												selectedValue="2" style="width:10.0px;height:10.0px"
+												url="/pending.png">
+												<xe:this.selected><![CDATA[#{javascript:rowTemas.getDocument().getItemValueString("TemaVisto")!="Si"}]]></xe:this.selected>
+											</xe:iconEntry>
+										</xe:this.icons>
+									</xe:viewIconColumn>
+								</xe:this.iconColumn>
+								<xp:this.facets>
+
+
+								</xp:this.facets>
+								<xe:this.data>
+									<xp:dominoView var="vTemas"
+										viewName="vTemasAsignados_ByActa">
+										<xp:this.categoryFilter><![CDATA[#{javascript:rowHandle.getDocument().getItemValueString("IDdocActa")}]]></xp:this.categoryFilter>
+									</xp:dominoView>
+								</xe:this.data>
+							</xe:dataView>
+						</xp:td>
+					</xp:tr>
+				</xp:table>
+			</xp:panel>
+
+		</xp:this.facets>
+		<xe:this.data>
+			<xp:dominoView var="vOrdenes" viewName="vActas"></xp:dominoView>
+		</xe:this.data>
+	</xe:dataView>
+	<xe:pagerSaveState id="pagerSaveState1" for="dataView1" globalRows="false">
+	</xe:pagerSaveState>
+	
+	<xp:br></xp:br>
+	
+</xp:view>

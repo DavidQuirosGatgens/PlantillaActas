@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+	<xp:this.data>
+		<xp:dominoDocument var="consecutivo" formName="frmConsecutivo"
+			computeWithForm="both">
+		</xp:dominoDocument>
+	</xp:this.data>
+
+
+	<xp:this.resources>
+		<xp:script src="/GeneralSSJS.jss" clientSide="false"></xp:script>
+		<xp:script src="/ClientSideValidationV1.js" clientSide="true"></xp:script>
+	</xp:this.resources>
+	<xp:table style="width:508.0px">
+		<xp:tr>
+			<xp:td>
+				<xp:button value="Salvar" id="button1"
+					rendered="#{javascript:currentDocument.isEditable()}">
+
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="complete" id="eventHandler1">
+						<xp:this.action>
+
+							<xp:actionGroup>
+								<xp:saveDocument var="consecutivo"></xp:saveDocument>
+								<xp:openPage name="$$PreviousPage"></xp:openPage>
+							</xp:actionGroup>
+						</xp:this.action>
+					</xp:eventHandler>
+				</xp:button>
+				<xp:button value="Editar" id="button2"
+					rendered="#{javascript:!currentDocument.isEditable()}">
+
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="complete" id="eventHandler2">
+						<xp:this.action>
+							<xp:changeDocumentMode mode="edit"
+								var="consecutivo">
+							</xp:changeDocumentMode>
+						</xp:this.action>
+					</xp:eventHandler>
+				</xp:button>
+				<xp:button value="Salir" id="button3">
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="complete" id="eventHandler3">
+						<xp:this.action>
+							<xp:openPage name="$$PreviousPage"></xp:openPage>
+						</xp:this.action>
+					</xp:eventHandler>
+				</xp:button>
+			</xp:td>
+			<xp:td></xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td>
+				<xp:label value="Documento:" id="codiDocu_Label1"
+					for="codiDocu1">
+				</xp:label>
+			</xp:td>
+			<xp:td>
+
+				<xp:text escape="true" id="computedField1"
+					value="#{consecutivo.CodiDocu}">
+				</xp:text>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td>
+				<xp:label value="Llave:" id="llaveConsecutivo_Label1"
+					for="llaveConsecutivo1">
+				</xp:label>
+
+			</xp:td>
+			<xp:td>
+				<xp:inputText value="#{consecutivo.llaveConsecutivo}"
+					id="llaveConsecutivo1">
+				</xp:inputText>
+
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td>
+				<xp:label value="Incluir Año:" id="label1"></xp:label>
+			</xp:td>
+			<xp:td>
+				<xp:checkBox text="Si" id="checkBox1"
+					value="#{consecutivo.IncluirAnno}">
+				</xp:checkBox>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td>
+
+				<xp:label value="Consecutivo:" id="field1_Label1"
+					for="field11">
+				</xp:label>
+			</xp:td>
+			<xp:td>
+
+				<xp:inputText value="#{consecutivo.Field1}"
+					id="field11">
+					<xp:this.converter>
+						<xp:convertNumber type="number"
+							integerOnly="true">
+						</xp:convertNumber>
+					</xp:this.converter>
+				</xp:inputText>
+			</xp:td></xp:tr><xp:tr><xp:td><xp:checkBox text="Usar Consecutivo General:" id="checkBox2" value="#{consecutivo.UsarConsecutivoGeneral}"></xp:checkBox></xp:td>
+			<xp:td>
+				<xp:inputText value="#{consecutivo.Field3}"
+					id="inputText1">
+				<xp:this.converter>
+					<xp:convertNumber type="number"
+						integerOnly="true">
+					</xp:convertNumber></xp:this.converter></xp:inputText></xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td>
+
+				<xp:label value="Longitud:" id="field2_Label1"
+					for="field21">
+				</xp:label>
+			</xp:td>
+			<xp:td>
+
+				<xp:inputText value="#{consecutivo.Field2}"
+					id="field21">
+					<xp:this.converter>
+						<xp:convertNumber type="number"
+							integerOnly="true">
+						</xp:convertNumber>
+					</xp:this.converter>
+				</xp:inputText>
+			</xp:td>
+		</xp:tr>
+	</xp:table></xp:view>

@@ -1,0 +1,175 @@
+<?xml version='1.0' encoding='utf-8'?>
+<note class='form' xmlns='http://www.lotus.com/dxl' version='9.0' maintenanceversion='1.0'
+ replicaid='0625806D0062AD0E'>
+<noteinfo noteid='1182' unid='27C36DDB821A5AB706257DA90061225F' sequence='44'>
+<created><datetime>20141209T114057,91-06</datetime></created>
+<modified><datetime>20161118T102857,11-06</datetime></modified>
+<revised><datetime>20161118T102857,10-06</datetime></revised>
+<lastaccessed><datetime>20161118T102857,11-06</datetime></lastaccessed>
+<addedtofile><datetime>20161116T115759,47-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Elisa Núñez/OU=Tec/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name
+>CN=CV3JOHAN/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=SJODOMDES/OU=SVR/O=Recope</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localJohan/OU=DEV/O=CV3</name><name
+>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=localMilton/OU=DEV/O=CV3</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
+>CN=localCristhian/OU=DEV/O=CV3</name></updatedby>
+<wassignedby><name>CN=localCristhian/OU=DEV/O=CV3</name></wassignedby>
+<item name='$FILE' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='$HTMLCode' sign='true'>
+<rawitemdata type='1'>
+X/8QAAIADwAHAAAAAAAAAA==
+</rawitemdata></item>
+<item name='$TITLE'><text>ActaGenerada</text></item>
+<item name='$Comment' sign='true'><text/></item>
+<item name='$Info' sign='true'>
+<rawitemdata type='1'>
+hhgBAIAAAAAAgAAAAQABAP///wAQAAAA
+</rawitemdata></item>
+<item name='$SubForms' sign='true'><text>SwAttachmentsLayout-Modificado</text></item>
+<item name='$SubForm_RepIDs' sign='true'><text>0000000000000000</text></item>
+<item name='$Flags'><text/></item>
+<item name='$DesignerVersion' sign='true'><text>8.5.3</text></item>
+<item name='$$ScriptName' summary='false' sign='true'><text>ActaGenerada</text></item>
+<item name='ActaGenerada' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwInitialize' summary='false' sign='true'><number>0</number></item>
+<item name='SwAttType_1' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttName_1' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttSize_1' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttType_2' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttName_2' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttSize_2' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttType_3' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttName_3' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttSize_3' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttType_4' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttName_4' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttSize_4' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttType_5' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttName_5' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttSize_5' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttType_6' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttName_6' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttSize_6' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttType_7' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttName_7' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttSize_7' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttType_8' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttName_8' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttSize_8' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttType_9' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttName_9' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttSize_9' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttType_10' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttName_10' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='SwAttSize_10' placeholder='true'>
+<rawitemdata type='0'>
+</rawitemdata></item>
+<item name='$Fields'><textlist><text>SwAttSize_10</text><text>SwAttName_10</text><text
+>SwAttType_10</text><text>SwAttSize_9</text><text>SwAttName_9</text><text
+>SwAttType_9</text><text>SwAttSize_8</text><text>SwAttName_8</text><text>SwAttType_8</text><text
+>SwAttSize_7</text><text>SwAttName_7</text><text>SwAttType_7</text><text>SwAttSize_6</text><text
+>SwAttName_6</text><text>SwAttType_6</text><text>SwAttSize_5</text><text>SwAttName_5</text><text
+>SwAttType_5</text><text>SwAttSize_4</text><text>SwAttName_4</text><text>SwAttType_4</text><text
+>SwAttSize_3</text><text>SwAttName_3</text><text>SwAttType_3</text><text>SwAttSize_2</text><text
+>SwAttName_2</text><text>SwAttType_2</text><text>SwAttSize_1</text><text>SwAttName_1</text><text
+>SwAttType_1</text><text>SwInitialize</text><text>ActaGenerada</text></textlist></item>
+<item name='$Body' sign='true'>
+<rawitemdata type='1'>
+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
+</rawitemdata></item></note>
+

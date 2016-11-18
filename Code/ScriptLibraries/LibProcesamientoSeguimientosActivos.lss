@@ -1,0 +1,808 @@
+'++LotusScript Development Environment:2:5:(Options):0:74
+%REM
+	Library LibNotificacionesSeguimientos
+	Created Nov 25, 2014 by Milton Villegas/CV3 
+	Description: Comments for Library
+%END REM
+Option Public
+Option Declare
+
+Use "LibDeclaracionesComunes"
+Use "LibNotificaciones"
+
+
+
+'++LotusScript Development Environment:2:5:(Forward):0:1
+Declare Sub Initialize	
+Declare Sub ProcesarSeguimientosActivos
+Declare Sub CrearDocTarea(docSeguimiento As NotesDocument, fechaLimiteTarea As NotesDateTime)
+Declare Sub ProcesarNotificacionConPlantilla( doc As NotesDocument, nombrePlantilla As String)
+Declare Sub EvaluarTarea(docTarea As NotesDocument, docSeguimiento As NotesDocument)
+Declare Sub ProcesarTareaCambioFecha
+Declare Sub CrearNotificacion__ParaAdministrador()
+Declare Function ExtractDocAttachment(doc As NotesDocument) As String
+Declare Private Sub RegistrarError(errorMessage As String)
+Declare Sub ProcesarTareaCompletada
+Declare Sub EvaluarSeguimiento(docSeguimiento As NotesDocument)
+
+'++LotusScript Development Environment:2:5:(Declarations):0:10
+Dim fechaLimite As NotesDateTime
+Dim fechaCreacionSeguimiento As NotesDateTime
+
+Dim vPlantillasCorreo As NotesView
+Dim vTareasPendientesPorDocPadre As NotesView
+Dim vTareasPendientesPorDocPadreYFechaLimite As NotesView
+
+
+Dim ErroresBuzon As Variant
+
+'++LotusScript Development Environment:2:2:Initialize:1:10
+Sub Initialize	
+	
+	Set vPlantillasCorreo= dbActual.Getview("(PlantillasCorreo)")
+	Set vTareasPendientesPorDocPadre= dbActual.Getview("(TareasPendientesPorDocPadre)")
+	Set vTareasPendientesPorDocPadreYFechaLimite = dbActual.Getview("(TareasPendientesDocPadreYFechaLimite)")
+	
+	
+End Sub
+
+
+
+
+
+'++LotusScript Development Environment:2:2:ProcesarSeguimientosActivos:5:8
+%REM
+	Sub ProcesarNotificacionesSeguimientos
+	Description: Comments for Sub
+%END REM
+Sub ProcesarSeguimientosActivos
+	On Error GoTo ERRORHANDLER
+	
+	
+	Dim docSeguimiento As NotesDocument
+	Dim docSeguimientoNext As NotesDocument
+	Dim vistaSeguimientosActivos As NotesView
+	Set vistaSeguimientosActivos= dbActual.Getview("(SeguimientosActivos)")
+	Set docSeguimiento= vistaSeguimientosActivos.Getfirstdocument()
+	While Not docSeguimiento Is Nothing
+		On Error GoTo ErrorEnWhile 
+		Set docSeguimientoNext= vistaSeguimientosActivos.Getnextdocument(docSeguimiento)
+				
+		Call EvaluarSeguimiento(docSeguimiento)
+		
+ErrorEnWhile:		
+		Set docSeguimiento= docSeguimientoNext
+	Wend 
+	
+		
+	REM ***************************************
+	REM Procesar Mensajes de Errores del Buzón
+	If Not isAlreadyEmptyArray(ErroresBuzon) Then
+		Call CrearNotificacion__ParaAdministrador()
+	End If
+	
+	
+	
+GETOUT:
+	Exit Sub
+	
+ERRORHANDLER:
+	Call RegistrarError("Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+	GoTo GETOUT
+End Sub
+
+
+
+
+'++LotusScript Development Environment:2:2:CrearDocTarea:5:8
+%REM
+	Sub CrearDocTarea
+	Description: Comments for Sub
+%END REM
+Sub CrearDocTarea(docSeguimiento As NotesDocument, fechaLimiteTarea As NotesDateTime)
+	On Error GoTo ERRORHANDLER
+
+	
+	Dim docTemp As NotesDocument
+	Dim attachments As NotesRichTextItem
+	REM Crear campos para ANNO - MES - DIA
+	REM FechaLimite_Anno
+	REM FechaLimite_Mes
+	REM FechaLimite_Dia
+	Stop
+	Dim nuevoDocTarea As NotesDocument
+	Set nuevoDocTarea= dbActual.Createdocument()
+	
+	Call nuevoDocTarea.Replaceitemvalue("Form", "Tarea")
+	Call nuevoDocTarea.Replaceitemvalue("IDDocumentoPadre", getDocValueString(docSeguimiento, "IDDocumento") )
+	Call nuevoDocTarea.Replaceitemvalue("TipoDocumentoPadre",  getDocValueString(docSeguimiento, "TipoSeguimiento") )
+	Call nuevoDocTarea.Replaceitemvalue("ResponsablesAcuerdo",  getDocValueString(docSeguimiento, "ResponsablesAcuerdo") )
+	Call nuevoDocTarea.Replaceitemvalue("TipoResponsable", getDocValueString(docSeguimiento, "TipoResponsable") )
+	
+	Call nuevoDocTarea.Replaceitemvalue("Descripcion",  getDocValueString(docSeguimiento, "Descripcion") )
+	Call nuevoDocTarea.Replaceitemvalue("Estado", "Pendiente")
+	Call nuevoDocTarea.Replaceitemvalue("FechaLimite",  fechaLimiteTarea )
+ 	Call nuevoDocTarea.Replaceitemvalue("FechaLimite_Anno",  Year(fechaLimiteTarea.Lslocaltime ) )
+	Call nuevoDocTarea.Replaceitemvalue("FechaLimite_Mes",  Month(fechaLimiteTarea.Lslocaltime )  )
+	Call nuevoDocTarea.Replaceitemvalue("FechaLimite_Dia",  Day(fechaLimiteTarea.Lslocaltime )  )
+	
+	Call nuevoDocTarea.Replaceitemvalue("IDAcuerdo",  getDocValueString(docSeguimiento, "IDAcuerdo"))
+	Call nuevoDocTarea.Replaceitemvalue("IDdocActa",  getDocValueString(docSeguimiento, "IDdocActa"))
+	Call nuevoDocTarea.Replaceitemvalue("IDdocTema",  getDocValueString(docSeguimiento, "IDdocTema"))
+	Call nuevoDocTarea.Replaceitemvalue("NumerOrden",  getDocValueString(docSeguimiento, "NumerOrden"))
+
+	
+	Call nuevoDocTarea.Computewithform(True, True)
+	Call nuevoDocTarea.Save(True, True, False)
+	
+	
+	
+	If getDocValueString(docSeguimiento, "TipoResponsable")="Externo" Then
+		Dim emb As NotesEmbeddedObject
+		Dim ubicacionfile As String
+		ubicacionfile=""
+		If getDocValueString(nuevoDocTarea, "TipoDocumentoPadre")="SeguimientoDeAcuerdo" Then
+			Dim docAcuerdo As NotesDocument
+			REM Se obtiene el seguimiento correspondiente a la tarea en caso que la tarea no se periodica,
+			REM al completarse la unica tarea, debe cerrar el seguimiento, poniendo el estado= Completado 
+			Set docAcuerdo= vDocsByID.Getdocumentbykey(getDocValueString(nuevoDocTarea, "IDAcuerdo"), True)
+			If Not docAcuerdo Is Nothing Then
+				ubicacionfile= ExtractDocAttachment(docAcuerdo) 
+			End If
+		End If		
+		If ubicacionfile<>"" Then
+			Set docTemp= dbActual.Createdocument()
+			Set attachments= New NotesRichTextItem(docTemp,"attachments")
+			REM Call rtitem2.EmbedObject ( EMBED_ATTACHMENT, "", Environ("Temp") & "\" & fname & ".docx")
+			Call attachments.EmbedObject ( EMBED_ATTACHMENT, "", ubicacionfile)
+		Else
+			Set attachments= Nothing
+		End If
+	Else
+		Set attachments= Nothing
+	End If
+	 			
+	
+	
+		
+	Dim docPlantilla As NotesDocument
+	Set docPlantilla= vPlantillasCorreo.Getdocumentbykey("TareaCreada", True)
+	If Not docPlantilla Is Nothing Then
+		Dim adjuntarEnlacesADoc As Boolean
+		If getDocValueString(nuevoDocTarea, "TipoResponsable")="Interno" Then
+			adjuntarEnlacesADoc= True
+		Else
+			adjuntarEnlacesADoc= False
+		End If
+		
+		Call GenerarNotificacionConEtiquetas(getDocValueString(nuevoDocTarea, "ResponsablesAcuerdo"), _
+		getDocValueString(docPerfilGeneral, "RecibeTareasCompletadas"), "", getDocValueString(docPlantilla, "Asunto"), getDocValueString(docPerfilGeneral, "EmisorNotificaciones"), _ 
+		docPlantilla.Getfirstitem("CuerpoCorreo"), attachments, nuevoDocTarea, adjuntarEnlacesADoc)
+	Else
+		Call RegistrarError("Error # No existe la plantilla de correo -TareaCreada- para enviar la notificación." )
+	End If
+	
+	%REM 
+	%END REM
+		
+	
+	GETOUT:
+	Exit Sub
+	
+	ERRORHANDLER:
+	stop
+		Call RegistrarError("Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+		GoTo GETOUT
+End Sub
+
+'++LotusScript Development Environment:2:2:ProcesarNotificacionConPlantilla:5:8
+%REM
+	Sub ProcesarNotificacionConPlantilla
+	Description: Comments for Sub
+%END REM
+Sub ProcesarNotificacionConPlantilla( doc As NotesDocument, nombrePlantilla As String)
+	On Error GoTo ERRORHANDLER
+ 
+	
+	
+	%REM
+	MessageBox |**********************************"
+Envio Notificacion para DOC TAREA
+| + doc.Universalid + |
+|+nombrePlantilla+|
+
+***Notificación de Seguimiento Detenida - No se envían notificaciones de Seguimientos***
+
+**********************************|
+		
+	%END REM
+			
+		Dim docPlantilla As NotesDocument
+		Set docPlantilla= vPlantillasCorreo.Getdocumentbykey(nombrePlantilla, True)
+		If Not docPlantilla Is Nothing Then
+		
+			Call GenerarNotificacionConEtiquetas(getDocValueString(Doc, "ResponsablesAcuerdo"), _
+			getDocValueString(docPerfilGeneral, "RecibeTareasCompletadas"), "", getDocValueString(docPlantilla, "Asunto"), getDocValueString(docPerfilGeneral, "EmisorNotificaciones"), _ 
+			docPlantilla.Getfirstitem("CuerpoCorreo"), Nothing, doc, true)
+		Else
+			Call RegistrarError("Error # No existe la plantilla de correo -"+nombrePlantilla+"- para enviar la notificación." )
+		End If 
+	
+
+	
+	
+GETOUT:
+	Exit Sub
+	
+ERRORHANDLER:
+	Call RegistrarError("Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+	GoTo GETOUT
+End Sub
+
+'++LotusScript Development Environment:2:2:EvaluarTarea:5:8
+%REM
+	Sub EvaluarTarea
+	Description: Se evalua cada tarea que se encuentre activa e hija del seguimiento
+%END REM
+Sub EvaluarTarea(docTarea As NotesDocument, docSeguimiento As NotesDocument)
+	On Error GoTo ERRORHANDLER
+
+	
+	Dim fechaLimite As NotesDateTime
+	Dim difFechas As Double
+	Dim arrayTiposAlertasActivas As Variant
+	
+	Set fechaLimite= getDocValueDateTime(docTarea, "FechaLimite")
+	REM para asegurarnos que venga con hora 0
+	Set fechaLimite= CrearFechaHora0(Day(fechaLimite.Lslocaltime), Month(fechaLimite.Lslocaltime), Year(fechaLimite.Lslocaltime))
+	difFechas= fechaHoyHoraCero.Timedifference( fechaLimite )
+
+
+	REM Verificación de si la tarea está vencida (Aunque no estén activos los vencimientos) 
+	If difFechas > 0 Then
+		REM Ya pasó la fecha limite 
+		REM PONER VENCIDA LA TAREA SI NO ESTÄ YA VENCIDA
+		If getDocValueString(docTarea, "Estado")<>"Vencida" And getDocValueString(docTarea, "Estado")<>"Completada" Then
+			Call docTarea.ReplaceItemValue("Estado", "Vencida")
+			Call docTarea.Save(True, True, False)
+		End If
+	End If
+		
+	REM Verificación de si están activas las notificaciones
+	If getDocValueString(docSeguimiento, "ActivarAlertas")<>"Si" Then
+		REM No están activas las notificaciones 
+		Exit Sub			
+	End If
+	arrayTiposAlertasActivas= getDocValuesToArray(docSeguimiento, "TiposAlertasActivas")
+	If Not IsArray(arrayTiposAlertasActivas) Then
+		If arrayTiposAlertasActivas="" Then
+			REM No hay notificaciones seleccionadas para este seguimiento 
+			Exit Sub			
+		End If
+	End If
+	
+	REM Evaluar si ha vencido la fecha limite	
+	If difFechas = 0 Then
+		REM Es el día de Fecha Limite
+		REM Consultar si debe notificar el día de la fecha limite.
+		If isMemberOfArray("DiaPrevio", arrayTiposAlertasActivas) Then
+			REM Si debe notificar el día previo
+			Call ProcesarNotificacionConPlantilla( docTarea, "NotificacionLimite")
+			
+		End If
+	ElseIf difFechas > 0 Then
+		REM Ya pasó la fecha limite 
+		REM Consultar si debe notificar el día siguiente al vencimiento
+		If difFechas = 86400 Then
+			REM ES EL DIA SIGUIENTE
+			REM Consultar si debe notificar el día siguiente al vencimiento
+			If isMemberOfArray("DiaPosterior", arrayTiposAlertasActivas) Then
+				REM Se debe enviar la notificación de día posterior al vencimiento
+				Call ProcesarNotificacionConPlantilla( docTarea, "NotificacionDiaPosterior")
+			End If			
+		Else
+			REM Consultar si debe notificar POR CANTIDAD DE DIAS
+			If isMemberOfArray("DiasPosteriores", arrayTiposAlertasActivas) Then
+				Dim diasPosteriores As Integer
+				diasPosteriores= getDocValueInteger(docSeguimiento, "AlertaNDiasPosteriores")
+				If difFechas = (diasPosteriores * 86400) Then
+					REM es le día indicado para notificar por cantidad de días posteriores
+					Call ProcesarNotificacionConPlantilla( docTarea, "NotificacionDiasPosteriores")
+					
+				End If				
+			End If					
+		End If	
+	ElseIf difFechas < 0 Then
+		REM Todavía no llega la fecha limite
+		 
+		REM Consultar si debe notificar POR CANTIDAD DE DIAS Y VERIFICAR SI DEBE NOTIFICAR
+		If isMemberOfArray("DiasPrevios", arrayTiposAlertasActivas) Then
+			Dim diasPrevios As Integer
+			diasPrevios= getDocValueInteger(docSeguimiento, "AlertaNDiasPrevios")
+			If difFechas = -(diasPosteriores * 86400) Then
+				REM es le día indicado para notificar por cantidad de días previos 
+				Call ProcesarNotificacionConPlantilla( docTarea, "NotificacionDiasPrevios")
+				
+			End If				
+		End If					
+		
+		If difFechas = -86400 Then
+			REM ES EL DIA ANTERIOR
+			REM Consultar si debe notificar el día antes al vencimiento
+			If isMemberOfArray("DiaPrevio", arrayTiposAlertasActivas) Then
+				REM Se debe enviar la notificación de día previo al vencimiento
+				Call ProcesarNotificacionConPlantilla( docTarea, "NotificacionDiaPrevio")
+				
+			End If			
+			
+		End if
+	End if
+	
+	
+	GETOUT:
+	Exit Sub
+	
+	ERRORHANDLER:
+				Call RegistrarError("Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+		GoTo GETOUT
+End Sub
+
+'++LotusScript Development Environment:2:2:ProcesarTareaCambioFecha:5:8
+%REM
+	Sub ProcesarTareaCambioFecha
+	Description: Comments for Sub
+%END REM
+Sub ProcesarTareaCambioFecha
+	On Error GoTo ERRORHANDLER
+	
+	Dim docSeguimiento As NotesDocument
+	Dim docPlantillaSolicitud As NotesDocument	
+	Dim docPlantillaAprobacion As NotesDocument	
+	Dim docTarea As NotesDocument
+	Dim docNextTarea As NotesDocument
+	Dim vistaTareasPendientesNotif As NotesView
+	Dim idSeguimiento As String
+	idSeguimiento=""
+	
+	Set docPlantillaSolicitud= vPlantillasCorreo.Getdocumentbykey("CambioFechaTareaSolicitud", True)
+	If docPlantillaSolicitud Is Nothing Then
+		Call RegistrarError("Error # No existe la plantilla de correo -CambioFechaTareaSolicitud- para enviar la notificación." )
+		Exit Sub
+	End If
+	
+	Set docPlantillaAprobacion= vPlantillasCorreo.Getdocumentbykey("CambioFechaTareaAprobacion", True)
+	If docPlantillaAprobacion Is Nothing Then
+		Call RegistrarError("Error # No existe la plantilla de correo -CambioFechaTareaAprobacion- para enviar la notificación." )
+		Exit Sub
+	End If
+	
+	
+	Set vistaTareasPendientesNotif= dbActual.Getview("(TareasPendientesNotificarCambioFecha)")
+	Set docTarea= vistaTareasPendientesNotif.Getfirstdocument()
+	While Not docTarea Is Nothing
+		On Error GoTo ErrorEnWhile 
+		Set docNextTarea= vistaTareasPendientesNotif.Getnextdocument(docTarea)
+		
+		REM Notificaciones de las aprobaciones de cambios de fecha en tareas
+		If 	getDocValueString(docTarea, "PendienteNotificarAprobacionCambioFecha")="Si" Then
+			
+				
+			 Call GenerarNotificacionConEtiquetas(getDocValueString(docTarea, "ResponsablesAcuerdo"), _
+			"", "", getDocValueString(docPlantillaAprobacion, "Asunto"), getDocValueString(docPerfilGeneral, "RecibeTareasCompletadas"), _ 
+			docPlantillaAprobacion.Getfirstitem("CuerpoCorreo"), Nothing, docTarea, true)
+	%REM
+			%END REM
+			Call docTarea.Replaceitemvalue("PendienteNotificarAprobacionCambioFecha", "No")
+			Call docTarea.Save(True, True, False)
+		End If	
+		
+		REM Notificaciones de las solicitudes de cambios de fecha en tareas
+		If 	getDocValueString(docTarea, "PendienteNotificarSolicitudCambioFecha")="Si" Then
+		
+		
+			
+			Call GenerarNotificacionConEtiquetas(getDocValueString(docPerfilGeneral, "RecibeTareasCompletadas"), _
+			"", "", getDocValueString(docPlantillaSolicitud, "Asunto"), getDocValueString(docTarea, "ResponsablesAcuerdo"), _ 
+			docPlantillaSolicitud.Getfirstitem("CuerpoCorreo"), Nothing, docTarea, true)
+			Call docTarea.Replaceitemvalue("PendienteNotificarSolicitudCambioFecha", "No")
+			Call docTarea.Save(True, True, False)
+	%REM
+		%END REM
+
+		End If	
+		
+
+ErrorEnWhile:		
+		Set docTarea= docNextTarea
+	Wend 
+		
+	
+GETOUT:
+	Exit Sub
+	
+ERRORHANDLER:
+	Call RegistrarError("Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+	GoTo GETOUT
+End Sub
+
+'++LotusScript Development Environment:2:2:CrearNotificacion__ParaAdministrador:1:8
+Sub CrearNotificacion__ParaAdministrador()
+	On Error GoTo ERRORHANDLER
+	 
+	Dim mailTitle As String 
+	Dim mailBody As NotesRichTextItem 
+	Dim docTemp As NotesDocument
+	Set docTemp= dbActual.CreateDocument
+	Set mailBody = docTemp.Createrichtextitem("Body")	
+	
+	REM mailTitle= "Reporte Errores en Procesamiento de "  + tipoNotificaciones +" "+  dbActual.Title 
+	mailTitle= "Reporte Errores en Procesamiento de Seguimientos"
+	mailBody.Appendtext("Estimados(as) Señores(as)")
+	mailBody.Addnewline(2)
+	mailBody.Appendtext("Los siguientes son problemas presentados en procesamiento de seguimientos")
+	mailBody.Addnewline(2)
+	ForAll textoError In ErroresBuzon
+		If Not InStr(mailBody.Text, CStr(textoError)) Then
+			mailBody.Appendtext(CStr(textoError))
+			mailBody.Addnewline(1)
+		End If
+	End ForAll
+	mailBody.Addnewline(1)
+	mailBody.Appendtext("¡Gracias!")
+	
+	Dim admin As String
+	admin= getDocValueString(docPerfilGeneral, "Administrador")
+	If admin<>"" Then
+		REM Call enviarCorreo( dbMail, IdentificadorBuzonProcesando, AdminsBuzon, "", "", mailTitle, mailBody, Nothing)
+		Call enviarCorreo(Dbmail, getDocValueString(docPerfilGeneral, "EmisorNotificaciones"), admin, _
+		"", "", mailTitle, Mailbody, Nothing)	
+	End If 
+	
+	 
+	Erase ErroresBuzon
+	
+	GETOUT:
+	Exit Sub
+	
+	ERRORHANDLER:
+	Call RegistrarError(" Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)	
+	GoTo GETOUT
+End Sub
+
+'++LotusScript Development Environment:2:1:ExtractDocAttachment:1:8
+Function ExtractDocAttachment(doc As NotesDocument) As String
+	Dim temp As Variant
+	Dim o As NotesEmbeddedObject
+
+	ExtractDocAttachment = ""
+	If doc.HasEmbedded Then
+		temp = doc.GetItemValue("$FILE")
+		Set o = doc.GetAttachment(temp(0))
+		If o.Type = EMBED_ATTACHMENT Then
+			If Right$(o.Source, 4) = ".doc" Or Right$(o.Source, 5)=".docx" Then
+				ExtractDocAttachment = Environ("Temp") & "\" & o.Source 
+				Call o.ExtractFile(ExtractDocAttachment)
+			End If
+		End If
+	End If
+
+End Function
+
+
+
+'++LotusScript Development Environment:2:2:RegistrarError:2:8
+
+Private Sub RegistrarError(errorMessage As String)
+	Call AgregarLogError(errorMessage)
+	Call AddToArray(ErroresBuzon, errorMessage)
+End Sub
+
+
+'++LotusScript Development Environment:2:2:ProcesarTareaCompletada:5:8
+%REM
+	Sub EnviarNotificacionTareasCompletadas
+	Description: Para el proceso de envío de notificaciones en Tareas que ya han sido completadas
+%END REM
+Sub ProcesarTareaCompletada
+	On Error GoTo ERRORHANDLER
+	
+	Dim docSeguimiento As NotesDocument
+	Dim docPlantilla As NotesDocument	
+	Dim docTarea As NotesDocument
+	Dim docNextTarea As NotesDocument
+	Dim vistaTareasPendientesNotif As NotesView
+	Dim idSeguimiento As String
+	idSeguimiento=""
+	
+	Set docPlantilla= vPlantillasCorreo.Getdocumentbykey("TareaCompletada", True)
+	If docPlantilla Is Nothing Then
+		Call RegistrarError("No hay plantilla para el envío de la Notificación de tarea completada.")
+		Exit Sub
+	End If
+	
+	Set vistaTareasPendientesNotif= dbActual.Getview("(TareasFinalizadasPendientesNotificar)")
+	Set docTarea= vistaTareasPendientesNotif.Getfirstdocument()
+	While Not docTarea Is Nothing
+		On Error GoTo ErrorEnWhile 
+		Set docNextTarea= vistaTareasPendientesNotif.Getnextdocument(docTarea)
+		
+	
+		Call GenerarNotificacionConEtiquetas(getDocValueString(docPerfilGeneral, "RecibeTareasCompletadas"), _
+		"", "", getDocValueString(docPlantilla, "Asunto"), getDocValueString(docTarea, "UsuarioCompletaTarea"), _ 
+		docPlantilla.Getfirstitem("CuerpoCorreo"), Nothing, docTarea, False)
+		%REM
+		%End Rem
+		Call docTarea.Replaceitemvalue("NotificacionCompletadaEnviada", "Si")
+		Call docTarea.Save(True, True, False)
+
+		REM Se obtiene el seguimiento correspondiente a la tarea en caso que la tarea no se periodica,
+		REM al completarse la unica tarea, debe cerrar el seguimiento, poniendo el estado= Completado 
+		Set docSeguimiento= vDocsByID.Getdocumentbykey(getDocValueString(docTarea, "IDDocumentoPadre"), True)
+		If Not docSeguimiento Is Nothing Then
+			If getDocValueString(docSeguimiento, "HabilitarRepeticiones")="No"	Then
+				Call docSeguimiento.Replaceitemvalue("Estado", "Completado")
+				Call docSeguimiento.Save(True, True, False)
+				
+			End If
+		End If
+		
+
+ErrorEnWhile:		
+		Set docTarea= docNextTarea
+	Wend 
+	
+	
+	
+	
+	
+	
+	
+	
+GETOUT:
+	Exit Sub
+	
+ERRORHANDLER:
+	Call RegistrarError("Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+	GoTo GETOUT
+End Sub
+
+
+
+
+
+'++LotusScript Development Environment:2:2:EvaluarSeguimiento:5:8
+%REM
+	Sub EvaluarNotificarSeguimiento
+	Description: Comments for Sub
+%END REM
+Sub EvaluarSeguimiento(docSeguimiento As NotesDocument)
+	On Error GoTo ERRORHANDLER
+	Dim estado As String
+	Dim tipoRepeticiones As String
+	Dim docTareaPendiente As NotesDocument
+	Dim keys( 1 To 4 ) As Variant
+	Dim fechaAjustada As NotesDateTime
+	
+	Set fechaLimite= getDocValueDateTime(docSeguimiento, "FechaLimite")
+	Set fechaCreacionSeguimiento= New NotesDateTime( docSeguimiento.Created )
+	
+	tipoRepeticiones= getDocValueString(docSeguimiento, "TipoRepeticiones")
+	
+	keys( 1 ) = getDocValueString(docSeguimiento, "IDDocumento")
+
+	
+	If getDocValueString(docSeguimiento, "HabilitarRepeticiones" ) = "No" Then
+		Stop
+		keys( 2 ) = Year(fechaLimite.Lslocaltime)
+		keys( 3 ) = Month(fechaLimite.Lslocaltime)
+		keys( 4 ) = Day(fechaLimite.Lslocaltime)
+		If vTareasPendientesPorDocPadreYFechaLimite.GetAlldocumentsbykey(keys, True).Count = 0 Then
+			REM No existe documento de tarea para este periodo o día, debe crearse. 
+			Call CrearDocTarea(Docseguimiento, fechaLimite)	
+		Else
+			REM Ya existe un documento de Tarea para este periodo o este día, no se debe crear otro.				 
+		End If
+	Else
+
+		Select Case tipoRepeticiones
+			
+		Case "Diario":
+			If fechalimite.Timedifference(fechaHoyHoraCero) < 0 Then
+				keys( 2 ) = Year(fechalimite.Lslocaltime)
+				keys( 3 ) = Month(fechalimite.Lslocaltime)
+				keys( 4 ) = Day(fechalimite.Lslocaltime)			
+
+			Else
+				keys( 2 ) = Year(fechaHoyHoraCero.Lslocaltime)
+				keys( 3 ) = Month(fechaHoyHoraCero.Lslocaltime)
+				keys( 4 ) = Day(fechaHoyHoraCero.Lslocaltime)			
+				
+			End If
+			REM - Se debe crear una tarea diariamente
+			REM Se verifica si para el día de hoy, ya hay creada una tarea (Para no duplicarla en caso que haya corrido el agente hoy)
+			If vTareasPendientesPorDocPadreYFechaLimite.GetAlldocumentsbykey(keys, True).Count = 0 Then
+				REM No existe documento de tarea para este periodo o día, debe crearse. 
+				Call CrearDocTarea(Docseguimiento, fechaHoyHoraCero)	
+				
+			Else
+				REM Ya existe un documento de Tarea para este periodo o este día, no se debe crear otro.				 
+			End If
+			
+		Case "CantidadDias": 
+			REM - Se debe crear una tarea cada N cantidad de días
+			Dim cantDias As Integer
+			cantDias= getDocValueInteger(docSeguimiento, "Repeticion_CantidadDias")
+			If cantDias<>0 Then
+				Set fechaAjustada= CrearFechaHora0( Day(fechaLimite.Lslocaltime) , Month(fechaLimite.Lslocaltime), Year(fechaLimite.Lslocaltime))
+				Call fechaAjustada.Adjustday(cantDias, True)
+				While fechaAjustada.Timedifference(fechaHoyHoraCero) < 0
+					Call fechaAjustada.Adjustday(cantDias, True)
+				Wend
+				
+
+				keys( 2 ) = Year(fechaAjustada.Lslocaltime)
+				keys( 3 ) = Month(fechaAjustada.Lslocaltime)
+				keys( 4 ) = Day(fechaAjustada.Lslocaltime)
+				If vTareasPendientesPorDocPadreYFechaLimite.GetAlldocumentsbykey(keys, True).Count = 0 Then
+					REM No existe documento de tarea para este periodo o día, debe crearse. 
+					Call CrearDocTarea(Docseguimiento, fechaAjustada)	
+				Else
+					REM Ya existe un documento de Tarea para este periodo o este día, no se debe crear otro.				 
+				End If
+			End If
+			
+			
+		Case "Semanal": 
+			REM - Se debe crear una tarea todas las semanas. mismo día de la semana de la fecha limite
+	%REM
+				
+			
+			Dim diaFechaLimite As Integer
+			Dim diaHoy As Integer
+			diaFechaLimite= Weekday( fechaLimite.Lslocaltime )
+			diaHoy= Weekday(fechaHoyHoraCero.Lslocaltime)
+			
+			If diaFechaLimite = diaHoy Then
+				If vTareasPendientesPorDocPadreYFechaLimite.GetAlldocumentsbykey(keys, True).Count = 0 Then
+					REM No existe documento de tarea para este periodo o día, debe crearse. 
+					Call CrearDocTarea(Docseguimiento, fechaHoyHoraCero)	
+				Else
+					REM Ya existe un documento de Tarea para este periodo o este día, no se debe crear otro.				 
+				End If
+			End If
+	%END REM
+			Set fechaAjustada= CrearFechaHora0( Day(fechaLimite.Lslocaltime) , Month(fechaLimite.Lslocaltime), Year(fechaLimite.Lslocaltime))
+			Call fechaAjustada.Adjustday(7, True)
+			While fechaAjustada.Timedifference(fechaHoyHoraCero) < 0
+				Call fechaAjustada.Adjustmonth(7, True)
+			Wend
+			
+
+			keys( 2 ) = Year(fechaAjustada.Lslocaltime)
+			keys( 3 ) = Month(fechaAjustada.Lslocaltime)
+			keys( 4 ) = Day(fechaAjustada.Lslocaltime)
+			If vTareasPendientesPorDocPadreYFechaLimite.GetAlldocumentsbykey(keys, True).Count = 0 Then
+				REM No existe documento de tarea para este periodo o día, debe crearse. 
+				Call CrearDocTarea(Docseguimiento, fechaAjustada)	
+			Else
+				REM Ya existe un documento de Tarea para este periodo o este día, no se debe crear otro.				 
+			End If
+			
+			
+		Case "Mensual": 
+			REM - Se debe crear una tarea todos los meses el día seleccionado como FechaLimite
+	%REM
+			If Day(fechaLimite.Lslocaltime) = Day( fechaHoyHoraCero.Lslocaltime) Then
+				If vTareasPendientesPorDocPadreYFechaLimite.GetAlldocumentsbykey(keys, True).Count = 0 Then
+					REM No existe documento de tarea para este periodo o día, debe crearse. 
+					Call CrearDocTarea(Docseguimiento, fechaHoyHoraCero)	
+				Else
+					REM Ya existe un documento de Tarea para este periodo o este día, no se debe crear otro.				 
+				End If
+			End If
+					
+	%End REM
+			
+			Set fechaAjustada= CrearFechaHora0( Day(fechaLimite.Lslocaltime) , Month(fechaLimite.Lslocaltime), Year(fechaLimite.Lslocaltime))
+			Call fechaAjustada.Adjustmonth(1, True)
+			While fechaAjustada.Timedifference(fechaHoyHoraCero) < 0
+				Call fechaAjustada.Adjustmonth(1, True)
+			Wend
+			
+
+			keys( 2 ) = Year(fechaAjustada.Lslocaltime)
+			keys( 3 ) = Month(fechaAjustada.Lslocaltime)
+			keys( 4 ) = Day(fechaAjustada.Lslocaltime)
+			If vTareasPendientesPorDocPadreYFechaLimite.GetAlldocumentsbykey(keys, True).Count = 0 Then
+				REM No existe documento de tarea para este periodo o día, debe crearse. 
+				Call CrearDocTarea(Docseguimiento, fechaAjustada)	
+			Else
+				REM Ya existe un documento de Tarea para este periodo o este día, no se debe crear otro.				 
+			End If
+			
+		Case "Trimestral": 
+			REM - Se debe crear una tarea cada 3 meses el día seleccionado como FechaLimite
+			
+			Set fechaAjustada= CrearFechaHora0( Day(fechaLimite.Lslocaltime) , Month(fechaLimite.Lslocaltime), Year(fechaLimite.Lslocaltime))
+			Call fechaAjustada.Adjustmonth(3, True)
+			While fechaAjustada.Timedifference(fechaHoyHoraCero) < 0
+				Call fechaAjustada.Adjustmonth(3, True)
+			Wend
+			
+
+			keys( 2 ) = Year(fechaAjustada.Lslocaltime)
+			keys( 3 ) = Month(fechaAjustada.Lslocaltime)
+			keys( 4 ) = Day(fechaAjustada.Lslocaltime)
+			If vTareasPendientesPorDocPadreYFechaLimite.GetAlldocumentsbykey(keys, True).Count = 0 Then
+				REM No existe documento de tarea para este periodo o día, debe crearse. 
+				Call CrearDocTarea(Docseguimiento, fechaAjustada)	
+			Else
+				REM Ya existe un documento de Tarea para este periodo o este día, no se debe crear otro.				 
+			End If
+
+		Case "Semestral": 
+			REM - Se debe crear una tarea cada 6 meses el día seleccionado como FechaLimite
+			REM - Se debe crear una tarea cada 3 meses el día seleccionado como FechaLimite
+			
+			Set fechaAjustada= CrearFechaHora0( Day(fechaLimite.Lslocaltime) , Month(fechaLimite.Lslocaltime), Year(fechaLimite.Lslocaltime))
+			Call fechaAjustada.Adjustmonth(6, True)
+			While fechaAjustada.Timedifference(fechaHoyHoraCero) < 0
+				Call fechaAjustada.Adjustmonth(6, True)
+			Wend
+			
+
+			keys( 2 ) = Year(fechaAjustada.Lslocaltime)
+			keys( 3 ) = Month(fechaAjustada.Lslocaltime)
+			keys( 4 ) = Day(fechaAjustada.Lslocaltime)
+			If vTareasPendientesPorDocPadreYFechaLimite.GetAlldocumentsbykey(keys, True).Count = 0 Then
+				REM No existe documento de tarea para este periodo o día, debe crearse. 
+				Call CrearDocTarea(Docseguimiento, fechaAjustada)	
+			Else
+				REM Ya existe un documento de Tarea para este periodo o este día, no se debe crear otro.				 
+			End If
+
+
+		Case Else:
+			REM No se hacen evaluaciones
+	End Select			
+	End If
+	
+
+
+	
+			
+	
+
+	
+	
+	REM Se evalúan las tareas existentes, que estén pendientes de finalizar, en caso de haberse vencido o bien 
+	REM se requiera notificiar según lo definido en el seguimiento.	
+	Dim dcTareasPendientes As NotesDocumentCollection
+	Dim docTarea As NotesDocument
+	Dim docTareaNext As NotesDocument
+	
+	REM Se recorren los documentos de cada tarea pendiente del seguimiento. 
+	Set dcTareasPendientes= vTareasPendientesPorDocPadre.Getalldocumentsbykey(getDocValueString(docSeguimiento, "IDDocumento"), True)
+	Set docTarea= dcTareasPendientes.Getfirstdocument()   
+	While Not docTarea Is Nothing
+		On Error GoTo ErrorEnWhile 
+		Set docTareaNext= dcTareasPendientes.Getnextdocument(docTarea)
+		
+		Call EvaluarTarea(docTarea, docSeguimiento)
+		
+ErrorEnWhile:		
+		Set docTarea= docTareaNext
+	Wend 
+	
+	
+GETOUT:
+	Exit Sub
+	
+ERRORHANDLER:
+	Call RegistrarError("Error #" & Err & " " & Error$ & " " & "Line #" & Erl & | in sub/function: "| & GetThreadInfo(1) & |"|)
+	GoTo GETOUT
+End Sub
+
+
+
+

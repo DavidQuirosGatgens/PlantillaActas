@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<note class='view' xmlns='http://www.lotus.com/dxl' version='9.0' maintenanceversion='1.0'
+ replicaid='0625806D0062AD0E'>
+<noteinfo noteid='182e' unid='7C174E0354A93BDA06257FD1007AA5DD' sequence='5'>
+<created><datetime>20160613T161938,53-06</datetime></created>
+<modified><datetime>20161118T102851,49-06</datetime></modified>
+<revised><datetime>20161118T102851,48-06</datetime></revised>
+<lastaccessed><datetime>20161118T102851,49-06</datetime></lastaccessed>
+<addedtofile><datetime>20161116T115805,97-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=Johan Arroyo/O=CV3</name><name>CN=Milton Villegas/O=CV3</name><name
+>CN=AIXPROD01/OU=SVR/O=Recope</name><name>CN=localCristhian/OU=DEV/O=CV3</name></updatedby>
+<wassignedby><name>CN=localCristhian/OU=DEV/O=CV3</name></wassignedby>
+<item name='$FormulaClass' sign='true'><text>1</text></item>
+<item name='$TITLE' sign='true'><text>(vActas_Migrados)</text></item>
+<item name='$Index' sign='true'><text/></item>
+<item name='$Formula' summary='true' sign='true'><formula compiled='true'>
+aAACABoAAgAkMQUACgBOdW1lck9yZGVuXgEDAAUAHgAZAAMAAgAJAAQAJDEkQ29uZmxpY3QkUkVG
+AAQABAAAABwABQAEAEZvcm0BAAQAQWN0YQoCBAAEAAMABwAOAAgACUwxUzRTNVM=
+</formula></item>
+<item name='$Collation' summary='true'>
+<rawitemdata type='2'>
+DwABAABECGYAAAACACQx
+</rawitemdata></item>
+<item name='$ViewFormat' summary='true' sign='true'>
+<rawitemdata type='5'>
+AQABAAIACAAAAFZDAQACAAoAKAAAAE0BAQAACgABAAAAAAAAAAICAAAAJDFOdW1lck9yZGVuKAAC
+ABoAAgAkMQUACgBOdW1lck9yZGVuXgEDAAcADAAFAAkwUzBFACYAAQAAAAEBAAkBAAAKAQEOCgAA
+AQCtKwEAAQABAAAAAAAAAAAAV0MBAQAJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAAAAAAAA
+AAAAAAAAAEIAAAAAAAEA////AAUA////AAEAAAAAAAAAAAAAAAAAAQD///8AAQD///8AAAABAAAA
+AAABAAAAAAABAAAAAAAAAAgAAAAAAAEA
+</rawitemdata></item>
+<item name='$Comment' sign='true'><text/></item>
+<item name='$DesignerVersion' sign='true'><text>8.5.3</text></item>
+<item name='$Flags'><text>Y</text></item></note>
+

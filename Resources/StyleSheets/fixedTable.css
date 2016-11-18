@@ -1,0 +1,9 @@
+.lotusTable {
+    table-layout: fixed;
+}
+.oddRow {
+ BACKGROUND-COLOR: RGB(248, 248, 248);
+}
+.evenRow {
+ BACKGROUND-COLOR: RGB(98, 120, 150);
+}

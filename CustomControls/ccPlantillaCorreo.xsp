@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+
+
+	<xp:this.resources>
+		<xp:script src="/GeneralSSJS.jss" clientSide="false"></xp:script>
+	</xp:this.resources>
+	<xp:this.data>
+		<xp:dominoDocument var="docPlantillaCorreo"
+			formName="PlantillaCorreo">
+		</xp:dominoDocument>
+	</xp:this.data>
+	<xp:button value="Salvar" id="button1">
+		
+	<xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+		<xp:this.action>
+			<xp:saveDocument var="docPlantillaCorreo"></xp:saveDocument>
+		</xp:this.action></xp:eventHandler></xp:button>
+	<xp:button value="Editar" id="button2"
+		rendered="#{javascript:!currentDocument.isEditable()}">
+		
+	<xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+		<xp:this.action>
+			<xp:changeDocumentMode mode="edit"
+				var="docPlantillaCorreo">
+			</xp:changeDocumentMode>
+		</xp:this.action></xp:eventHandler></xp:button>
+	<xp:button value="Salir" id="button3"><xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+	<xp:this.action>
+		<xp:openPage name="$$PreviousPage"></xp:openPage>
+	</xp:this.action></xp:eventHandler></xp:button><xp:br></xp:br>
+	<xp:table>
+		<xp:tr>
+			<xp:td>
+				<xp:label value="Nombre plantilla:"
+					id="nombrePlantilla_Label1" for="nombrePlantilla1">
+				</xp:label>
+			</xp:td>
+			<xp:td>
+				<xp:inputText
+					value="#{docPlantillaCorreo.NombrePlantilla}"
+					id="nombrePlantilla1" readonly="true" style="font-weight:bold">
+				</xp:inputText>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td>
+				<xp:label value="Asunto:" id="asunto_Label1"
+					for="asunto1">
+				</xp:label>
+			</xp:td>
+			<xp:td>
+				<xp:inputText value="#{docPlantillaCorreo.Asunto}"
+					id="asunto1" style="width:98.0%">
+				</xp:inputText>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td>
+				<xp:label value="Cuerpo correo:"
+					id="cuerpoCorreoAutomatico_Label1" for="cuerpoCorreoAutomatico1">
+				</xp:label>
+			</xp:td>
+			<xp:td>
+				<xp:inputRichText
+					value="#{docPlantillaCorreo.CuerpoCorreo}"
+					id="cuerpoCorreoAutomatico1">
+				</xp:inputRichText>
+			</xp:td>
+		</xp:tr>
+	</xp:table>
+	<xp:br></xp:br>
+	
+
+
+
+<xp:table>
+		<xp:tr>
+			
+			<xp:td><xp:span style="font-weight:bold">Tags para Identificar Valores</xp:span><xp:span style="font-weight:bold">:</xp:span><xp:span style="font-weight:bold"></xp:span><xp:span style="font-weight:bold"></xp:span></xp:td></xp:tr><xp:tr><xp:td><xp:span style="font-weight:bold"></xp:span><xp:span style="font-weight:bold">Formato:
+				</xp:span>&#160;&#160;<xp:span>&lt;%@Formula()%&gt;
+</xp:span><xp:span></xp:span><xp:br></xp:br>Se puede utilizar formulas que serán ejecutadas en el contexto del documento del cual se desea notificar.<xp:br></xp:br>Por ejemplo:<xp:br></xp:br><xp:span style="font-style:italic;font-weight:bold"> </xp:span><xp:span style="font-style:italic;text-decoration:underline">Buenos</xp:span><xp:span style="font-style:italic;text-decoration:underline"> Días Sr.  </xp:span><xp:span style="text-decoration:underline">&lt;%@Text(EncargadoTX)%&gt;</xp:span> sería reemplazado por <xp:span>: <xp:span style="font-style:italic"> </xp:span><xp:span style="font-style:italic;text-decoration:underline">Buenos Días Sr.  José</xp:span>, en caso de que el campo EncargadoTX contenga el valor &quot;José&quot; en el documento.</xp:span></xp:td></xp:tr></xp:table></xp:view>

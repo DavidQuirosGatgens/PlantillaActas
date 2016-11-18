@@ -1,0 +1,1261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+	<xp:this.resources>
+		<xp:script src="/ClientSideValidationV1.js" clientSide="true"></xp:script>
+	</xp:this.resources>
+	
+	
+	<xp:button value="Enviar a Aprobar" id="button4">
+		<xp:this.rendered><![CDATA[#{javascript:(@IsMember(@Name("[ABBREVIATE]", @UserName()),currentDocument.getItemValueArray("Autor"))
+||context.getUser().getRoles().contains('[Secretaria]')) && ((currentDocument.getItemValueString("Estado").equals("Borrador"))||(currentDocument.getItemValueString("Estado").equals("Devuelto a Edición")))}]]></xp:this.rendered>
+		<xp:eventHandler event="onclick" submit="true"
+			refreshMode="complete">
+			<xp:this.action><![CDATA[#{javascript:viewScope.AccionWF="Enviar a Aprobar";
+currentDocument.setValue("ComentariosWF","");
+if (currentDocument.getValue( 'TipoAprobacion')==""){
+	currentDocument.setValue( 'TipoAprobacion',"Secuencial");
+}
+var c = getComponent("dialogEnviarAprobar");
+c.show();
+
+}]]></xp:this.action>
+		</xp:eventHandler>
+	</xp:button>
+	<xp:panel id="panelAprobacion">
+		<xe:dialog id="dialogEnviarAprobar"
+			title="Enviar Documento a Aprobación"
+			tooltip="Enviar Documento a Aprobación">
+			<xe:dialogButtonBar id="dialogButtonBar1">
+				<xp:button value="Aceptar" id="button27">
+					<xp:eventHandler event="onclick" submit="false">
+
+						<xp:this.script><![CDATA[//XSP.closeDialog('#{id:dialogEnviarAprobar}');
+XSP.openDialog('#{id:dialogComentarios}');]]></xp:this.script>
+
+					</xp:eventHandler>
+				</xp:button>
+				<xp:button value="Cancelar" id="button26">
+					<xp:eventHandler event="onclick" submit="false">
+						<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogEnviarAprobar}')]]></xp:this.script>
+					</xp:eventHandler>
+				</xp:button>
+			</xe:dialogButtonBar>
+			<xe:dialogContent id="dialogContent1">
+				<xp:panel id="panelEnviarFlujo">
+					<xp:table border="0" cellpadding="0">
+
+						<xp:tr>
+							<xp:td>
+								<xp:label
+									value="Aprobadores Predeterminados" id="label9">
+								</xp:label>
+							</xp:td>
+							<xp:td colspan="3">
+
+								<xp:repeat
+									value="#{document1.AprobadoresDefault}"
+									var="AprobadoresDefault" indexVar="AprobadoresDefaultIndex"
+									id="repeatItemAprobadores">
+									<xp:table border="1" cellpadding="0"
+										cellspacing="0"
+										style="border: 1px solid grey;width:831.0px">
+										<xp:tr>
+											<xp:td
+												style="width:25.0px;text-align:center">
+												<xp:text escape="true"
+													id="computedField4"
+													value="#{javascript:AprobadoresDefaultIndex + 1}"
+													style="font-weight:bold">
+													<xp:this.converter>
+														<xp:convertNumber
+															type="number" integerOnly="true">
+														</xp:convertNumber>
+													</xp:this.converter>
+												</xp:text>
+											</xp:td>
+
+											<xp:td
+												style="width:30.0px;text-align:center;height:40.0px"
+												rendered="false">
+
+												<xp:button id="button6"
+													icon="/Edit.gif" style="height:25.0px;width:25.0px">
+													<xp:eventHandler
+														event="onclick" submit="false" id="eventHandler1">
+														<xp:this.script><![CDATA[XSP.openDialog('#{id:dialogEditAprobador}')]]></xp:this.script>
+													</xp:eventHandler>
+												</xp:button>
+											</xp:td>
+
+
+											<xp:td style="width:50px">
+												<xp:link escape="true"
+													id="link4">
+													<xp:div
+														style="text-align:center">
+														<xp:image
+															id="image1" url="/uncheck.png" alt="Eliminar"
+															title="Eliminar" role="Eliminar">
+														</xp:image>
+													</xp:div>
+													<xp:div
+														style="text-align:center">
+													</xp:div>
+													<xp:eventHandler
+														event="onclick" submit="true" refreshMode="complete">
+														<xp:this.action><![CDATA[#{javascript:var field:Array = document1.getValue( 'AprobadoresDefault' );
+var field2:Array = document1.getValue( 'AprobadoresDefaultPuestos' );
+
+document1.replaceItemValue( 'AprobadoresDefault', SpliceArray(field,AprobadoresDefaultIndex,1));
+ 
+document1.replaceItemValue( 'AprobadoresDefaultPuestos', SpliceArray(field2,AprobadoresDefaultIndex,1) );
+
+}]]></xp:this.action>
+														<xp:this.script><![CDATA[var txt;
+var r = confirm("Esta seguro de Eliminar el Aprobador");
+if (r == true) {
+   
+} else {
+     return false;
+}]]></xp:this.script>
+													</xp:eventHandler>
+												</xp:link>
+											</xp:td>
+
+											<xp:td
+												style="width:35.0px;text-align:center">
+												<xp:div
+													style="text-align:center">
+													<xp:link
+														escape="true" id="link6">
+														<xp:div
+															style="text-align:center">
+															<xp:image
+																id="image4" url="/up.png" alt="Subir" role="Subir"
+																title="Subir">
+																<xp:this.rendered><![CDATA[#{javascript:if(AprobadoresDefaultIndex!=0){
+	return true;
+}else{
+	return false;
+}}]]></xp:this.rendered>
+																<xp:eventHandler
+																	event="onclick" submit="true" refreshMode="complete">
+																	<xp:this.action><![CDATA[#{javascript:var field:Array = document1.getValue( 'AprobadoresDefault' );
+var field2:Array = document1.getValue( 'AprobadoresDefaultPuestos' );
+var arrayNew:Array=new Array();
+var arrayNew2:Array=new Array();
+if(AprobadoresDefaultIndex!=0){
+
+	var i=AprobadoresDefaultIndex;
+	var valor;
+
+
+	for (x=0;x<field.length;x++){
+		print(field[x]);
+		arrayNew.push(field[x]);
+	}	
+	valor=arrayNew[i];
+	arrayNew[i]=arrayNew[i-1];
+	arrayNew[i-1]=valor;
+	document1.replaceItemValue( 'AprobadoresDefault', arrayNew);
+
+	for (x=0;x<field2.length;x++){
+		print(field2[x]);
+		arrayNew2.push(field2[x]);
+	}	
+	valor=arrayNew2[i];
+	arrayNew2[i]=arrayNew2[i-1];
+	arrayNew2[i-1]=valor;
+	
+	document1.replaceItemValue( 'AprobadoresDefault', arrayNew)
+	document1.replaceItemValue( 'AprobadoresDefaultPuestos', arrayNew2);
+
+}
+
+}]]></xp:this.action>
+																</xp:eventHandler>
+															</xp:image>
+															<xp:link
+																escape="true" id="link1">
+																<xp:image
+																	id="image2" url="/down.png" alt="Bajar" role="Bajar"
+																	title="Bajar">
+																	<xp:this.rendered><![CDATA[#{javascript:var field:Array = document1.getValue( 'AprobadoresDefault' );
+if(field.length!=AprobadoresDefaultIndex+1){
+	return true;
+
+}else{
+	return false;
+}
+
+}]]></xp:this.rendered>
+																	<xp:eventHandler
+																		event="onclick" submit="true"
+																		refreshMode="complete">
+																		<xp:this.action><![CDATA[#{javascript:var field:Array = document1.getValue( 'AprobadoresDefault' );
+var field2:Array = document1.getValue( 'AprobadoresDefaultPuestos' );
+var arrayNew:Array=new Array();
+var arrayNew2:Array=new Array();
+print("Valor 1: " + field.length);
+print("Valor 2: " + AprobadoresDefaultIndex);
+if(field.length!=AprobadoresDefaultIndex+1){
+
+	var i=AprobadoresDefaultIndex;
+	var valor;
+
+
+	for (x=0;x<field.length;x++){
+		print(field[x]);
+		arrayNew.push(field[x]);
+	}	
+	valor=arrayNew[i];
+	arrayNew[i]=arrayNew[i+1];
+	arrayNew[i+1]=valor;
+	document1.replaceItemValue( 'AprobadoresDefault', arrayNew);
+
+	for (x=0;x<field2.length;x++){
+		print(field2[x]);
+		arrayNew2.push(field2[x]);
+	}	
+	valor=arrayNew2[i];
+	arrayNew2[i]=arrayNew2[i+1];
+	arrayNew2[i+1]=valor;
+	
+	document1.replaceItemValue( 'AprobadoresDefault', arrayNew)
+	document1.replaceItemValue( 'AprobadoresDefaultPuestos', arrayNew2);
+
+}
+}]]></xp:this.action>
+																	</xp:eventHandler>
+																</xp:image>
+															</xp:link>
+														</xp:div>
+														<xp:eventHandler
+															event="onclick" submit="true" refreshMode="complete">
+															<xp:this.action><![CDATA[#{javascript:var field:Array = document1.getValue( 'AprobadoresDefault' );
+var field2:Array = document1.getValue( 'AprobadoresDefaultPuestos' );
+var arrayNew:Array=new Array();
+var arrayNew2:Array=new Array();
+if(AprobadoresDefaultIndex!=0){
+
+	var i=AprobadoresDefaultIndex;
+	var valor;
+
+
+	for (x=0;x<field.length;x++){
+		print(field[x]);
+		arrayNew.push(field[x]);
+	}	
+	valor=arrayNew[i];
+	arrayNew[i]=arrayNew[i-1];
+	arrayNew[i-1]=valor;
+	document1.replaceItemValue( 'AprobadoresDefault', arrayNew);
+
+	for (x=0;x<field2.length;x++){
+		print(field2[x]);
+		arrayNew2.push(field2[x]);
+	}	
+	valor=arrayNew2[i];
+	arrayNew2[i]=arrayNew2[i-1];
+	arrayNew2[i-1]=valor;
+	
+	document1.replaceItemValue( 'AprobadoresDefault', arrayNew)
+	document1.replaceItemValue( 'AprobadoresDefaultPuestos', arrayNew2);
+
+}
+
+}]]></xp:this.action>
+														</xp:eventHandler>
+													</xp:link>
+													<xp:div
+														style="text-align:center">
+													</xp:div>
+												</xp:div>
+											</xp:td>
+
+
+											<xp:td
+												style="width:305.0px">
+
+												<xp:inputText
+													id="inputIterAprobadores" style="width:300px"
+													readonly="#{javascript:true}">
+													<xp:this.rendered><![CDATA[#{javascript:return (document1.getItemValueArray( 'AprobadoresDefault' ).length > 1);}]]></xp:this.rendered>
+													<xp:this.value><![CDATA[#{document1.AprobadoresDefault[AprobadoresDefaultIndex]}]]></xp:this.value>
+												</xp:inputText>
+
+												<xp:text escape="true"
+													id="computedField7" value="#{document1.AprobadoresDefault}"
+													rendered="#{javascript:return ( document1.getItemValueArray( 'AprobadoresDefault' ).length == 1 );}">
+												</xp:text>
+											</xp:td>
+											<xp:td
+												style="width:305.0px">
+												<xp:inputText
+													id="inputIterPresentesPuestos" style="width:300px"
+													readonly="#{javascript:true}">
+													<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'AprobadoresDefault' ).length > 1 );}]]></xp:this.rendered>
+													<xp:this.value><![CDATA[#{document1.AprobadoresDefaultPuestos[AprobadoresDefaultIndex]}]]></xp:this.value>
+												</xp:inputText>
+												<xp:text escape="true"
+													id="computedField8"
+													value="#{document1.AprobadoresDefaultPuestos}">
+													<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'AprobadoresDefault' ).length == 1 );
+}]]></xp:this.rendered>
+												</xp:text>
+											</xp:td>
+
+
+										</xp:tr>
+
+									</xp:table>
+
+
+
+
+									<xe:dialog id="dialogEditAprobador"
+										title="Editar Presente">
+										<xe:dialogContent
+											id="dialogContent4">
+											<xp:panel>
+												<xp:table>
+													<xp:tr>
+														<xp:td>
+															Nombre
+														</xp:td>
+														<xp:td>
+															<xe:namePicker
+																id="namePicker4"
+																dialogTitle="Seleccione los presentes">
+																<xe:this.dataProvider>
+																	<xe:namePickerAggregator>
+																		<xe:this.dataProviders>
+																			<xe:dominoNABNamePicker
+																				addressBookSel="db-name" groups="true"
+																				nameList="peopleByLastName" people="true">
+																				<xe:this.addressBookDb><![CDATA[#{javascript:database.getServer()+ "!!names.nsf"}]]></xe:this.addressBookDb>
+																			</xe:dominoNABNamePicker>
+																		</xe:this.dataProviders>
+																	</xe:namePickerAggregator>
+																</xe:this.dataProvider>
+																<xe:this.for><![CDATA[#{javascript:if(document1.getItemValueArray( 'Aprobadores' ).length > 1 ){
+	return "inputText6";
+}else{
+	return "inputText5";
+}}]]></xe:this.for>
+															</xe:namePicker>
+														</xp:td>
+														<xp:td>
+															<xp:inputText
+																id="inputText6" style="width:300px" required="true">
+																<xp:this.validators>
+																	<xp:validateRequired
+																		message="El dato es requerido">
+																	</xp:validateRequired>
+																</xp:this.validators>
+																<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'AprobadoresDefault' ).length > 1 );}]]></xp:this.rendered>
+																<xp:this.value><![CDATA[#{document1.AprobadoresDefault[AprobadoresDefaultIndex]}]]></xp:this.value>
+															</xp:inputText>
+															<xp:br></xp:br>
+															<xp:inputText
+																id="inputText5" style="width:300px" required="true"
+																rendered="#{javascript:return ( document1.getItemValueArray( 'AprobadoresDefault' ).length == 1 );}"
+																value="#{document1.AprobadoresDefault}">
+															</xp:inputText>
+														</xp:td>
+														<xp:td></xp:td>
+													</xp:tr>
+													<xp:tr>
+														<xp:td>
+															Puesto
+														</xp:td>
+														<xp:td></xp:td>
+														<xp:td>
+
+															<xp:comboBox
+																id="comboBox3">
+																<xp:this.value><![CDATA[#{document1.AprobadoresDefaultPuestos[AprobadoresDefaultIndex]}]]></xp:this.value>
+
+																<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'AprobadoresDefault' ).length > 1 );}]]></xp:this.rendered>
+																<xp:selectItems
+																	id="selectItems2">
+																	<xp:this.value><![CDATA[#{javascript:@DbLookup(@DbName(), "vListaValores", "Puesto", "values")}]]></xp:this.value>
+																</xp:selectItems>
+															</xp:comboBox>
+															<xp:br></xp:br>
+															<xp:comboBox
+																id="comboBox2"
+																value="#{document1.AprobadoresDefaultPuestos}"
+																rendered="#{javascript:return ( document1.getItemValueArray( 'AprobadoresDefault' ).length == 1 );}">
+																<xp:selectItems
+																	id="selectItems7">
+																	<xp:this.value><![CDATA[#{javascript:@DbLookup(@DbName(), "vListaValores", "Puesto", "values")}]]></xp:this.value>
+																</xp:selectItems>
+															</xp:comboBox>
+														</xp:td>
+														<xp:td></xp:td>
+													</xp:tr>
+
+
+												</xp:table>
+											</xp:panel>
+										</xe:dialogContent>
+										<xe:dialogButtonBar
+											id="dialogButtonBar5">
+											<xp:button value="ok"
+												id="button13">
+												<xp:eventHandler
+													event="onclick" submit="true" refreshMode="partial"
+													refreshId="repeatItemsPresentes" id="eventHandler9">
+													<xp:this.action>
+
+														<xp:actionGroup>
+
+
+
+
+
+															<xp:executeScript>
+																<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogEditAprobador")
+c.hide()}]]></xp:this.script>
+															</xp:executeScript>
+
+
+															<xp:executeScript>
+																<xp:this.script><![CDATA[#{javascript:
+var field = document1.getValue( 'AprobadoresDefault' );
+var field2 = document1.getValue( 'AprobadoresDefaultPuestos' );
+
+if( !field ){ field = []; }
+if( typeof field === 'string' ){
+	field = [ field ];
+}
+
+document1.setValue( 'AprobadoresDefault', field );
+
+if( !field2 ){ field2 = []; }
+if( typeof field2 === 'string' ){
+	field2 = [ field2 ];
+}
+
+document1.setValue( 'AprobadoresDefaultPuestos', field2 );
+}]]></xp:this.script>
+															</xp:executeScript>
+														</xp:actionGroup>
+													</xp:this.action>
+												</xp:eventHandler>
+											</xp:button>
+											<xp:link escape="true"
+												text="Cancel" id="link8">
+												<xp:eventHandler
+													event="onclick" submit="false" id="eventHandler10">
+													<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogEditAprobador}')]]></xp:this.script>
+												</xp:eventHandler>
+											</xp:link>
+										</xe:dialogButtonBar>
+									</xe:dialog>
+								</xp:repeat>
+								<xp:inputText
+									value="#{document1.AprobadoresDefault}"
+									readonly="#{javascript:return !document.isEditable();}"
+									id="inputText9">
+									<xp:this.rendered><![CDATA[#{javascript://return ( document1.getItemValueArray( 'field' ).length < 1 );
+return false}]]></xp:this.rendered>
+								</xp:inputText>
+								<xp:inputText
+									value="#{document1.AprobadoresDefaultPuestos}"
+									readonly="#{javascript:return !document.isEditable();}"
+									id="inputText10">
+									<xp:this.rendered><![CDATA[#{javascript://return ( document1.getItemValueArray( 'field2' ).length < 1 );
+return false}]]></xp:this.rendered>
+								</xp:inputText>
+							</xp:td>
+
+
+						</xp:tr>
+						<xp:tr>
+							<xp:td>
+								<xp:br></xp:br>
+								<xp:label value="Otros Aprobadores"
+									id="label11">
+								</xp:label>
+								&#160;
+								<xp:br></xp:br>
+								<xp:button id="button14" value="..."
+									rendered="#{javascript:currentDocument.isEditable()}">
+									<xp:eventHandler event="onclick"
+										submit="false" id="eventHandler11">
+										<xp:this.script><![CDATA[XSP.openDialog('#{id:dialogNewAprobador}')]]></xp:this.script>
+									</xp:eventHandler>
+								</xp:button>
+							</xp:td>
+							<xp:td colspan="3">
+								<xp:br></xp:br>
+								<xp:panel id="panelPresentes">
+
+
+
+									<xe:dialog id="dialogNewAprobador"
+										title="Nuevo Presente">
+
+										<xe:dialogButtonBar
+											id="dialogButtonBar4">
+											<xp:button value="ok"
+												id="button17">
+												<xp:eventHandler
+													event="onclick" submit="true" refreshMode="partial"
+													refreshId="repeatItemsPresentes" id="eventHandler3">
+													<xp:this.action>
+
+														<xp:actionGroup>
+
+
+
+
+															<xp:executeScript>
+																<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogNewAprobador")
+c.hide()}]]></xp:this.script>
+															</xp:executeScript>
+
+															<xp:executeScript>
+																<xp:this.script><![CDATA[#{javascript:
+var field = document1.getValue( 'Aprobadores' );
+var field2 = document1.getValue( 'AprobadoresPuestos' );
+if(field==""){
+	field=getComponent("inputNombreAprobador").getValue();
+	field2=getComponent("inputPuestoAprobador").getValue();
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+	if( !field2 ){ field2 = []; }
+	if( typeof field2 === 'string' ){
+		field2 = [ field2 ];
+	}
+}else{
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+	field.push(getComponent("inputNombreAprobador").getValue());
+	if( !field2 ){ field2 = []; }
+	if( typeof field2 === 'string' ){
+		field2 = [ field2 ];
+	}
+	field2.push(getComponent("inputPuestoAprobador").getValue());
+}
+document1.setValue( 'Aprobadores', field );
+document1.setValue( 'AprobadoresPuestos', field2 );
+
+}]]></xp:this.script>
+															</xp:executeScript>
+														</xp:actionGroup>
+													</xp:this.action>
+												</xp:eventHandler>
+											</xp:button>
+											<xp:link escape="true"
+												text="Cancel" id="link5">
+												<xp:eventHandler
+													event="onclick" submit="false" id="eventHandler5">
+													<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogNewAprobador}')]]></xp:this.script>
+												</xp:eventHandler>
+											</xp:link>
+										</xe:dialogButtonBar>
+										<xe:dialogContent
+											id="dialogContent3">
+											<xp:panel>
+												<xp:table>
+													<xp:tr>
+														<xp:td>
+															Nombre
+														</xp:td>
+														<xp:td>
+
+															<xe:namePicker
+																id="namePicker3" for="inputNombreAprobador"
+																dialogTitle="Seleccione los Nombres">
+																<xe:this.dataProvider>
+																	<xe:namePickerAggregator>
+
+																		<xe:this.dataProviders>
+																			<xe:dominoViewNamePicker
+																				label="Nombre" labelColumn="Nombre" loaded="true"
+																				viewName="vUsuario">
+																			</xe:dominoViewNamePicker>
+																		</xe:this.dataProviders>
+																	</xe:namePickerAggregator>
+																</xe:this.dataProvider>
+															</xe:namePicker>
+														</xp:td>
+														<xp:td>
+															<xp:inputText
+																id="inputNombreAprobador" style="width:300px"
+																required="true">
+																<xp:this.validators>
+																	<xp:validateRequired
+																		message="El dato es requerido">
+																	</xp:validateRequired>
+																</xp:this.validators>
+																<xp:eventHandler
+																	event="onchange" submit="true"
+																	refreshMode="complete">
+																	<xp:this.action><![CDATA[#{javascript:
+try{
+	var viewClientes=database.getView("vUsuario");
+	if(viewClientes!=null){
+		if(!getComponent("inputNombreAprobador").getValue().equals("")){
+			var docCliente=viewClientes.getDocumentByKey(getComponent("inputNombreAprobador").getValue());
+			if (docCliente!=null){
+			    getComponent("inputPuestoAprobador").setValue(docCliente.getItemValueString('Puesto'));
+				//currentDocument.setValue("IDPuesto",docCliente.getItemValue('IDPuesto'))
+			}else{
+				getComponent("inputPuestoAprobador").setValue("");
+				//currentDocument.setValue("IDPuesto","")
+			}
+		}
+	}
+	}catch(e){
+		print('Error: ' + e);
+		return "";
+}
+}]]></xp:this.action>
+																</xp:eventHandler>
+															</xp:inputText>
+														</xp:td>
+														<xp:td></xp:td>
+													</xp:tr>
+													<xp:tr>
+														<xp:td>
+															Puesto
+														</xp:td>
+														<xp:td></xp:td>
+														<xp:td>
+
+
+															<xp:inputText
+																id="inputPuestoAprobador" style="width:301.0px"
+																readonly="true">
+															</xp:inputText>
+														</xp:td>
+														<xp:td></xp:td>
+													</xp:tr>
+													<xp:tr>
+														<xp:td></xp:td>
+														<xp:td></xp:td>
+														<xp:td></xp:td>
+														<xp:td></xp:td>
+													</xp:tr>
+													<xp:tr>
+														<xp:td></xp:td>
+														<xp:td></xp:td>
+														<xp:td></xp:td>
+														<xp:td></xp:td>
+													</xp:tr>
+												</xp:table>
+
+											</xp:panel>
+										</xe:dialogContent>
+									</xe:dialog>
+
+
+
+									<xp:repeat
+										value="#{document1.Aprobadores}" var="Apobadores"
+										indexVar="AprobadoresIndex" id="repeatItemsPresentes">
+										<xp:table border="1"
+											cellpadding="0" cellspacing="0"
+											style="border: 1px solid grey;width:831.0px">
+											<xp:tr>
+												<xp:td
+													style="width:25.0px;text-align:center">
+													<xp:text
+														escape="true" id="computedField1"
+														value="#{javascript:AprobadoresIndex + 1}"
+														style="font-weight:bold">
+														<xp:this.converter>
+															<xp:convertNumber
+																type="number" integerOnly="true">
+															</xp:convertNumber>
+														</xp:this.converter>
+													</xp:text>
+												</xp:td>
+												<xp:td
+													style="width:50.0px">
+													<xp:div
+														style="text-align:center">
+														<xp:link
+															escape="true" id="link2">
+															<xp:image
+																id="image3" url="/Edit.gif" alt="Editar" role="Editar"
+																title="Editar">
+																<xp:eventHandler
+																	event="onclick" submit="false" id="eventHandler2">
+																	<xp:this.script><![CDATA[XSP.openDialog('#{id:dialogAprobador}')]]></xp:this.script>
+																</xp:eventHandler>
+															</xp:image>
+														</xp:link>
+														&#160;&#160;
+														<xp:link
+															escape="true" id="link7">
+															<xp:image
+																id="image5" url="/uncheck.png" alt="Eliminar"
+																role="Eliminar" title="Eliminar">
+															</xp:image>
+															<xp:eventHandler
+																event="onclick" submit="true" refreshMode="complete"
+																id="eventHandler4">
+																<xp:this.action><![CDATA[#{javascript:var field:Array = document1.getValue( 'Aprobadores' );
+var field2:Array = document1.getValue( 'AprobadoresPuestos' );
+
+document1.replaceItemValue( 'Aprobadores', SpliceArray(field,AprobadoresIndex,1));
+ 
+document1.replaceItemValue( 'AprobadoresPuestos', SpliceArray(field2,AprobadoresIndex,1) );
+
+}]]></xp:this.action>
+																<xp:this.script><![CDATA[var txt;
+var r = confirm("Esta seguro de Eliminar el Aprobador");
+if (r == true) {
+   
+} else {
+     return false;
+}]]></xp:this.script>
+															</xp:eventHandler>
+														</xp:link>
+													</xp:div>
+												</xp:td>
+
+
+												<xp:td
+													style="width:35px">
+
+													<xp:div
+														style="text-align:center">
+														<xp:link
+															escape="true" id="link9">
+															<xp:div
+																style="text-align:center">
+																<xp:image
+																	id="image6" url="/up.png" alt="Subir" role="Subir"
+																	title="Subir">
+																	<xp:this.rendered><![CDATA[#{javascript:if(AprobadoresIndex!=0){
+	return true;
+}else{
+	return false;
+}}]]></xp:this.rendered>
+																	<xp:eventHandler
+																		event="onclick" submit="true"
+																		refreshMode="complete">
+																		<xp:this.action><![CDATA[#{javascript:var field:Array = document1.getValue( 'Aprobadores' );
+var field2:Array = document1.getValue( 'AprobadoresPuestos' );
+var arrayNew:Array=new Array();
+var arrayNew2:Array=new Array();
+if(AprobadoresIndex!=0){
+
+	var i=AprobadoresIndex;
+	var valor;
+
+
+	for (x=0;x<field.length;x++){
+		print(field[x]);
+		arrayNew.push(field[x]);
+	}	
+	valor=arrayNew[i];
+	arrayNew[i]=arrayNew[i-1];
+	arrayNew[i-1]=valor;
+	document1.replaceItemValue( 'Aprobadores', arrayNew);
+
+	for (x=0;x<field2.length;x++){
+		print(field2[x]);
+		arrayNew2.push(field2[x]);
+	}	
+	valor=arrayNew2[i];
+	arrayNew2[i]=arrayNew2[i-1];
+	arrayNew2[i-1]=valor;
+	
+	document1.replaceItemValue( 'Aprobadores', arrayNew)
+	document1.replaceItemValue( 'AprobadoresPuestos', arrayNew2);
+
+}
+
+}]]></xp:this.action>
+																	</xp:eventHandler>
+																</xp:image>
+																<xp:link
+																	escape="true" id="link10">
+																	<xp:image
+																		id="image7" url="/down.png" alt="Bajar" role="Bajar"
+																		title="Bajar">
+																		<xp:this.rendered><![CDATA[#{javascript:
+
+var field:Array = document1.getValue( 'Aprobadores' );
+if(field.length!=AprobadoresIndex+1){
+	if(field.length!=AprobadoresIndex+1){
+		return true;
+
+	}else{
+		return false;
+	}
+
+}else{
+	return false;
+}
+
+}]]></xp:this.rendered>
+																		<xp:eventHandler
+																			event="onclick" submit="true"
+																			refreshMode="complete">
+																			<xp:this.action><![CDATA[#{javascript:var field:Array = document1.getValue( 'Aprobadores' );
+var field2:Array = document1.getValue( 'AprobadoresPuestos' );
+var arrayNew:Array=new Array();
+var arrayNew2:Array=new Array();
+print("Valor 1: " + field.length);
+print("Valor 2: " + AprobadoresIndex);
+if(field.length!=AprobadoresIndex+1){
+
+	var i=AprobadoresIndex;
+	var valor;
+
+
+	for (x=0;x<field.length;x++){
+		print(field[x]);
+		arrayNew.push(field[x]);
+	}	
+	valor=arrayNew[i];
+	arrayNew[i]=arrayNew[i+1];
+	arrayNew[i+1]=valor;
+	document1.replaceItemValue( 'Aprobadores', arrayNew);
+
+	for (x=0;x<field2.length;x++){
+		print(field2[x]);
+		arrayNew2.push(field2[x]);
+	}	
+	valor=arrayNew2[i];
+	arrayNew2[i]=arrayNew2[i+1];
+	arrayNew2[i+1]=valor;
+	
+	document1.replaceItemValue( 'Aprobadores', arrayNew)
+	document1.replaceItemValue( 'AprobadoresPuestos', arrayNew2);
+
+}
+}]]></xp:this.action>
+																		</xp:eventHandler>
+																	</xp:image>
+																</xp:link>
+															</xp:div>
+
+														</xp:link>
+
+													</xp:div>
+												</xp:td>
+												<xp:td
+													style="width:305.0px">
+
+													<xp:inputText
+														id="inputText1" style="width:300px"
+														readonly="#{javascript:true}">
+														<xp:this.rendered><![CDATA[#{javascript:return (document1.getItemValueArray( 'Aprobadores' ).length > 1);}]]></xp:this.rendered>
+														<xp:this.value><![CDATA[#{document1.Aprobadores[AprobadoresIndex]}]]></xp:this.value>
+													</xp:inputText>
+
+													<xp:text
+														escape="true" id="computedField2"
+														value="#{document1.Aprobadores}"
+														rendered="#{javascript:return ( document1.getItemValueArray( 'Aprobadores' ).length == 1 );}">
+
+													</xp:text>
+												</xp:td>
+												<xp:td
+													style="width:305.0px">
+													<xp:inputText
+														id="inputText3" style="width:300px"
+														readonly="#{javascript:true}">
+														<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'Aprobadores' ).length > 1 );}]]></xp:this.rendered>
+														<xp:this.value><![CDATA[#{document1.AprobadoresPuestos[AprobadoresIndex]}]]></xp:this.value>
+													</xp:inputText>
+													<xp:text
+														escape="true" id="computedField3"
+														value="#{document1.AprobadoresPuestos}">
+														<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'Aprobadores' ).length == 1 );
+}]]></xp:this.rendered>
+													</xp:text>
+												</xp:td>
+
+
+											</xp:tr>
+
+										</xp:table>
+
+
+										<xe:dialog id="dialogAprobador"
+											title="Editar Aprobador">
+											<xe:dialogContent
+												id="dialogContent2">
+												<xp:panel>
+													<xp:table>
+														<xp:tr>
+															<xp:td>
+																Nombre
+															</xp:td>
+															<xp:td>
+
+																<xe:namePicker
+																	id="namePicker12"
+																	dialogTitle="Seleccione los Nombres">
+																	<xe:this.dataProvider>
+																		<xe:namePickerAggregator>
+
+																			<xe:this.dataProviders>
+																				<xe:dominoViewNamePicker
+																					label="Nombre" labelColumn="Nombre" loaded="true"
+																					viewName="vUsuario">
+																				</xe:dominoViewNamePicker>
+																			</xe:this.dataProviders>
+																		</xe:namePickerAggregator>
+																	</xe:this.dataProvider>
+																	<xe:this.for><![CDATA[#{javascript:if(document1.getItemValueArray( 'Aprobadores' ).length > 1 ){
+	return "inputText7";
+}else{
+	return "inputText8";
+}}]]></xe:this.for>
+																</xe:namePicker>
+															</xp:td>
+															<xp:td>
+																<xp:inputText
+																	id="inputText7" style="width:300px" required="true">
+																	<xp:this.value><![CDATA[#{document1.Aprobadores[AprobadoresIndex]}]]></xp:this.value>
+																	<xp:this.validators>
+																		<xp:validateRequired
+																			message="El dato es requerido">
+																		</xp:validateRequired>
+																	</xp:this.validators>
+																	<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'Aprobadores' ).length > 1 );}]]></xp:this.rendered>
+																	<xp:eventHandler
+																		event="onchange" submit="true"
+																		refreshMode="complete">
+																		<xp:this.action><![CDATA[#{javascript:try{
+	print('Debug: 1');
+	var viewClientes=database.getView("vUsuario");
+	if(viewClientes!=null){
+		print('Debug: 2');
+		if(!getComponent("inputText7").getValue().equals("")){
+			print('Debug: 3');
+			var docCliente=viewClientes.getDocumentByKey(getComponent("inputText7").getValue());
+			if (docCliente!=null){
+				print('Debug: 4');
+			    getComponent("inputTextPuesto").setValue(docCliente.getItemValueString('Puesto'));
+				//currentDocument.setValue("IDPuesto",docCliente.getItemValue('IDPuesto'))
+			}else{
+				getComponent("inputTextPuesto").setValue("");
+				//currentDocument.setValue("IDPuesto","")
+			}
+		}
+	}
+	}catch(e){
+		print('Error: ' + e);
+		return "";
+}}]]></xp:this.action>
+																	</xp:eventHandler>
+																</xp:inputText>
+																<xp:br></xp:br>
+																<xp:inputText
+																	id="inputText8" style="width:300px" required="true"
+																	value="#{document1.Aprobadores}"
+																	rendered="#{javascript:return ( document1.getItemValueArray( 'Aprobadores' ).length == 1 );}">
+
+
+																	<xp:eventHandler
+																		event="onchange" submit="true"
+																		refreshMode="complete">
+																		<xp:this.action><![CDATA[#{javascript:try{
+	
+	var viewClientes=database.getView("vUsuario");
+	if(viewClientes!=null){
+		if(!getComponent("inputText8").getValue().equals("")){
+			var docCliente=viewClientes.getDocumentByKey(getComponent("inputText8").getValue());
+			if (docCliente!=null){
+			    getComponent("inputText24").setValue(docCliente.getItemValueString('Puesto'));
+				//currentDocument.setValue("IDPuesto",docCliente.getItemValue('IDPuesto'))
+			}else{
+				getComponent("inputText24").setValue("");
+				//currentDocument.setValue("IDPuesto","")
+			}
+		}
+	}
+	}catch(e){
+		print('Error: ' + e);
+		return "";
+}}]]></xp:this.action>
+																	</xp:eventHandler>
+																</xp:inputText>
+															</xp:td>
+															<xp:td></xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td>
+																Puesto
+															</xp:td>
+															<xp:td></xp:td>
+															<xp:td>
+
+
+																<xp:inputText
+																	id="inputTextPuesto" style="width:302.0px"
+																	readonly="true">
+																	<xp:this.value><![CDATA[#{document1.AprobadoresPuestos[AprobadoresIndex]}]]></xp:this.value>
+
+																	<xp:this.rendered><![CDATA[#{javascript:return ( document1.getItemValueArray( 'Aprobadores' ).length > 1 );}]]></xp:this.rendered>
+																</xp:inputText>
+																<xp:br></xp:br>
+																<xp:inputText
+																	id="inputText24" style="width:302.0px" readonly="true"
+																	value="#{document1.AprobadoresPuestos}"
+																	rendered="#{javascript:return ( document1.getItemValueArray( 'Aprobadores' ).length == 1 );}">
+																</xp:inputText>
+															</xp:td>
+															<xp:td></xp:td>
+														</xp:tr>
+
+
+													</xp:table>
+												</xp:panel>
+											</xe:dialogContent>
+											<xe:dialogButtonBar
+												id="dialogButtonBar2">
+												<xp:button value="ok"
+													id="button1">
+													<xp:eventHandler
+														event="onclick" submit="true" refreshMode="partial"
+														refreshId="repeatItemsPresentes" id="eventHandler7">
+														<xp:this.action>
+
+															<xp:actionGroup>
+
+
+
+
+
+
+
+																<xp:executeScript>
+																	<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogAprobador")
+c.hide()}]]></xp:this.script>
+																</xp:executeScript>
+
+																<xp:executeScript>
+																	<xp:this.script><![CDATA[#{javascript:
+var field = document1.getValue( 'Aprobadores' );
+var field2 = document1.getValue( 'AprobadoresPuestos' );
+
+if( !field ){ field = []; }
+if( typeof field === 'string' ){
+	field = [ field ];
+}
+
+document1.setValue( 'Aprobadores', field );
+
+if( !field2 ){ field2 = []; }
+if( typeof field2 === 'string' ){
+	field2 = [ field2 ];
+}
+
+document1.setValue( 'AprobadoresPuestos', field2 );
+}]]></xp:this.script>
+																</xp:executeScript>
+															</xp:actionGroup>
+														</xp:this.action>
+													</xp:eventHandler>
+												</xp:button>
+												<xp:link escape="true"
+													text="Cancel" id="link3">
+
+													<xp:eventHandler
+														event="onclick" submit="true" refreshMode="partial"
+														refreshId="dialogAprobador">
+														<xp:this.action><![CDATA[#{javascript:var c = getComponent("dialogAprobador")
+c.hide()}]]></xp:this.action>
+													</xp:eventHandler>
+												</xp:link>
+											</xe:dialogButtonBar>
+										</xe:dialog>
+
+									</xp:repeat>
+									<xp:inputText
+										value="#{document1.Aprobadores}"
+										readonly="#{javascript:return !document.isEditable();}"
+										id="inputText2">
+										<xp:this.rendered><![CDATA[#{javascript://return ( document1.getItemValueArray( 'field' ).length < 1 );
+return false}]]></xp:this.rendered>
+									</xp:inputText>
+									<xp:inputText
+										value="#{document1.AprobadoresPuestos}"
+										readonly="#{javascript:return !document.isEditable();}"
+										id="inputText4">
+										<xp:this.rendered><![CDATA[#{javascript://return ( document1.getItemValueArray( 'field2' ).length < 1 );
+return false}]]></xp:this.rendered>
+									</xp:inputText>
+
+
+
+
+								</xp:panel>
+							</xp:td>
+
+
+						</xp:tr>
+						<xp:tr>
+							<xp:td>
+
+								<xp:label value="Tipo de Aprobación"
+									id="label10">
+								</xp:label>
+							</xp:td>
+							<xp:td colspan="3">
+
+								<xp:comboBox id="cboTipoAprobacion"
+									value="#{document1.TipoAprobacion}">
+									<xp:selectItem
+										itemLabel="Secuencial" itemValue="Secuencial">
+									</xp:selectItem>
+									<xp:selectItem itemLabel="Paralela"
+										itemValue="Paralela">
+									</xp:selectItem>
+									<xp:eventHandler event="onclick"
+										submit="true" refreshMode="partial" refreshId="computedField6">
+									</xp:eventHandler>
+									<xp:eventHandler event="onchange"
+										submit="true" refreshMode="partial" refreshId="computedField6">
+									</xp:eventHandler></xp:comboBox>
+								</xp:td>
+
+
+						</xp:tr>
+					</xp:table>
+				</xp:panel>
+			</xe:dialogContent>
+		</xe:dialog>
+	</xp:panel>
+	<xe:dialog id="dialogComentarios" title="Comentarios">
+		<xe:dialogButtonBar id="dialogButtonBar3">
+
+			<xp:button value="Aceptar" id="button3">
+				<xp:eventHandler event="onclick" submit="true"
+					refreshMode="complete">
+					<xp:this.action>
+
+						<xp:actionGroup>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+							<xp:executeScript>
+								<xp:this.script><![CDATA[#{javascript:if (viewScope.AccionWF=="Enviar a Aprobar"){
+	//var curDoc:NotesDocument=document1.getDocument(true);
+	
+	currentDocument.setValue( 'TipoAprobacion', document1.getValue( 'TipoAprobacion' ));
+//se llama al Procesar Flujo
+	var agent = database.getAgent('(EnviarFlujo)');
+	if(null != agent){
+
+		try{
+			currentDocument.setValue("AccionFlujo","Enviar a Aprobar");
+			var curDoc:NotesDocument=currentDocument.getDocument(true);
+			//curDoc.save(true,false)
+			curDoc.computeWithForm(false,false);
+			agent.runWithDocumentContext(curDoc);
+		}catch(e){
+			print('Error: ' + e);
+			return false;
+		}
+	}
+}
+
+}]]></xp:this.script>
+							</xp:executeScript>
+							<xp:openPage
+								name="#{javascript:compositeData.redirectTo}">
+							</xp:openPage>
+						</xp:actionGroup>
+					</xp:this.action>
+					<xp:this.script><![CDATA[var msg="";
+if(!validaCampoTexto(dojo.byId("#{id:txComentariosWF}")))msg= msg + "Comentarios.\n";
+
+
+
+if(msg!=""){
+	alert("Debe incluir los siguientes Datos: \n" + msg);
+	return false;
+}
+
+
+]]></xp:this.script>
+				</xp:eventHandler>
+			</xp:button>
+			<xp:button value="Cancelar" id="button2">
+				<xp:eventHandler event="onclick" submit="false">
+					<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogComentarios}')]]></xp:this.script>
+				</xp:eventHandler>
+			</xp:button>
+		</xe:dialogButtonBar>
+
+		<xe:dialogContent id="dialogContent5">
+			<xp:panel>
+				<xp:table>
+
+					<xp:tr>
+						<xp:td>
+							<xp:label value="Comentario" id="label5"></xp:label>
+							<xp:br></xp:br>
+							
+						</xp:td>
+						<xp:td>
+							<xp:inputTextarea id="txComentariosWF"
+								style="width:568.0px;height:63.0px"
+								value="#{document1.ComentariosWF}">
+							</xp:inputTextarea>
+						<xp:br></xp:br>
+						<xp:text escape="true" id="computedField6" value="#{javascript:document1.getValue( 'TipoAprobacion' )}"></xp:text></xp:td>
+					</xp:tr>
+				</xp:table>
+			</xp:panel>
+		</xe:dialogContent>
+	</xe:dialog>
+</xp:view>

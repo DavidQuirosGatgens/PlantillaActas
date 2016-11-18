@@ -1,0 +1,10 @@
+.lotusPlaceBar .lotusBtnContainer {
+	float: right;
+	position: relative;
+  	left: -30%; /* or right 50% */
+  	text-align: left;
+}
+var applicationLogo= dojo.query('.applicationLogo')[0];
+applicationLogo.onclick = function() {
+            alert('clicked on logo');
+} 

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex" dojoTheme="true"
+	dojoParseOnLoad="true" dojoForm="true">
+	<xp:this.data>
+		
+		<xp:dominoView var="colActaGenerada"
+			viewName="ActaGeneradaVerEnEncabezado">
+		</xp:dominoView>
+		<xp:dominoView var="view2" viewName="vAnexosActa">
+			<xp:this.categoryFilter><![CDATA[#{javascript://"8508E03D6470481606257DB0006DEA5E"
+compositeData.IDDocumento}]]></xp:this.categoryFilter>
+		</xp:dominoView>
+		<xp:dominoView var="colAnexosV2" viewName="vAnexosActa"></xp:dominoView>
+		<xp:dominoDocument var="docActaGenerada" formName="ActaTmp"></xp:dominoDocument>
+	</xp:this.data>
+
+
+
+
+	<xp:this.dataContexts>
+		<xp:dataContext var="isEditParent"
+			value="#{javascript:currentDocument.isEditable() }">
+		</xp:dataContext>
+	</xp:this.dataContexts>
+	<xp:table>
+		<xp:tr>
+			<xp:td style="width:600.0px">
+
+
+
+
+				<xp:panel id="panel1">
+
+					
+					<xp:panel id="panelAnexos">
+						<xp:this.data>
+							<xp:dominoView var="vAnexos"
+								viewName="vAnexos"
+								keys="#{javascript:compositeData.IDDocumento}"
+								keysExactMatch="true">
+							</xp:dominoView>
+						</xp:this.data>
+
+
+						
+						<xp:repeat id="repeatAnexos" rows="2"
+							style="height:80.0px" value="#{view2}" var="colAnexosV2">
+
+							<xp:table border="1" cellpadding="2"
+								cellspacing="0">
+								<xp:tr>
+									<xp:td style="width:124.0px">
+										<xp:link escape="true"
+											text="Abrir" id="linkEditar"
+											style="text-decoration:underline">
+											<xp:eventHandler
+												event="onclick" submit="false" id="eventHandler1">
+												<xp:this.script><![CDATA[XSP.openTooltipDialog('#{id:tooltipDialogAnexo}','#{id:computedField1}')]]></xp:this.script>
+											</xp:eventHandler>
+										</xp:link>
+										&#160;&#160;
+
+									</xp:td>
+									<xp:td style="width:402.0px">
+										<xp:text escape="true"
+											id="computedField2" value="#{colAnexosV2.$4}"
+											style="font-weight:bold">
+										</xp:text>
+										<xp:br></xp:br>
+										<xp:text escape="true"
+											id="computedField1" value="#{colAnexosV2.SwAttName_1}">
+										</xp:text>
+									</xp:td>
+
+
+
+								</xp:tr>
+							</xp:table>
+							<xe:tooltipDialog id="tooltipDialogAnexo">
+								<xp:panel
+									readonly="#{javascript:!currentDocument.isEditable() }">
+									<xp:this.data>
+										<xp:dominoDocument
+											var="docAnexo" action="editDocument"
+											documentId="#{javascript:colAnexosV2.getNoteID()}"
+											formName="ActaTmp" ignoreRequestParams="true">
+										</xp:dominoDocument>
+									</xp:this.data>
+
+									<xp:table>
+										<xp:tr>
+											<xp:td></xp:td>
+											<xp:td></xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td></xp:td>
+											<xp:td>
+
+											</xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td>
+												<xp:label id="label2"
+													value="Archivo " style="width:63.0px">
+												</xp:label>
+											</xp:td>
+											<xp:td>
+
+
+
+
+												<xp:fileDownload
+													rows="30" id="fileDownload1" displayLastModified="false"
+													value="#{docAnexo.SWAttachment}" style="width:483.0px"
+													hideWhen="false" displayType="false">
+												</xp:fileDownload>
+											</xp:td>
+										</xp:tr>
+										<xp:tr>
+											<xp:td></xp:td>
+											<xp:td>
+
+
+											</xp:td>
+										</xp:tr>
+									</xp:table>
+								</xp:panel>
+							</xe:tooltipDialog>
+						</xp:repeat>
+
+
+					</xp:panel>
+				</xp:panel>
+
+			</xp:td>
+		</xp:tr>
+	</xp:table>
+</xp:view>

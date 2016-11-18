@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+
+	<xp:this.resources>
+		<xp:styleSheet href="/custom.css"></xp:styleSheet>
+	</xp:this.resources>
+	<xe:applicationLayout id="applicationLayout1">
+		<xp:callback facetName="facetMiddle" id="facetMiddle"></xp:callback>
+		<xe:this.facets>
+			<xp:link escape="true" text=" Búsqueda     " id="link1"
+				xp:key="SearchBar"
+				style="color:rgb(255,255,255);font-weight:bold;text-decoration:underline"
+				value="/xpBusquedaAvanzada.xsp">
+				<xp:image id="image1" url="/bt-search.png"></xp:image>
+			</xp:link>
+			<xp:panel xp:key="MastFooter">
+				<xp:table style="width:100.0%">
+					<xp:tr>
+						<xp:td style="height:20.0px;width:532.0px"></xp:td>
+						<xp:td>
+							<xp:link escape="true"
+								text="Powered by Cv3 Consultores y Asociados" id="link"
+								value="https://www.cv3.biz/" rendered="false">
+							</xp:link>
+						</xp:td>
+					</xp:tr>
+				</xp:table>
+			</xp:panel>
+			<xp:callback facetName="facetRight" id="facetRight"
+				xp:key="RightColumn">
+			</xp:callback>
+			<xp:callback facetName="facetLeft" id="facetLeft"
+				xp:key="LeftColumn">
+			</xp:callback>
+		</xe:this.facets>
+		<xe:this.configuration>
+			<xe:oneuiApplication
+				productLogoHeight='#{javascript:var vParam=database.getView("(Parametros)");
+var doc:NotesDocument=vParam.getFirstDocument();
+if(doc!=null){
+	return doc.getItemValueInteger("imagenLargo");
+}}px'
+				productLogoWidth='#{javascript:var vParam=database.getView("(Parametros)");
+var doc:NotesDocument=vParam.getFirstDocument();
+if(doc!=null){
+	return doc.getItemValueInteger("imagenAncho");
+}}px'
+				footer="true" productLogoStyle="text-align:center"
+				placeBarName="#{javascript:database.getTitle()}">
+				<xe:this.footerLinks>
+
+
+
+
+
+				</xe:this.footerLinks>
+
+				<xe:this.bannerApplicationLinks>
+
+
+					<xe:basicContainerNode label="Administración"
+						image="/app-settings-icon.png"
+						style="font-weight:bold;text-decoration:underline">
+						<xe:this.children>
+							<xe:pageTreeNode
+								label="Parámetros Generales" page="/xpParametros.xsp">
+							</xe:pageTreeNode>
+							<xe:pageTreeNode label="Consecutivos"
+								page="/xpvConsecutivo.xsp">
+							</xe:pageTreeNode>
+
+							<xe:pageTreeNode label="Dependencias"
+								page="/xpvDependencias.xsp">
+							</xe:pageTreeNode>
+							<xe:pageTreeNode label="Puestos"
+								page="/xpvPuestos.xsp">
+							</xe:pageTreeNode>
+							<xe:pageTreeNode label="Usuarios"
+								page="/xpvUsuario.xsp">
+							</xe:pageTreeNode>
+							<xe:pageTreeNode
+								label="Plantillas de Correo" page="/xpvPlantillasCorreos.xsp">
+							</xe:pageTreeNode>
+						</xe:this.children>
+						<xe:this.rendered><![CDATA[#{javascript:context.getUser().getRoles().contains('[Secretaria]')}]]></xe:this.rendered>
+					</xe:basicContainerNode>
+
+
+				</xe:this.bannerApplicationLinks>
+				<xe:this.bannerUtilityLinks>
+
+
+
+
+
+
+
+
+
+
+
+
+					<xe:userTreeNode>
+						<xe:this.label><![CDATA[#{javascript:"Bienvenido(a) " + @Name("[CN]", @UserName()) }]]></xe:this.label>
+					</xe:userTreeNode>
+					<xe:basicLeafNode label="  Cerrar Sesión"
+						image="/logout.png" imageHeight="30px" imageWidth="30px">
+						<xe:this.onClick><![CDATA[#{javascript:sessionScope.put("extlib.user.canlogout", true)}]]></xe:this.onClick>
+						<xe:this.href><![CDATA[#{javascript:facesContext.getExternalContext().getRequest().getContextPath() + "?Logout&redirectTo=" + facesContext.getExternalContext().getRequest().getContextPath()}]]></xe:this.href>
+					</xe:basicLeafNode>
+
+
+
+
+
+
+				</xe:this.bannerUtilityLinks>
+				<xe:this.productLogo><![CDATA[#{javascript:var vParam=database.getView("(Parametros)");
+var doc:NotesDocument=vParam.getFirstDocument();
+if(doc!=null){
+	if (doc.hasEmbedded()) {
+		var itemvalues:java.util.Vector = doc.getItemValue("attachmentsNames");
+		var iterator = itemvalues.iterator();
+		var itemvalue = iterator.next();
+		var imagen=itemvalue;
+		var url= doc.getItemValueString("URLBD");
+	} else {
+		return ""
+	}
+}
+var urldb:String=context.getUrl().toString();
+var nIndexOf = urldb.indexOf(".nsf");
+nIndexOf=nIndexOf+4;
+urldb = urldb.substring(0, nIndexOf);
+
+return url + "/(Parametros)/Parametros/$File/"+imagen+"?OpenElement"}]]></xe:this.productLogo>
+				<xe:this.titleBarTabs>
+
+					
+				</xe:this.titleBarTabs>
+				<xe:this.placeBarActions>
+
+				</xe:this.placeBarActions>
+			</xe:oneuiApplication>
+		</xe:this.configuration>
+	</xe:applicationLayout>
+</xp:view>

@@ -1,0 +1,203 @@
+'++LotusScript Development Environment:2:5:(Options):0:74
+Option Public
+Option Explicit
+
+
+'++LotusScript Development Environment:2:5:(Forward):0:1
+Declare Sub IniLetras()
+Declare Function ConvALetras(TresDígitos As Integer, Contador As Integer) As String
+Declare Function NumeroALetras(Numero As Double, IndMoneda As String) As String
+
+'++LotusScript Development Environment:2:5:(Declarations):0:10
+Public Inicio As Integer
+Public Letras(1 To 50) As String
+Dim Hilera As String                'Variable para ir armando el texto
+Dim Enteros As String               'Parte entera tratada como texto
+Dim Decimales As String             'Parte decimal convertida a caracteres
+Dim TresDígitos As Integer          'Tres dígitos que se analizan a la vez
+Dim Contador As Integer             'Para contar cada tres dígitos
+Dim IndDecimales As String	'
+
+
+'++LotusScript Development Environment:2:2:IniLetras:1:8
+Sub IniLetras()
+	
+	Letras(1) = "Un"
+	Letras(2) = "Dos"
+	Letras(3) = "Tres"
+	Letras(4) = "Cuatro"
+	Letras(5) = "Cinco"
+	Letras(6) = "Seis"
+	Letras(7) = "Siete"
+	Letras(8) = "Ocho"
+	Letras(9) = "Nueve"
+	Letras(10) = "Diez"
+	Letras(11) = "Once"
+	Letras(12) = "Doce"
+	Letras(13) = "Trece"
+	Letras(14) = "Catorce"
+	Letras(15) = "Quince"
+	Letras(16) = "Dieciséis"
+	Letras(17) = "Diecisiete"
+	Letras(18) = "Dieciocho"
+	Letras(19) = "Diecinueve"
+	Letras(20) = "Veinte"
+	Letras(21) = "Veintiun"
+	Letras(22) = "Veintidós"
+	Letras(23) = "Veintitrés"
+	Letras(24) = "Veinticuatro"
+	Letras(25) = "Veinticinco"
+	Letras(26) = "Veintiséis"
+	Letras(27) = "Veintisiete"
+	Letras(28) = "Veintiocho"
+	Letras(29) = "Veintinueve"
+	Letras(30) = "Treinta"
+	Letras(33) = "Treinta"
+	Letras(34) = "Cuarenta"
+	Letras(35) = "Cincuenta"
+	Letras(36) = "Sesenta"
+	Letras(37) = "Setenta"
+	Letras(38) = "Ochenta"
+	Letras(39) = "Noventa"
+	Letras(41) = "Cien"
+	Letras(42) = "Doscientos"
+	Letras(43) = "Trescientos"
+	Letras(44) = "Cuatrocientos"
+	Letras(45) = "Quinientos"
+	Letras(46) = "Seiscientos"
+	Letras(47) = "Setecientos"
+	Letras(48) = "Ochocientos"
+	Letras(49) = "Novecientos"
+	Letras(50) = "Mil"
+	Inicio = 1
+	
+End Sub
+'++LotusScript Development Environment:2:1:ConvALetras:1:8
+Function ConvALetras(TresDígitos As Integer, Contador As Integer) As String
+	
+	Dim Strings As String
+	Dim DosDígitos As Integer
+	
+    'Primero se evalúan los dígitos.  Después se agrega un sufijo
+    'que depende del contador (mil, millones, billones, etc.)
+	
+	Select Case TresDígitos         'Evalúa TresDígitos
+	Case 0
+		Strings = ""
+		
+	Case 1 To 30                    'Asignación Directa Numeros simples
+		Strings = Letras(TresDígitos)
+		
+	Case 40, 50, 60, 70, 80, 90     'Asignación Directa múltiplos de 10
+		Strings = Letras(Val(Left(Cstr(TresDígitos), 1)) + 30)
+		
+	Case 100, 200, 300, 400, 500, 600, 700, 800, 900 'Asignación Directa múltiplos de 100
+		Strings = Letras(Val(Left(Cstr(TresDígitos), 1)) + 40)
+		
+	Case 31 To 99                   'Asignación con "doble lookup"
+		Strings = Letras(Val(Left(Cstr(TresDígitos), 1)) + 30) & " y " & Letras(Val(Right(Cstr(TresDígitos), 1)))
+		
+	Case Else                       'Asignación directa de centena
+		Strings = Letras(Val(Left(Cstr(TresDígitos), 1)) + 40)
+		
+        'En caso de ser 100, en realidad se escribe ciento
+		If Strings = "Cien" Then
+			Strings = "Ciento"
+		End If
+		
+        'Ahora, se repite el análisis de dos dígitos
+		DosDígitos = Val(Right(Cstr(TresDígitos), 2))
+		
+		Select Case DosDígitos
+		Case 1 To 30                    'Asignación Directa Numeros simples
+			Strings = Strings & " " & Letras(DosDígitos)
+			
+		Case 40, 50, 60, 70, 80, 90     'Asignación Directa múltiplos de 10
+			Strings = Strings & " " & Letras(Val(Left(Cstr(DosDígitos), 1)) + 30)
+			
+		Case Else                       'Asignación con "doble lookup"
+			Strings = Strings & " " & Letras(Val(Left(Cstr(DosDígitos), 1)) + 30) & " y " & Letras(Val(Right(Cstr(DosDígitos), 1)))
+			
+		End Select
+		
+	End Select
+	
+	If Len(Strings) > 0 Then
+		
+		Select Case Contador
+		Case 2, 4, 6
+            'En estos casos, se debe agregar al texto "mil"
+			Strings = Strings & " Mil"
+		Case 1
+            'No se hace absolutamente nada
+		Case 3
+            'Estamos hablando de millones
+			Strings = Strings & " Millon(es)"
+		Case 5
+            'Estamos hablando de billones
+			Strings = Strings & " Billon(es)"
+		Case Else
+            'Se podría seguir hasta el infinito pero ya tengo pereza
+			Strings = Strings & " Caquimillon(es)"
+		End Select
+		
+	End If
+	
+	ConvALetras = Trim(Strings)
+	
+End Function
+
+'++LotusScript Development Environment:2:1:NumeroALetras:1:8
+Function NumeroALetras(Numero As Double, IndMoneda As String) As String
+	If IndMoneda = "H" Or IndMoneda ="M" Or IndMoneda ="N" Then
+		IndDecimales = ""
+	Else
+		IndDecimales= " exactos"
+	End If
+	
+	Select Case IndMoneda
+	Case "C"
+		IndMoneda = " Colones "
+	Case "D"
+		IndMoneda = " Dólares "
+	Case "H"
+		IndMoneda = " horas "
+	Case "M"
+		IndMoneda = " minutos "
+	Case "N"
+		IndMoneda = " "		
+	Case Else
+		NumeroALetras = "Código de moneda inválido"
+		Exit Function
+	End Select
+	
+	
+	If Inicio = 0 Then
+		IniLetras
+	End If
+	
+	Enteros = Cstr(Int(Numero))
+	Decimales = Cstr(Round((Numero - Int(Numero)) * 100, 0))
+	
+	For Contador = 1 To Int((Len(Enteros) + 2) / 3)
+		TresDígitos = Val(Right(Enteros, 3))
+		If Len(Enteros) > 3 Then
+			Enteros = Left(Enteros, Len(Enteros) - 3)
+		End If
+		If Len(Hilera) > 0 Then             'Poner un espacio como separador
+			Hilera = ConvALetras(TresDígitos, Contador) & " " & Trim(Hilera)
+		Else                                'No poner ni mierda
+			Hilera = ConvALetras(TresDígitos, Contador) & Hilera
+		End If
+	Next Contador
+	
+	If Decimales = "0" Then
+		Hilera = Hilera & IndMoneda & IndDecimales
+	Else
+		Hilera = Hilera & IndMoneda & "con " & Decimales & "/100"
+	End If
+	
+	NumeroALetras = Trim(Lcase(Hilera))
+	Hilera=""
+	
+End Function

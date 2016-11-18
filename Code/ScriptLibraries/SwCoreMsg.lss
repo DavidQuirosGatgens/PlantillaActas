@@ -1,0 +1,41 @@
+'++LotusScript Development Environment:2:5:(Options):0:66
+Option Public
+
+'++LotusScript Development Environment:2:5:(Forward):0:1
+Declare Function SW_CoreMsg (MsgNo As Integer) As String
+Declare Sub Terminate
+
+'++LotusScript Development Environment:2:5:(Declarations):0:10
+Const SW_CoreMsg1 = "Error"
+Const SW_CoreMsg2 = "No application associated with document!"
+Const SW_CoreMsg3 = "Warning"
+Const SW_CoreMsg4 = "Cannot delete temporary file!"
+Const SW_CoreMsg5 = "Unauthorized user. Please contact your database manager."
+Const SW_CoreMsg6 = "Selected template document cannot be attached. Please make sure that you don't have this document opened and try again."
+Const SW_CoreMsg7 = "Transfering fixed fields"
+Const SW_CoreMsg8 = "Transfering rows"
+Const SW_CoreMsg9 = "Extracting new version of macro templates..."
+Const SW_CoreMsg10 = "Generating new mailing labels document..."
+Const SW_CoreMsg11 = "Please execute 'Activate license' action on a template setup view."
+
+Public SW_tmpCoreMsg$
+
+'++LotusScript Development Environment:2:1:SW_CoreMsg:1:8
+Function SW_CoreMsg (MsgNo As Integer) As String
+%REM
+Defined in
+	SWCoreMsg
+Parameters
+	MsgNo
+		Number of message text.
+Return Value
+	String
+		Message text.
+%END REM
+	Execute(|SW_tmpCoreMsg$ = SW_CoreMsg| + Cstr(MsgNo))
+	SW_CoreMsg = SW_tmpCoreMsg$
+End Function
+'++LotusScript Development Environment:2:2:Terminate:1:10
+Sub Terminate
+	
+End Sub

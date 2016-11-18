@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xc="http://www.ibm.com/xsp/custom"
+	xmlns:xe="http://www.ibm.com/xsp/coreex"
+	pageTitle="#{javascript:database.getTitle()}">
+
+	<xc:Plantilla>
+		<xp:this.facets>
+			<xp:panel xp:key="facetMiddle">
+				<xe:formTable id="formTable1" labelPosition="above"
+					formTitle="Administración / Plantilla de Correo">
+					<xe:formRow id="formRow1">
+						<xc:ccPlantillaCorreo></xc:ccPlantillaCorreo>
+					</xe:formRow>
+					<xe:this.formDescription><![CDATA[#{javascript:var vParam=database.getView("(Parametros)");
+var docParam=vParam.getFirstDocument();
+if(docParam!=null){
+	return docParam.getItemValueString("Empresa");
+}
+}]]></xe:this.formDescription>
+
+
+				</xe:formTable>
+				<xp:br></xp:br>
+				<xp:br></xp:br>
+				<xp:br></xp:br>
+			</xp:panel>
+
+
+
+			<xc:Menu xp:key="facetLeft"></xc:Menu>
+		</xp:this.facets>
+	</xc:Plantilla>
+</xp:view>

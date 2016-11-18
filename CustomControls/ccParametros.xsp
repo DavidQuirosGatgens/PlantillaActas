@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+	<xp:this.data>
+		<xp:dominoDocument var="docParametros" formName="Parametros"
+			action="openDocument" computeWithForm="both">
+			<xp:this.documentId><![CDATA[#{javascript:var vParam=database.getView("(Parametros)");
+var docParam=vParam.getFirstDocument();
+if(docParam!=null){
+	return docParam.getUniversalID();
+}
+}]]></xp:this.documentId>
+		</xp:dominoDocument>
+	</xp:this.data>
+
+	<xp:this.resources>
+		<xp:script src="/GeneralSSJS.jss" clientSide="false"></xp:script>
+	</xp:this.resources>
+	<xp:button value="Salvar" id="button1" rendered="#{javascript:currentDocument.isEditable()}">
+		<xp:eventHandler event="onclick" submit="true"
+			refreshMode="complete">
+			<xp:this.action>
+				<xp:saveDocument var="docParametros"></xp:saveDocument>
+			</xp:this.action>
+		</xp:eventHandler>
+	</xp:button>
+	<xp:button value="Editar" id="button2"
+		rendered="#{javascript:!currentDocument.isEditable()}">
+		<xp:eventHandler event="onclick" submit="true"
+			refreshMode="complete">
+			<xp:this.action>
+				<xp:changeDocumentMode mode="edit"
+					var="docParametros">
+				</xp:changeDocumentMode>
+			</xp:this.action>
+		</xp:eventHandler>
+	</xp:button>
+	<xp:br></xp:br>
+	
+	<xp:table>
+		<xp:tr>
+			<xp:td></xp:td>
+			<xp:td>
+
+			<xp:text escape="true" id="computedField1" rendered="false"><xp:this.value><![CDATA[#{javascript:var vParam=database.getView("(Parametros)");
+var doc:NotesDocument=vParam.getFirstDocument();
+if(doc!=null){
+	if (doc.hasEmbedded()) {
+		var itemvalues:java.util.Vector = doc.getItemValue("attachmentsNames");
+		var iterator = itemvalues.iterator();
+		var itemvalue = iterator.next();
+		var imagen=itemvalue;
+		var url= doc.getItemValueString("URLBD");
+	} else {
+		return ""
+	}
+}
+var urldb:String=context.getUrl().toString();
+var nIndexOf = urldb.indexOf(".nsf");
+nIndexOf=nIndexOf+4;
+urldb = urldb.substring(0, nIndexOf);
+
+return url + "/(Parametros)/Parametros/$File/"+imagen+"?OpenElement"}]]></xp:this.value></xp:text>
+			<xp:br></xp:br><xp:text escape="true" id="computedField3" value="#{javascript:context.getUser().getFullName()}"></xp:text>
+			<xp:br></xp:br>
+			<xp:text escape="true" id="computedField2"><xp:this.value><![CDATA[#{javascript:context.getUser().getRoles().contains('[Secretaria]')}]]></xp:this.value></xp:text></xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td>
+				<xp:label value="Empresa:" id="empresa_Label1"
+					for="empresa1">
+				</xp:label>
+			</xp:td>
+			<xp:td>
+				<xp:inputText value="#{docParametros.Empresa}"
+					id="empresa1" style="width:612.0px">
+				</xp:inputText>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td>
+				<xp:label value="Logo empresa:" id="logoEmpresa_Label1"
+					for="logoEmpresa1">
+				</xp:label>
+			</xp:td>
+			<xp:td>
+
+				<xp:fileUpload id="fileUpload1"
+					value="#{docParametros.LogoEmpresa}"
+					rendered="#{javascript:!docParametros.getDocument().hasEmbedded()}"
+					mimetype="image/jpeg">
+				</xp:fileUpload>
+				<xp:fileDownload rows="30" id="fileDownload1"
+					displayLastModified="true" value="#{docParametros.LogoEmpresa}"
+					allowDelete="true" hideWhen="true" displayType="false"
+					displayCreated="false">
+				</xp:fileDownload>
+				Largo:&#160;
+				<xp:inputText id="inputText2"
+					value="#{docParametros.imagenLargo}" required="true">
+					<xp:this.converter>
+						<xp:convertNumber type="number"></xp:convertNumber>
+					</xp:this.converter>
+					<xp:this.validators>
+						<xp:validateRequired
+							message="Largo de Imagen">
+						</xp:validateRequired>
+					</xp:this.validators>
+				</xp:inputText>
+				<xp:br></xp:br>
+				Ancho:&#160;
+				<xp:inputText id="inputText3"
+					value="#{docParametros.imagenAncho}" required="true">
+					<xp:this.converter>
+						<xp:convertNumber type="number"></xp:convertNumber>
+					</xp:this.converter>
+					<xp:this.validators>
+						<xp:validateRequired
+							message="Ancho de Imagen">
+						</xp:validateRequired>
+					</xp:this.validators>
+				</xp:inputText>
+				<xp:br></xp:br>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td>
+
+				<xp:label value="URL de la aplicación:" id="label2"
+					for="logoEmpresa1">
+				</xp:label>
+			</xp:td>
+			<xp:td>
+
+				<xp:inputText id="inputText1" style="width:684.0px"
+					value="#{docParametros.URLBD}">
+				</xp:inputText>
+			</xp:td>
+		</xp:tr>
+
+		<xp:tr>
+			<xp:td>
+				<xp:label id="label1" for="logoEmpresa1"
+					style="height:40.0px;width:134.0px">
+					<xp:this.value><![CDATA[Ruta de descarga de 
+Actas en el servidor]]></xp:this.value>
+				</xp:label></xp:td>
+			<xp:td>
+				<xp:inputText id="inputText4" style="width:684.0px"
+					value="#{docParametros.RutaDescargaActas}">
+				</xp:inputText></xp:td>
+		</xp:tr>
+	</xp:table>
+
+	<xp:tabbedPanel id="tabbedPanel1">
+		<xp:tabPanel label="Notificaciones" id="tabPanel1">
+			<xp:table style="width:628.0px">
+				<xp:tr>
+					<xp:td style="width:178.0px">
+						<xp:label value="Notificaciones servidor:"
+							id="notificacionesServidor_Label1"
+							for="notificacionesServidor1">
+						</xp:label>
+					</xp:td>
+					<xp:td style="width:643.0px">
+						<xp:inputText
+							value="#{docParametros.NotificacionesServidor}"
+							id="notificacionesServidor1" style="width:412.0px">
+						</xp:inputText>
+					</xp:td>
+				</xp:tr>
+				<xp:tr>
+					<xp:td style="width:178.0px">
+						<xp:label value="Notificaciones ubicacion bd:"
+							id="notificacionesUbicacionBD_Label1"
+							for="notificacionesUbicacionBD1">
+						</xp:label>
+					</xp:td>
+					<xp:td style="width:643.0px">
+						<xp:span style="width:543.0px">
+							<xp:inputText
+								value="#{docParametros.NotificacionesUbicacionBD}"
+								id="notificacionesUbicacionBD1" style="width:412.0px">
+							</xp:inputText>
+						</xp:span>
+					</xp:td>
+				</xp:tr>
+				<xp:tr>
+					<xp:td style="width:178.0px">
+						<xp:label value="Emisor notificaciones:"
+							id="emisorNotificaciones_Label1" for="emisorNotificaciones1">
+						</xp:label>
+					</xp:td>
+					<xp:td style="width:643.0px">
+						<xp:inputText
+							value="#{docParametros.EmisorNotificaciones}"
+							id="emisorNotificaciones1" style="width:412.0px">
+						</xp:inputText>
+					</xp:td>
+				</xp:tr>
+				<xp:tr>
+					<xp:td style="width:178.0px">
+						<xp:label value="Recibe tareas completadas:"
+							id="recibeTareasCompletadas_Label1"
+							for="recibeTareasCompletadas1">
+						</xp:label>
+					</xp:td>
+					<xp:td style="width:643.0px">
+						<xp:inputText
+							value="#{docParametros.RecibeTareasCompletadas}"
+							id="recibeTareasCompletadas1" style="width:412.0px">
+						</xp:inputText>
+					</xp:td>
+				</xp:tr>
+				<xp:tr>
+					<xp:td style="width:178.0px">
+						<xp:label value="Administrador:"
+							id="administrador_Label1" for="administrador1">
+						</xp:label>
+					</xp:td>
+					<xp:td style="width:543.0px">
+						<xp:inputText
+							value="#{docParametros.Administrador}" id="administrador1"
+							style="width:412.0px">
+						</xp:inputText>
+					</xp:td>
+				</xp:tr>
+			</xp:table></xp:tabPanel>
+		
+	</xp:tabbedPanel>
+	<xp:br></xp:br>
+
+	<xp:br></xp:br>
+</xp:view>

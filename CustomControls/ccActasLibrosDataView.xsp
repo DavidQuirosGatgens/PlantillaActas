@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:xe="http://www.ibm.com/xsp/coreex">
+	<xp:panel>
+		
+		
+		
+	</xp:panel>
+	<xe:dataView id="dataView1" collapsibleDetail="true"
+		columnTitles="true" var="rowHandle" pageName="/xpActa.xsp"
+		openDocAsReadonly="true">
+		<xe:this.summaryColumn>
+			<xe:viewSummaryColumn columnName="$5"
+				columnTitle="Número">
+			</xe:viewSummaryColumn>
+		</xe:this.summaryColumn>
+		<xe:this.extraColumns>
+			<xe:viewExtraColumn columnName="FechaOrdenLetras"
+				columnTitle="Fecha">
+			</xe:viewExtraColumn>
+			<xe:viewExtraColumn columnName="HoraSesionLetras"
+				columnTitle="Hora">
+			</xe:viewExtraColumn>
+
+			<xe:viewExtraColumn columnName="FechaCreacion"
+				columnTitle="Creación">
+			</xe:viewExtraColumn>
+		</xe:this.extraColumns>
+		<xp:this.facets>
+			<xp:pager layout="Previous Group Next" partialRefresh="true"
+				id="pager2" xp:key="pagerBottomRight">
+			</xp:pager>
+			<xp:pager layout="Previous Group Next" partialRefresh="true"
+				id="pager1" xp:key="pagerTop">
+			</xp:pager>
+			<xe:pagerAddRows id="pagerAddRows1" xp:key="pagerBottom"
+				for="dataView1" partialRefresh="true" refreshPage="true">
+			</xe:pagerAddRows>
+			<xp:panel xp:key="detail">
+
+				
+				&#160;
+				
+				
+			<xp:table style="width:723.0px">
+					<xp:tr>
+						<xp:td style="height:20.0px;width:30.0px"></xp:td>
+						<xp:td style="width:681.0px">
+							<xp:viewPanel rows="30" id="viewPanel1" disableTheme="false" summary="aaaaaaa">
+								<xp:this.facets>
+									<xp:pager partialRefresh="true" layout="Previous Group Next" xp:key="headerPager" id="pager3" title="Documentos">
+									</xp:pager>
+								</xp:this.facets>
+								<xp:this.data>
+									<xp:dominoView var="view1" viewName="vTemasChildrensAsignados_ByActa" expandLevel="1">
+										<xp:this.categoryFilter><![CDATA[#{javascript:rowHandle.getDocument().getItemValueString("IDdocActa")}]]></xp:this.categoryFilter>
+									</xp:dominoView>
+								</xp:this.data>
+								<xp:viewColumn columnName="IDdocActa" id="viewColumn1" rendered="false">
+									<xp:viewColumnHeader value="IDdocActa" id="viewColumnHeader1" rendered="false">
+									</xp:viewColumnHeader>
+								</xp:viewColumn>
+								<xp:viewColumn columnName="$4" id="viewColumn2" indentResponses="true" expandedImage="/minus_cleuk_sym.png" collapsedImage="/plus-icon.png" displayAs="link" openDocAsReadonly="true" style="font-size:8pt" iconSrc="/ping.png">
+									<xp:viewColumnHeader id="viewColumnHeader2" value="Tipo de Documento" rendered="false">
+									</xp:viewColumnHeader>
+								</xp:viewColumn>
+
+							</xp:viewPanel>
+						</xp:td>
+					</xp:tr>
+				</xp:table></xp:panel>
+
+		</xp:this.facets>
+		<xe:this.data>
+			<xp:dominoView var="vOrdenes" viewName="vActasLibros"></xp:dominoView>
+		</xe:this.data>
+	</xe:dataView>
+	<xe:pagerSaveState id="pagerSaveState1" for="dataView1" globalRows="false">
+	</xe:pagerSaveState>
+	
+	</xp:view>

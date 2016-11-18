@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core">
+	<xp:this.data>
+		<xp:dominoDocument formName="Dependencia" var="dependencia"></xp:dominoDocument>
+	</xp:this.data>
+
+	<xp:table>
+		<xp:tr>
+			<xp:td>
+				<xp:label value="Nombre dependencia:"
+					id="nombreDependencia_Label1" for="nombreDependencia1">
+				</xp:label>
+			</xp:td>
+			<xp:td>
+				<xp:inputText value="#{dependencia.NombreDependencia}"
+					id="nombreDependencia1" style="width:422.0px">
+				</xp:inputText>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td>
+				<xp:label value="Estado:" id="estado_Label1"
+					for="estado1">
+				</xp:label>
+			</xp:td>
+			<xp:td>
+				
+			<xp:radioGroup id="radioGroup1" layout="pageDirection" defaultValue="Activo">
+				<xp:selectItem itemLabel="Activo" itemValue="Activo"></xp:selectItem>
+				<xp:selectItem itemLabel="Inactivo" itemValue="Inactivo"></xp:selectItem>
+			</xp:radioGroup><xp:button value="Salvar" id="button1">
+					<xp:eventHandler event="onclick" submit="true" refreshMode="complete" immediate="false" save="true" id="eventHandler1">
+					<xp:this.action>
+						<xp:openPage name="$$PreviousPage"></xp:openPage>
+					</xp:this.action></xp:eventHandler>
+				</xp:button><xp:button value="Salir" id="button2"><xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+	<xp:this.action>
+		<xp:openPage name="$$PreviousPage"></xp:openPage>
+	</xp:this.action></xp:eventHandler></xp:button></xp:td>
+		</xp:tr>
+	</xp:table></xp:view>

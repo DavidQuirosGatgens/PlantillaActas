@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core">
+	<xp:this.data>
+		<xp:dominoDocument var="docPuesto" formName="Puesto"></xp:dominoDocument>
+	</xp:this.data>
+
+	<xp:table>
+		<xp:tr>
+			<xp:td>
+				<xp:label value="Cod Puesto:" id="iDPuesto_Label1"
+					for="iDPuesto1">
+				</xp:label>
+			</xp:td>
+			<xp:td>
+				<xp:inputText value="#{docPuesto.IDPuesto}"
+					id="iDPuesto1" required="true">
+				<xp:this.validators>
+					<xp:validateRequired
+						message="Código de Puesto Requerido">
+					</xp:validateRequired>
+				</xp:this.validators></xp:inputText>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td>
+				<xp:label value="Descripción:" id="descripcion_Label1"
+					for="descripcion1">
+				</xp:label>
+			</xp:td>
+			<xp:td>
+				<xp:inputText value="#{docPuesto.Descripcion}"
+					id="descripcion1" required="true">
+				<xp:this.validators>
+					<xp:validateRequired
+						message="Descripción requerida">
+					</xp:validateRequired>
+				</xp:this.validators></xp:inputText>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td></xp:td>
+			<xp:td>
+				<xp:messages layout="table" style="color:red"
+					id="messages1">
+				</xp:messages>
+			</xp:td>
+		</xp:tr>
+		<xp:tr>
+			<xp:td></xp:td>
+			<xp:td>
+				<xp:button value="Salvar" id="button1">
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="complete" immediate="false" save="true"
+						id="eventHandler1">
+					<xp:this.action>
+						<xp:openPage name="$$PreviousPage"></xp:openPage>
+					</xp:this.action></xp:eventHandler>
+				</xp:button>
+				<xp:button value="Salir" id="button2"><xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+	<xp:this.action>
+		<xp:openPage name="$$PreviousPage"></xp:openPage>
+	</xp:this.action></xp:eventHandler></xp:button></xp:td>
+		</xp:tr>
+	</xp:table></xp:view>
