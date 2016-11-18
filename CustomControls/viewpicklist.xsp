@@ -13,7 +13,7 @@
 		icon="#{javascript:compositeData.picklistButtonImg}">
 		<xp:this.rendered><![CDATA[#{javascript:compositeData.openDialogWith.toString() != "Link"}]]></xp:this.rendered>
 		<xp:this.id><![CDATA[${javascript:compositeData.dialogID + "button5999"}]]></xp:this.id>
-		<xp:this.styleClass><![CDATA[#{javascript:compositeData.picklistButtonClass + " domfindmebutton5999"}]]></xp:this.styleClass>
+
 		<xp:eventHandler event="onclick" submit="true"
 			refreshMode="partial" disableValidators="true">
 			<xp:this.script><![CDATA[dijit.byId('#{javascript:getClientId(compositeData.dialogID)}').show()]]></xp:this.script>
@@ -71,7 +71,7 @@ if(@Trim(value1) != ""){
 		text="#{javascript:compositeData.picklistLinkText}">
 		<xp:this.rendered><![CDATA[#{javascript:compositeData.openDialogWith.toString() == "Link"}]]></xp:this.rendered>
 		<xp:this.id><![CDATA[${javascript:compositeData.dialogID + "button5999"}]]></xp:this.id>
-		<xp:this.styleClass><![CDATA[#{javascript:compositeData.picklistLinkStyle + " domfindmebutton5999"}]]></xp:this.styleClass>
+
 		<xp:image id="image1"
 			url="#{javascript:compositeData.picklistLinkImg}">
 		</xp:image>
@@ -138,8 +138,7 @@ if(@Trim(value1) != ""){
 
 		<xp:panel>
 			<xp:this.id><![CDATA[${javascript:compositeData.dialogID + "panel"}]]></xp:this.id>
-			<xp:table style="width:100.0%"
-				styleClass="#{javascript:compositeData.tableClass}" cellpadding="0"
+			<xp:table style="width:100.0%" cellpadding="0"
 				cellspacing="0">
 
 				<xp:tr>
@@ -187,7 +186,6 @@ eval(scopetype + ".put('" + scopevar + "', '')" )
 										<xp:button
 											value="#{javascript:compositeData.searchButtonText}"
 											id="searchbutton999"
-											styleClass="#{javascript:compositeData.searchButtonClass}"
 											icon="#{javascript:compositeData.searchButtonImage}">
 											<xp:eventHandler
 												event="onclick" submit="true" refreshMode="partial"
@@ -300,8 +298,7 @@ return viewnam
 								</xp:this.facets>
 
 								<xp:this.id><![CDATA[${javascript:compositeData.dialogID + "datacolumn"}]]></xp:this.id>
-								<xp:td
-									style="width:0px">
+								<xp:td style="width:0px">
 									<xp:this.rendered><![CDATA[#{javascript:compositeData.type.toString() == "Single Value"}]]></xp:this.rendered>
 									<xp:button
 										value="#{javascript:compositeData.buttonText}" id="button1"
@@ -413,8 +410,7 @@ if(@Trim(compositeData.ssjsSelectFunction) != ""){
 								<xp:td
 									style="width:#{javascript:compositeData.SelectCellWidth}px">
 									<xp:this.rendered><![CDATA[#{javascript:compositeData.type.toString() == "Multi Value"}]]></xp:this.rendered>
-									<xp:button id="button4"
-										styleClass="#{javascript:compositeData.multiSelectButtonClass}">
+									<xp:button id="button4">
 
 										<xp:this.value><![CDATA[#{javascript:var myArray = sessionScope.get("selections");
 
@@ -596,7 +592,6 @@ myArray.add(valueselected);
 							value="#{javascript:compositeData.finishButtonText}"
 							id="button3999"
 							icon="#{javascript:compositeData.finishButtonImg}"
-							styleClass="#{javascript:compositeData.finishButtonClass}"
 							refreshId="#{javascript:compositeData.refreshID}">
 
 							<xp:this.rendered><![CDATA[#{javascript:compositeData.type.toString() == "Multi Value"}]]></xp:this.rendered>
@@ -676,8 +671,7 @@ sessionScope.put("selections", "")}]]></xp:this.action>
 						<xp:button
 							value="#{javascript:compositeData.cancelButtonText}"
 							id="cancelbutton999"
-							icon="#{javascript:compositeData.cancelButtonImg}"
-							styleClass="#{javascript:compositeData.cancelButtonClass}">
+							icon="#{javascript:compositeData.cancelButtonImg}">
 
 							<xp:eventHandler event="onclick"
 								submit="false" disableValidators="true" id="eventHandler4">
