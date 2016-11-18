@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:xe="http://www.ibm.com/xsp/coreex"
+	xmlns:xc="http://www.ibm.com/xsp/custom">
+
+	<xp:this.resources>
+		<xp:styleSheet href="/main.css"></xp:styleSheet>
+		<xp:styleSheet href="/bootstrap-theme.min.css"></xp:styleSheet>
+		<xp:styleSheet href="/bootstrap.min.css"></xp:styleSheet>
+		<xp:styleSheet href="/portada.css"></xp:styleSheet>
+	</xp:this.resources><xc:ccHeader></xc:ccHeader>
+
+
+
+	<xp:panel styleClass="jumbotron">
+		<div class="container-fluid">
+			<div class="row">
+
+				<div class="col-sm-6">
+					<xp:panel>
+						<xp:image url="/RecopeLogoPeq.png" id="image2">
+						</xp:image>
+						<xp:br></xp:br><xp:br></xp:br>
+						<xp:label value="#{javascript:database.getTitle()}" id="label1"
+							styleClass="h1" >
+						</xp:label>
+						<xp:br></xp:br>
+
+</xp:panel>
+					
+				</div>
+				<div class="col-sm-6">
+					<xp:panel>
+						<div class="container">
+							<xp:image url="/portada.jpg" id="image1" width="80%"
+								height="100%"></xp:image>
+						</div>
+					</xp:panel>
+
+				</div>
+
+			</div>
+		</div>
+
+
+	</xp:panel>
+
+
+	<div class="container-fluid">
+
+		<div class="row">
+			<div class="col-sm-4">
+
+				<!--Página principal Ordenes del Día  -->
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<xp:link escape="true" text="Órdenes del Día " id="link1"
+							value="/Home_OrdenesDelDia.xsp">
+						</xp:link>
+
+
+					</div>
+
+
+					<div class="panel-body">Prepare las órdenes del día para la creación
+						posterior del acta.</div>
+				</div>
+
+			</div>
+
+			<!--Página principal Actas  -->
+
+			<div class="col-sm-4">
+
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<xp:link escape="true" text="Actas" id="link2" value="/Home_Actas.xsp">
+						</xp:link>
+
+
+					</div>
+					<div class="panel-body">Completa las actas que han sido generadas y
+						siga el flujo de trabajo hasta dejar las actas en firme.</div>
+				</div>
+
+
+			</div>
+
+			<!--Página principal Seguimientos -->
+
+			<div class="col-sm-4">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<xp:link escape="true" text="Seguimientos" id="link3"
+							value="/Home_Seguimientos.xsp">
+						</xp:link>
+
+					</div>
+					<div class="panel-body">Realice el seguimiento de las asignaciones
+						pendientes y completadas en cada una de las actas.</div>
+				</div>
+			</div>
+
+
+			<!--Página principal Búsqueda  -->
+
+			<div class="col-sm-4">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<xp:link escape="true" text="Búsqueda" id="link4"
+							value="/Home_Seguimientos.xsp">
+						</xp:link>
+
+					</div>
+					<div class="panel-body">Realice una búsqueda sobre las Ordenes del
+						Día, Actas,
+						Temas, Acuerdos, Seguimientos y Comunicados.</div>
+				</div>
+			</div>
+
+
+			<!--Página principal Temas Pendientes  -->
+
+			<div class="col-sm-4">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<xp:link escape="true" text="Temas Pendientes" id="link5"
+							value="/Home_TemasPendientes.xsp">
+						</xp:link>
+					</div>
+					<div class="panel-body">Complete todos los Temas que se encuentren
+						pendientes.</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+</xp:view>
