@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><note class="form" maintenanceversion="1.0" replicaid="0625806D0062AD0E" version="9.0" xmlns="http://www.lotus.com/dxl">
+<noteinfo noteid="1a82" sequence="2" unid="D7C85A5C3292E8CC0625806F007863C2">
+<created><datetime>20161118T155458,58-06</datetime></created>
+<modified><datetime>20161118T155458,62-06</datetime></modified>
+<revised><datetime>20161118T155458,61-06</datetime></revised>
+<lastaccessed><datetime>20161118T155458,62-06</datetime></lastaccessed>
+<addedtofile><datetime>20161118T155458,59-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=David Quiros/O=CV3</name></updatedby>
+<wassignedby><name>CN=David Quiros/O=CV3</name></wassignedby>
+<item name="$TITLE"><text>Doc_Seguimiento.xsp</text></item>
+<item name="$Flags"><text>gC~4K</text></item>
+
+
+<item name="$FileNames" sign="true"><text>Doc_Seguimiento.xsp</text></item></note>

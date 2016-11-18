@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex"
+	xmlns:xc="http://www.ibm.com/xsp/custom"><xp:this.resources>
+		<xp:styleSheet href="/main.css"></xp:styleSheet>
+		<xp:styleSheet href="/bootstrap-theme.min.css"></xp:styleSheet>
+		<xp:styleSheet href="/bootstrap.min.css"></xp:styleSheet>
+	</xp:this.resources><xc:ccHeader></xc:ccHeader>
+	
+	
+
+
+
+
+
+
+	
+	<xc:cc_MenuVistasSeguimientos><xp:this.facets><xp:image url="/OrdenDia.png" id="image1" xp:key="facet_1"></xp:image></xp:this.facets></xc:cc_MenuVistasSeguimientos>
+	<xc:ccvSeguimientosActivos></xc:ccvSeguimientosActivos></xp:view>

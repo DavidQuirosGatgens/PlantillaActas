@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><note class="form" maintenanceversion="1.0" replicaid="0625806D0062AD0E" version="9.0" xmlns="http://www.lotus.com/dxl">
+<noteinfo noteid="1a52" sequence="6" unid="A6B5BF89B79BB64E0625806F00718266">
+<created><datetime>20161118T143949,50-06</datetime></created>
+<modified><datetime>20161118T143950,20-06</datetime></modified>
+<revised><datetime>20161118T143950,19-06</datetime></revised>
+<lastaccessed><datetime>20161118T143950,20-06</datetime></lastaccessed>
+<addedtofile><datetime>20161118T143949,51-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=David Quiros/O=CV3</name></updatedby>
+<wassignedby><name>CN=David Quiros/O=CV3</name></wassignedby>
+<item name="$TITLE"><text>Home_Seguimientos_Inactivos.xsp</text></item>
+<item name="$Flags"><text>gC~4K</text></item>
+
+
+<item name="$FileNames" sign="true"><text>Home_Seguimientos_Inactivos.xsp</text></item>
+<item name="$DesignerVersion"><text>8.5</text></item>
+
+
+
+
+</note>
