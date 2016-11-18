@@ -1,0 +1,1491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:xe="http://www.ibm.com/xsp/coreex"
+	dojoParseOnLoad="true" dojoTheme="true" xmlns:xc="http://www.ibm.com/xsp/custom">
+	<xe:breadCrumbs id="breadCrumbs1">
+		<xe:this.treeNodes>
+			<xe:pageTreeNode page="/Home.xsp" label="Inicio"
+				enabled="true">
+			</xe:pageTreeNode>
+			<xe:pageTreeNode page="/Home_OrdenesDelDia.xsp"
+				label="Órdenes del Día" enabled="true">
+			</xe:pageTreeNode>
+		</xe:this.treeNodes>
+	</xe:breadCrumbs>
+	<xp:this.data>
+ 
+		<xp:dominoDocument var="document1" formName="OrdenDelDia"
+			computeWithForm="both">
+			<xp:this.querySaveDocument><![CDATA[#{javascript:querySaveDocument();}]]></xp:this.querySaveDocument>
+			<xp:this.postSaveDocument><![CDATA[#{javascript:postSaveDocument();}]]></xp:this.postSaveDocument>
+		</xp:dominoDocument>
+
+	</xp:this.data>
+
+	<xp:this.resources>
+		<xp:script src="/GeneralSSJS.jss" clientSide="false"></xp:script>
+		<xp:dojoModule name="dijit.form.TimeTextBox"></xp:dojoModule>
+
+		<xp:script src="/ssjs_cc_OrdenDia.jss" clientSide="false"></xp:script>
+		<xp:script src="/ssjs_DocsAdicionales.jss" clientSide="false"></xp:script>
+		
+		
+	</xp:this.resources>
+	<xp:this.dataContexts>
+		<xp:dataContext var="esEditorDeCampos">
+			<xp:this.value><![CDATA[#{javascript:
+if (!context.getUser().getRoles().contains('[Secretaria]') || (currentDocument.getItemValueString("Estado").equals("Cerrado"))|| (currentDocument.getItemValueString("Estado").equals("Generado"))){
+	return false;
+}else{
+	return true;
+}
+}]]></xp:this.value>
+		</xp:dataContext>
+	</xp:this.dataContexts>
+	<xp:this.beforePageLoad><![CDATA[#{javascript://Se almacena la url de la pagina anterior
+if(sessionScope.RedirectOrdenDia==""){
+	if(context.getHistoryUrl(-1)!=""){
+		sessionScope.RedirectOrdenDia=context.getHistoryUrl(-1);
+	}else{
+		sessionScope.RedirectOrdenDia="/Home_OrdenesDelDia.xsp"
+	}
+}else{
+	sessionScope.RedirectOrdenDia="/Home_OrdenesDelDia.xsp"
+}
+
+}]]></xp:this.beforePageLoad>
+
+
+
+
+	<xp:table><xp:tr><xp:td id="imageCell" style="width:48px"><xp:image url="/OrdenDia.png" id="image1"></xp:image>
+			</xp:td>
+			<xp:td style="height:auto">
+				<xp:label id="label1" value="Orden del Día" styleClass="h1"></xp:label>
+			</xp:td>
+		</xp:tr>
+	</xp:table>
+
+
+	<xp:table>
+		<xp:tr>
+			<xp:td>
+				<xp:button value="Editar" id="button11"	styleClass="btn-NoBackground">
+					<xp:this.rendered><![CDATA[#{javascript:!currentDocument.isEditable()  && esEditorDeCampos}]]></xp:this.rendered>
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="complete">
+						<xp:this.action>
+							<xp:changeDocumentMode mode="edit"
+								var="document1">
+							</xp:changeDocumentMode>
+						</xp:this.action>
+					</xp:eventHandler>
+				</xp:button>
+				<xp:button id="button1" value="Guardar" styleClass="btn-NoBackground">
+					<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable() && context.getUser().getRoles().contains('[Secretaria]')}]]></xp:this.rendered>
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="complete" immediate="false" save="false">
+						<xp:this.action>
+
+							<xp:actionGroup>
+
+								<xp:executeScript>
+									<xp:this.script><![CDATA[#{javascript:var user:NotesName=session.createName(@UserName());
+if(currentDocument.isNewNote()){
+	CreateBitacora(user,"Se crea el Documento","",document1.getDocument(true).getUniversalID());
+}
+var agent = database.getAgent('(SaveOrdenDia)');
+if(null != agent){
+	var document = document1.getDocument(true);
+	if(null != document){
+		try{
+			agent.runWithDocumentContext(document);
+			document1.setValue("NumerOrden",document.getItemValueString("NumerOrden"));
+		}catch(e){
+			print('Error: ' + e);
+			return;
+		}
+		//document.save();
+	}
+}
+
+agent = database.getAgent('(Funciones)');
+if(null != agent){
+	var document = document1.getDocument(true);
+	if(null != document){
+		try{
+			document.replaceItemValue("FuncionSTR","FechaLetras");
+			agent.runWithDocumentContext(document);
+			document1.setValue("FechaOrdenLetras",document.getItemValueString("FechaOrdenLetras").toUpperCase());
+			document.replaceItemValue("FuncionSTR","NumeroLetras");
+			agent.runWithDocumentContext(document);
+			document1.setValue("HoraSesionLetras",document.getItemValueString("HoraSesionLetras").toUpperCase());
+		}catch(e){
+			print('Error: ' + e);
+			return;
+		}
+		//document.save();
+	}
+}
+
+
+
+}]]></xp:this.script>
+								</xp:executeScript>
+								<xp:saveDocument var="document1"></xp:saveDocument>
+							</xp:actionGroup>
+						</xp:this.action>
+						<xp:this.script><![CDATA[var msg="";
+if(!validaCampoTexto(dojo.byId("#{id:FechasOrden}")))msg= msg + "Fecha.\n";
+if(!validaCampoTexto(dojo.byId("#{id:HoraOrden}")))msg= msg + "Hora Tema.\n";
+if(!validaCampoTexto(dojo.byId("#{id:Lugar}")))msg= msg + "Lugar.\n";
+if(!validaCampoTexto(dojo.byId("#{id:TipoSesion}")))msg= msg + "Tipo Sesión.\n";
+
+
+if(msg!=""){
+	alert("Debe incluir los siguientes Datos: \n" + msg);
+	return false;
+}]]></xp:this.script>
+					</xp:eventHandler>
+				</xp:button>
+				<xp:button id="button2" value="Salir" 	styleClass="btn-NoBackground">
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="complete" immediate="true" save="false">
+						<xp:this.action>
+
+
+							<xp:actionGroup>
+								<xp:executeScript
+									script="#{javascript:viewStateBean.restoreState=true;}">
+								</xp:executeScript>
+								<xp:actionGroup>
+
+
+
+									<xp:openPage
+										name="$$PreviousPage">
+
+									</xp:openPage>
+								</xp:actionGroup>
+
+							</xp:actionGroup>
+						</xp:this.action>
+					</xp:eventHandler>
+				</xp:button>
+				<xc:ccEnviarRevision></xc:ccEnviarRevision>
+				<xc:ccConvocar></xc:ccConvocar>
+				<xc:ccConfirmarConvocatoria
+					redirectTo="#{javascript:sessionScope.RedirectOrdenDia;}">
+					<xc:this.IDDocumentoAsociado><![CDATA[#{javascript:document1.getItemValueString("IDdocOrden");}]]></xc:this.IDDocumentoAsociado>
+				</xc:ccConfirmarConvocatoria>
+			</xp:td>
+		</xp:tr>
+	</xp:table>
+
+	<xp:panel id="pnlGeneral">
+		<xp:panel>
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-sm-6">
+						<xp:panel>
+							<xp:panel>
+								<xp:panel id="pnlInfoGeneral">
+									<div class="panel panel-default">
+
+
+										<div class="panel-heading">
+											<xp:label value="Información General" id="label6"
+												styleClass="h3">
+											</xp:label>
+
+										</div>
+										<div class="panel-body">
+
+
+											<xp:table>
+
+												<xp:tr>
+													<xp:td>
+														<xp:label value="# Orden:" id="numerOrden_Label1"
+															for="numerOrden1">
+
+														</xp:label>
+													</xp:td>
+													<xp:td></xp:td>
+													<xp:td>
+														<xp:text escape="true" id="computedField13"
+															value="#{document1.NumerOrden}">
+															<xp:this.converter>
+																<xp:convertNumber type="number">
+																</xp:convertNumber>
+															</xp:this.converter>
+														</xp:text>
+														<xp:br></xp:br>
+														<xp:text escape="true" id="computedField1"
+															value="#{document1.ActaLetras}">
+														</xp:text>
+													</xp:td>
+
+
+												</xp:tr>
+												<xp:tr>
+													<xp:td>
+														<xp:label value="Autor:" id="label7" for="numerOrden1"
+															style="font-weight:bold" disableTheme="true">
+														</xp:label>
+													</xp:td>
+													<xp:td></xp:td>
+													<xp:td>
+														<xp:text escape="true" id="computedField4">
+															<xp:this.value><![CDATA[#{javascript:@Name("[ABBREVIATE]",document1.getItemValueString("Autor"))}]]></xp:this.value>
+														</xp:text>
+													</xp:td>
+												</xp:tr>
+												<xp:tr>
+													<xp:td>
+														<xp:label value="Estado:" id="label8" for="fechasOrden1">
+														</xp:label>
+													</xp:td>
+													<xp:td></xp:td>
+													<xp:td>
+														<xp:text escape="true" id="computedField18" value="#{document1.Estado}">
+														</xp:text>
+													</xp:td>
+												</xp:tr>
+
+												<xp:tr>
+													<xp:td>
+														<xp:label value="Fecha:" id="fechasOrden_Label1"
+															for="fechasOrden1">
+														</xp:label>
+													</xp:td>
+
+													<xp:td></xp:td>
+													<xp:td>
+
+														<xp:panel id="PanelFecha">
+															<xe:djDateTextBox id="FechasOrden"
+																value="#{document1.FechasOrden}">
+																<xp:eventHandler event="onChange"
+																	submit="true" refreshMode="partial" refreshId="PanelFecha"
+																	id="eventHandler7">
+																	<xe:this.action>
+
+																		<xp:actionGroup>
+
+
+
+
+
+
+
+																			<xp:executeScript>
+																				<xp:this.script><![CDATA[#{javascript:var agent = database.getAgent('(Funciones)');
+if(null != agent){
+	var document = document1.getDocument(true);
+	if(null != document){
+		try{
+			document.replaceItemValue("FuncionSTR","FechaLetras");
+			agent.runWithDocumentContext(document);
+			document1.setValue("FechaOrdenLetras",document.getItemValueString("FechaOrdenLetras").toUpperCase());
+		}catch(e){
+			print('Error: ' + e);
+			return;
+		}
+		//document.save();
+	}
+}}]]></xp:this.script>
+																			</xp:executeScript>
+																		</xp:actionGroup>
+																	</xe:this.action>
+																</xp:eventHandler>
+																<xe:this.converter>
+																	<xp:convertDateTime type="date">
+																	</xp:convertDateTime>
+																</xe:this.converter>
+															</xe:djDateTextBox>
+															&#160;
+															<xp:br></xp:br><xp:text escape="true" id="computedField6"
+																value="#{document1.FechaOrdenLetras}">
+															</xp:text>
+															&#160;
+															<xp:inputText id="FechaOrdenLetrasP"
+																value="#{document1.FechaOrdenLetras}" style="display: none;width"
+																rendered="#{javascript:currentDocument.isEditable()}">
+															</xp:inputText>
+														</xp:panel>
+													</xp:td>
+												</xp:tr>
+												<xp:tr>
+													<xp:td>
+														<xp:label value="Hora:" id="label9" for="fechasOrden1">
+														</xp:label>
+													</xp:td>
+
+													<xp:td></xp:td>
+													<xp:td>
+
+														<xp:panel id="PanelHora">
+															<xp:inputText id="HoraOrden" value="#{document1.HoraOrden}"
+																disableTheme="true">
+																<xp:this.converter>
+																	<xp:convertDateTime type="time"
+																		timeStyle="short" pattern="hh:mm aaa">
+																	</xp:convertDateTime>
+																</xp:this.converter>
+																<xp:this.defaultValue><![CDATA[#{javascript:"8:00 am"}]]></xp:this.defaultValue>
+																<xp:dateTimeHelper dojoType="dijit.form.TimeTextBox"
+																	id="dateTimeHelper1">
+																</xp:dateTimeHelper>
+																<xp:eventHandler event="onchange"
+																	submit="true" refreshMode="partial" refreshId="PanelHora"
+																	id="eventHandler9">
+																	<xp:this.action><![CDATA[#{javascript:var agent = database.getAgent('(Funciones)');
+if(null != agent){
+	var document = document1.getDocument(true);
+	if(null != document){
+		try{
+			document.replaceItemValue("FuncionSTR","NumeroLetras");
+			agent.runWithDocumentContext(document);
+			document1.setValue("HoraSesionLetras",document.getItemValueString("HoraSesionLetras").toUpperCase());
+		}catch(e){
+			print('Error: ' + e);
+			return;
+		}
+		//document.save();
+	}
+}}]]></xp:this.action>
+																</xp:eventHandler>
+															</xp:inputText><xp:br></xp:br>
+															<xp:text escape="true" id="computedField5"
+																value="#{document1.HoraSesionLetras}">
+															</xp:text>
+															&#160;
+															<xp:inputText id="HoraSesionLetras"
+																value="#{document1.HoraSesionLetras}" rendered="#{javascript:currentDocument.isEditable()}"
+																style="display: none;width">
+															</xp:inputText>
+														</xp:panel>
+
+													</xp:td>
+												</xp:tr>
+												<xp:tr>
+													<xp:td>
+														<xp:label value="Lugar:" id="label10" for="Lugar">
+														</xp:label>
+													</xp:td>
+
+													<xp:td></xp:td>
+													<xp:td>
+														<xp:inputText
+															id="Lugar" value="#{document1.Lugar}"
+															readonly="#{javascript:!esEditorDeCampos}"
+															defaultValue="Sala de Junta Directiva"
+															styleClass="form-control">
+
+														</xp:inputText>
+													</xp:td>
+												</xp:tr>
+												<xp:tr>
+													<xp:td>
+														<xp:label value="Tipo sesión:" id="tipoSesion_Label1"
+															for="tipoSesion1">
+														</xp:label>
+													</xp:td>
+
+													<xp:td></xp:td>
+													<xp:td>
+														<xp:comboBox id="TipoSesionD"
+															readonly="#{javascript:!esEditorDeCampos}" value="#{document1.TipoSesion}">
+															<xp:selectItem itemLabel="ORDINARIA"
+																itemValue="ORDINARIA" id="selectItem1">
+															</xp:selectItem>
+															<xp:selectItem itemLabel="EXTRAORDINARIA"
+																itemValue="EXTRAORDINARIA" id="selectItem2">
+															</xp:selectItem>
+
+
+															<xp:eventHandler event="onchange" submit="true"
+																refreshMode="partial" refreshId="TipoSesion" id="eventHandler10">
+																<xp:this.script><![CDATA[var element=dojo.byId("#{id:TipoSesionD}");
+var element2=dojo.byId("#{id:TipoSesion}");
+if(element!=null){
+	element2.value=element.value;
+}
+]]></xp:this.script>
+															</xp:eventHandler>
+														</xp:comboBox>
+														&#160;
+														<xp:inputText id="TipoSesion" value="#{document1.TipoSesion}"
+															style="display: none;width" rendered="#{javascript:currentDocument.isEditable()}">
+														</xp:inputText>
+													</xp:td>
+												</xp:tr>
+
+												<xp:tr>
+													<xp:td></xp:td>
+													<xp:td></xp:td>
+													<xp:td></xp:td>
+												</xp:tr>
+
+											</xp:table>
+										</div>
+									</div>
+
+								</xp:panel>
+
+
+							</xp:panel>
+						</xp:panel>
+
+					</div>
+					<div class="col-sm-6">
+						<xp:panel>
+
+							<xp:panel id="pnlDocsAdicionales"
+								rendered="#{javascript:!document1.isNewNote()}">
+								<div class="panel panel-default">
+
+
+									<div class="panel-heading">
+										<xp:label
+											value="Información Adicional" id="label14" styleClass="h3">
+										</xp:label>
+
+									</div>
+								</div>
+								<div class="">
+									<div class="panel-group"
+										id="accordion">
+										<div
+											class="panel panel-default">
+											<div
+												class="panel-heading">
+												<h4
+													class="panel-title">
+													<a
+														data-toggle="collapse" data-parent="#accordion"
+														href="#collapse1">Temas</a>&#160;
+														<span class="badge badgeColor" ><xp:text
+															escape="true" id="computedField7">
+
+														<xp:this.value><![CDATA[#{javascript:labelCantidadDocsAdicionales("vTemasAsignados_ByOrdenDia", document1.getItemValueString("IDdocOrden"))}]]></xp:this.value></xp:text></span>
+												</h4>
+											</div>
+											<div id="collapse1"
+												class="panel-collapse collapse in">
+												<div
+													class="panel-body">
+													<xp:panel
+														rendered="#{javascript:!document1.isNewNote()}"
+														id="pnlVistaTemas">
+														<xp:button
+															value="Agregar Nuevo Tema" id="button5">
+															<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable() && !currentDocument.isNewNote() && esEditorDeCampos}]]></xp:this.rendered>
+															<xp:eventHandler
+																event="onclick" submit="false" id="eventHandler3">
+																<xp:this.script><![CDATA[var elementID = '#{id:dialogTemaDisponible}'; 
+document.getElementById(elementID).className += "modal_Extension";
+
+XSP.openDialog('#{id:dialogTemaDisponible}')]]></xp:this.script>
+															</xp:eventHandler>
+														</xp:button>
+														<xp:button
+															value="Agregar Tema Pendiente" id="button10">
+															<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable() && !currentDocument.isNewNote() && esEditorDeCampos}]]></xp:this.rendered>
+															<xp:eventHandler
+																event="onclick" submit="false" id="eventHandler4">
+																<xp:this.script><![CDATA[var elementID = '#{id:dialogTemasPendientes}'; 
+document.getElementById(elementID).className += "modal_Extension";
+XSP.openDialog('#{id:dialogTemasPendientes}')]]></xp:this.script>
+															</xp:eventHandler>
+														</xp:button>
+														<xp:button
+															id="button6" value="Eliminar Tema de la Orden">
+															<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable() && !currentDocument.isNewNote() && esEditorDeCampos}]]></xp:this.rendered>
+															<xp:eventHandler
+																event="onclick" submit="true" refreshMode="complete"
+																id="eventHandler5">
+																<xp:this.action><![CDATA[#{javascript:var viewPanel=getComponent("viewPanelAsignados");
+var docIDArray=viewPanel.getSelectedIds(); 
+if (docIDArray.length>0){
+	for(i=0;i < docIDArray.length; i++){
+		var docId=docIDArray[i];
+		var doc:NotesDocument=database.getDocumentByID(docId); 
+		if(doc!=null){
+			doc.replaceItemValue("IDdocOrden","");
+			doc.replaceItemValue("deleteMarked","true");
+			doc.save(true,false);
+			//Se marcan todos los documentos de Anexos
+			var vAnexos:NotesView=database.getView("vAnexos");
+			var colAnexos:NotesDocumentCollection=vAnexos.getAllDocumentsByKey(doc.getItemValueString("IDdocTema").trim(),true);
+			if(colAnexos.getCount()>0){
+				colAnexos.stampAll("deleteMarked",document1.getItemValueString("true"));
+			}
+		}
+	}
+}else{
+	view.postScript("alert('Debe seleccionar al menos un documento.')");
+} 
+
+}]]></xp:this.action>
+																<xp:this.script><![CDATA[var r = confirm("Esta seguro de eliminar los temas seleccionados?");
+if (r == true) {
+    return true;
+} else {
+    return false;
+}]]></xp:this.script>
+															</xp:eventHandler>
+														</xp:button>
+														<xp:button
+															id="button16" value="Marcar Tema Pendiente">
+															<xp:this.rendered><![CDATA[#{javascript://currentDocument.isEditable() && !currentDocument.isNewNote() && context.getUser().getRoles().contains('[Secretaria]')
+currentDocument.isEditable() && !currentDocument.isNewNote() && esEditorDeCampos}]]></xp:this.rendered>
+															<xp:eventHandler
+																event="onclick" submit="true" id="eventHandler8"
+																refreshMode="partial"
+																refreshId="dialogComentariosTemaPendiente">
+
+																<xp:this.script><![CDATA[
+
+//XSP.openDialog('#{id:dialogComentariosTemaPendiente}');]]></xp:this.script>
+																<xp:this.action><![CDATA[#{javascript:var viewPanel=getComponent("viewPanelAsignados");
+var docIDArray=viewPanel.getSelectedIds(); 
+if (docIDArray.length>0){
+	document1.setValue("ComentariosWF","");
+	document1.setValue("FechaSessionTema","");
+	sessionScope.put("IDSel",docIDArray);
+	var c = getComponent("dialogComentariosTemaPendiente")
+	c.show()
+}else{
+	view.postScript("alert('Debe seleccionar al menos un documento.')");
+} }]]></xp:this.action>
+															</xp:eventHandler>
+														</xp:button>
+														
+														      
+														<xp:viewPanel
+															rows="30" id="viewPanelAsignados"
+															pageName="/Doc_Tema.xsp">
+															<xp:this.facets>
+																<xp:pager
+																	partialRefresh="true" layout="Previous Group Next"
+																	xp:key="headerPager" id="pager2">
+																</xp:pager>
+															</xp:this.facets>
+															<xp:this.data>
+																<xp:dominoView
+																	var="vTemasAsignados"
+																	viewName="vTemasAsignados_ByOrdenDia">
+																	<xp:this.categoryFilter><![CDATA[#{javascript:document1.getItemValueString("IDdocOrden")}]]></xp:this.categoryFilter>
+																</xp:dominoView>
+															</xp:this.data>
+															<xp:viewColumn
+																columnName="IDdocOrden" id="viewColumn2"
+																rendered="false">
+																<xp:viewColumnHeader
+																	value="IDdocOrden" id="viewColumnHeader2">
+																</xp:viewColumnHeader>
+															</xp:viewColumn>
+															
+															<xp:viewColumn
+																id="viewColumn6" columnName="NumeroTema"
+																displayAs="link" openDocAsReadonly="true">
+																<xp:this.facets>
+																	<xp:viewColumnHeader
+																		xp:key="header" id="viewColumnHeader6"
+																		value="Número">
+																	</xp:viewColumnHeader>
+																</xp:this.facets>
+																<xp:this.showCheckbox><![CDATA[${javascript:context.getUser().getRoles().contains('[Secretaria]')}]]></xp:this.showCheckbox>
+															</xp:viewColumn>
+															<xp:viewColumn
+																columnName="Titulo" id="viewColumn3">
+																<xp:viewColumnHeader
+																	value="Título" id="viewColumnHeader3">
+																</xp:viewColumnHeader>
+															</xp:viewColumn>
+															
+															<xp:viewColumn
+																id="viewColumn1" columnName="$spare" iconSrc="/ir.png" displayAs="link">
+																<xp:this.facets>
+
+																</xp:this.facets>
+
+															</xp:viewColumn>
+
+
+														</xp:viewPanel>
+														<xp:br></xp:br>
+													</xp:panel>
+												</div>
+											</div>
+										</div>
+										<div
+											class="panel panel-default">
+											<div
+												class="panel-heading">
+												<h4
+													class="panel-title">
+													<a
+														data-toggle="collapse" data-parent="#accordion"
+														href="#collapse2" >Comentarios</a> &#160;
+														<span class="badge badgeColor" ><xp:text
+															escape="true" id="computedField2">
+
+														<xp:this.value><![CDATA[#{javascript:
+labelCantidadDocsAdicionales("(vComentarios)", document1.getItemValueString("IDdocOrden"))}]]></xp:this.value></xp:text></span>
+														
+													
+												</h4>
+											</div>
+											<div id="collapse2"
+												class="panel-collapse collapse">
+												<div
+													class="panel-body">
+
+													<xc:ccComentarios>
+														<xc:this.IDDocumento><![CDATA[#{javascript:document1.getItemValueString("IDdocOrden")}]]></xc:this.IDDocumento>
+													</xc:ccComentarios>
+
+
+												</div>
+											</div>
+										</div>
+										<div
+											class="panel panel-default">
+											<div
+												class="panel-heading">
+												<h4
+													class="panel-title">
+													<a
+														data-toggle="collapse" data-parent="#accordion"
+														href="#collapse3">Bitácora</a>&#160;
+														<span class="badge badgeColor" ><xp:text
+															escape="true" id="computedField8">
+
+														<xp:this.value><![CDATA[#{javascript:
+labelCantidadDocsAdicionales("vBitacora", document1.getItemValueString("IDdocOrden"))}]]></xp:this.value></xp:text></span>
+												</h4>
+											</div>
+											<div id="collapse3"
+												class="panel-collapse collapse">
+												<div
+													class="panel-body">
+													<xc:ccBitacora>
+														<xc:this.key><![CDATA[#{javascript:document1.getItemValueString("IDdocOrden")}]]></xc:this.key>
+													</xc:ccBitacora>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</xp:panel>
+
+						</xp:panel>
+
+					</div>
+
+				</div>
+			</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			<xp:tabbedPanel id="tabbedPanel1" partialRefresh="false"
+				refreshId="tabbedPanel1" partialExecute="false"
+				rendered="#{javascript:!document1.isNewNote()}">
+
+				<xp:tabPanel label="Confirmación de Asistencia" id="tabPanel4">
+					<xp:this.rendered><![CDATA[#{javascript:document1.getItemValueString("Estado")=="Convocado"}]]></xp:this.rendered>
+					<xp:viewPanel rows="30" id="viewPanel2">
+						<xp:this.facets>
+							<xp:pager partialRefresh="true" layout="Previous Group Next"
+								xp:key="headerPager" id="pager5">
+							</xp:pager>
+						</xp:this.facets>
+						<xp:this.data>
+							<xp:dominoView var="view2"
+								viewName="(vDocsConfirmacionAsistencia_ByPadre)">
+								<xp:this.categoryFilter><![CDATA[#{javascript:document1.getItemValueString("IDdocOrden");}]]></xp:this.categoryFilter>
+							</xp:dominoView>
+						</xp:this.data>
+						<xp:viewColumn columnName="IDDocumentoAsociado" id="viewColumn10"
+							rendered="false">
+							<xp:viewColumnHeader value="id Padre"
+								id="viewColumnHeader10">
+							</xp:viewColumnHeader>
+						</xp:viewColumn>
+						<xp:viewColumn columnName="$3" id="viewColumn11">
+							<xp:this.converter>
+								<xp:convertDateTime type="both"></xp:convertDateTime>
+							</xp:this.converter>
+							<xp:viewColumnHeader value="Creación"
+								id="viewColumnHeader11">
+							</xp:viewColumnHeader>
+						</xp:viewColumn>
+						<xp:viewColumn columnName="$2" id="viewColumn12">
+							<xp:viewColumnHeader value="Persona"
+								id="viewColumnHeader12">
+							</xp:viewColumnHeader>
+						</xp:viewColumn>
+						<xp:viewColumn columnName="Comentarios" id="viewColumn13">
+							<xp:viewColumnHeader value="Comentarios"
+								id="viewColumnHeader13">
+							</xp:viewColumnHeader>
+						</xp:viewColumn>
+					</xp:viewPanel>
+				</xp:tabPanel>
+
+			</xp:tabbedPanel>
+		</xp:panel>
+	</xp:panel>
+
+	
+	<xp:span></xp:span>
+
+	<xp:br></xp:br>
+	<xe:dialog id="dialogComentariosTemaPendiente" title="Comentarios">
+		<xe:dialogButtonBar id="dialogButtonBar4">
+
+			<xp:button value="Aceptar" id="button3">
+				<xp:eventHandler event="onclick" submit="true"
+					refreshMode="partial" refreshId="viewPanelAsignados">
+
+					<xp:this.script><![CDATA[var msg="";
+if(!validaCampoTexto(dojo.byId("#{id:txComentariosWF}")))msg= msg + "Comentarios.\n";
+if(!validaCampoTexto(dojo.byId("#{id:inputFechaSession}")))msg= msg + "Fecha de Sesión.\n";
+
+
+
+if(msg!=""){
+	alert("Debe incluir los siguientes Datos: \n" + msg);
+	return false;
+}
+
+
+]]></xp:this.script>
+					<xp:this.action><![CDATA[#{javascript:
+var user:NotesName=session.createName(session.getUserName());
+print(sessionScope.IDSel[0]);
+for(i=0;i < sessionScope.IDSel.length; i++){
+	var docId=sessionScope.IDSel[i];
+	var doc:NotesDocument=database.getDocumentByID(docId);
+	if(doc!=null){
+		doc.replaceItemValue("IDdocOrden","");
+		doc.replaceItemValue("Estado","Pendiente");
+		doc.replaceItemValue("LectoresAdemas","");
+		doc.replaceItemValue("FechaSession", document1.getDocument(true).getItemValue("FechaSessionTema"));
+		doc.replaceItemValue("Estado","Pendiente");
+		doc.computeWithForm(true,false);
+		//CreateBitacora();
+		doc.save(true,false);
+		CreateBitacora(user,"Marca Tema  Pendiente. Comentarios:" + document1.getItemValueString("ComentariosWF"),"",doc.getUniversalID());
+		//Se marcan todos los documentos de Anexos
+		var vAnexos:NotesView=database.getView("vAnexos");
+		var colAnexos:NotesDocumentCollection=vAnexos.getAllDocumentsByKey(doc.getItemValueString("IDdocTema").trim(),true);
+		if(colAnexos.getCount()>0){
+			colAnexos.stampAll("IDDocOrden","");
+		}
+		
+	}
+}
+var c = getComponent("dialogComentariosTemaPendiente")
+c.hide()
+
+
+}]]></xp:this.action>
+				</xp:eventHandler>
+			</xp:button>
+			<xp:button value="Cancelar" id="button14">
+				<xp:eventHandler event="onclick" submit="false">
+					<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogComentariosTemaPendiente}')]]></xp:this.script>
+				</xp:eventHandler>
+			</xp:button>
+		</xe:dialogButtonBar>
+
+		<xe:dialogContent id="dialogContent5">
+			<xp:panel>
+				<xp:table>
+
+					<xp:tr>
+						<xp:td></xp:td>
+						<xp:td>
+							<xp:label value="El cambio aplica para los documenos seleccionados."
+								id="label13">
+							</xp:label>
+						</xp:td>
+					</xp:tr>
+					<xp:tr>
+						<xp:td>
+							<xp:label value="Comentario" id="label11">
+							</xp:label>
+							<xp:br></xp:br>
+
+						</xp:td>
+						<xp:td>
+							<xp:inputTextarea id="txComentariosWF"
+								value="#{document1.ComentariosWF}">
+							</xp:inputTextarea>
+						</xp:td>
+					</xp:tr>
+					<xp:tr>
+						<xp:td>
+							<xp:label value="Fecha de Sesión" id="label12">
+							</xp:label>
+						</xp:td>
+						<xp:td>
+							<xe:djDateTextBox id="djDateTextBox1"
+								value="#{document1.FechaSessionTema}">
+								<xe:this.converter>
+									<xp:convertDateTime type="date" dateStyle="short">
+									</xp:convertDateTime>
+								</xe:this.converter>
+							</xe:djDateTextBox>
+						</xp:td>
+					</xp:tr>
+				</xp:table>
+			</xp:panel>
+		</xe:dialogContent>
+		<xp:eventHandler event="onHide" submit="false">
+			<xe:this.script><![CDATA[var elementID = '#{id:dialogComentariosTemaPendiente}'; 
+
+document.getElementById(elementID).className =
+   document.getElementById(elementID).className.replace
+      ( /(?:^|\s)modal_Extension(?!\S)/g , '' );]]></xe:this.script>
+		</xp:eventHandler></xe:dialog>
+	
+
+
+	<xe:dialog id="dialogTemasPendientes" title="Temas Disponibles"
+		tooltip="Temas Disponibles">
+		<xe:dialogButtonBar id="dialogButtonBar3">
+			<xp:button value="Agregar Tema" id="button12">
+				<xp:eventHandler event="onclick" submit="true"
+					refreshMode="partial" refreshId="viewPanelAsignados">
+					<xp:this.action><![CDATA[#{javascript:var viewPanel=getComponent("viewPanelTemasDisponibles");
+var docIDArray=viewPanel.getSelectedIds(); 
+if (docIDArray.length>0){
+	var user:NotesName=session.createName(session.getUserName());
+	for(i=0;i < docIDArray.length; i++){
+		var docId=docIDArray[i];
+		var doc:NotesDocument=database.getDocumentByID(docId); 
+		if(doc!=null){
+			doc.replaceItemValue("IDdocOrden",document1.getItemValueString("IDdocOrden"));
+			doc.replaceItemValue("Estado","Asignado");
+			doc.replaceItemValue("LectoresAdemas","[JuntaDirectiva]");
+			CreateBitacora(user,"Asignación de Tema Pendiente","",doc.getUniversalID());
+			doc.save(true,false);
+			//Se marcan todos los documentos de Anexos
+			var vAnexos:NotesView=database.getView("vAnexos");
+			var colAnexos:NotesDocumentCollection=vAnexos.getAllDocumentsByKey(doc.getItemValueString("IDdocTema").trim(),true);
+			if(colAnexos.getCount()>0){
+				colAnexos.stampAll("IDDocOrden",document1.getItemValueString("IDdocOrden"));
+			}
+		}
+	}
+	var c = getComponent("dialogTemasPendientes")
+	c.hide()
+}else{
+	view.postScript("alert('Debe seleccionar al menos un documento.')");
+} }]]></xp:this.action>
+				</xp:eventHandler>
+			</xp:button>
+			<xp:button id="button13" value="Salir">
+				<xp:eventHandler event="onclick" submit="true"
+					refreshMode="complete">
+					<xp:this.action><![CDATA[#{javascript:var c = getComponent("dialogTemasPendientes")
+c.hide()}]]></xp:this.action>
+				</xp:eventHandler>
+			</xp:button>
+
+
+
+
+
+
+		</xe:dialogButtonBar>
+		<xe:dialogContent id="dialogContent2">
+			<xp:panel>
+				<xp:viewPanel rows="30" id="viewPanelTemasDisponibles">
+					<xp:this.facets>
+						<xp:pager partialRefresh="true" layout="Previous Group Next"
+							xp:key="headerPager" id="pager3">
+						</xp:pager>
+					</xp:this.facets>
+					<xp:this.data>
+						<xp:dominoView var="viewTemasDisponibles" viewName="vTemasPendientes">
+						</xp:dominoView>
+					</xp:this.data>
+
+					<xp:viewColumn id="viewColumn5" columnName="FechaSession"
+						showCheckbox="true">
+						<xp:this.facets>
+							<xp:viewColumnHeader xp:key="header"
+								id="viewColumnHeader5" value="Fecha de Sesión">
+							</xp:viewColumnHeader>
+						</xp:this.facets>
+						<xp:this.converter>
+							<xp:convertDateTime type="date"></xp:convertDateTime>
+						</xp:this.converter>
+					</xp:viewColumn>
+					<xp:viewColumn columnName="Titulo" id="viewColumn4">
+						<xp:viewColumnHeader value="Titulo" id="viewColumnHeader4">
+						</xp:viewColumnHeader>
+					</xp:viewColumn>
+				</xp:viewPanel>
+				<xp:br></xp:br>
+			</xp:panel>
+		</xe:dialogContent>
+		<xp:eventHandler event="onHide" submit="false">
+			<xe:this.script><![CDATA[var elementID = '#{id:dialogTemasPendientes}'; 
+
+document.getElementById(elementID).className =
+   document.getElementById(elementID).className.replace
+      ( /(?:^|\s)modal_Extension(?!\S)/g , '' );]]></xe:this.script>
+		</xp:eventHandler></xe:dialog>
+	
+	<xe:dialog id="dialogTemaDisponible" tooltip="Tema" title="Tema">
+
+		<xp:panel id="PanelTemasMant">
+			<xp:this.data>
+				<xp:dominoDocument var="docTema" formName="Tema"
+					computeWithForm="both" ignoreRequestParams="true">
+					<xp:this.postNewDocument><![CDATA[#{javascript:sessionScope.put("IdDocCreacion",docTema.getItemValueString("IDdocTema"));}]]></xp:this.postNewDocument>
+					<xp:this.querySaveDocument><![CDATA[#{javascript:docTema.replaceItemValue("IDdocActa",document1.getItemValueString("IDdocActa"));
+docTema.replaceItemValue("IDdocOrden",document1.getItemValueString("IDdocOrden"));
+docTema.replaceItemValue("IDdocTema",sessionScope.IdDocCreacion);
+docTema.replaceItemValue("IDDocumento",sessionScope.IdDocCreacion);}]]></xp:this.querySaveDocument>
+				</xp:dominoDocument>
+			</xp:this.data>
+			<xe:dialogButtonBar id="dialogButtonBar1">
+				<xp:button value="Salvar y Salir" id="button26">
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="partial" refreshId="viewPanelAsignados">
+						<xp:this.action>
+
+							<xp:actionGroup>
+
+
+
+								<xp:executeScript>
+									<xp:this.script><![CDATA[#{javascript:var agent = database.getAgent('(SaveTema)');
+if(null != agent){
+	var document = docTema.getDocument(true);
+	if(null != document){
+		try{
+			agent.runWithDocumentContext(document);
+			//docTema.setValue("NumerOrden",document.getItemValueString("NumerOrden"));
+		}catch(e){
+			print('Error: ' + e);
+			return;
+		}
+		//document.save();
+	}
+}}]]></xp:this.script>
+								</xp:executeScript>
+								<xp:saveDocument var="docTema"></xp:saveDocument>
+
+
+
+
+
+								<xp:executeScript>
+									<xp:this.script><![CDATA[#{javascript:var User:NotesName=session.createName(@UserName()); 
+CreateBitacora(User,"Se crea el Documento","",docTema.getDocument(true).getItemValueString("IdDocumento"));
+var c = getComponent("dialogTemaDisponible")
+c.hide()}]]></xp:this.script>
+								</xp:executeScript>
+							</xp:actionGroup>
+						</xp:this.action>
+						<xp:this.script><![CDATA[var msg="";
+if(!validaCampoTexto(dojo.byId("#{id:numeroTema1}")))msg= msg + "Numero Tema.\n";
+if(!validaCampoTexto(dojo.byId("#{id:titulo1}")))msg= msg + "Título.\n";
+
+if(msg!=""){
+	alert("Debe incluir los siguientes Datos: \n" + msg);
+	return false;
+}]]></xp:this.script>
+					</xp:eventHandler>
+				</xp:button>
+				<xp:button value="Agregar Anexo" id="button27"
+					rendered="#{javascript:currentDocument.isEditable()}">
+					<xp:eventHandler event="onclick" submit="true"
+						id="eventHandler49" refreshMode="partial" refreshId="PanelTemasMant">
+
+
+
+						<xp:this.action>
+
+							<xp:actionGroup>
+
+								<xp:executeScript>
+									<xp:this.script><![CDATA[#{javascript:var agent = database.getAgent('(SaveTema)');
+if(null != agent){
+	var document = docTema.getDocument(true);
+	if(null != document){
+		try{
+			agent.runWithDocumentContext(document);
+			//docTema.setValue("NumerOrden",document.getItemValueString("NumerOrden"));
+		}catch(e){
+			print('Error: ' + e);
+			return;
+		}
+		//document.save();
+	}
+}}]]></xp:this.script>
+								</xp:executeScript>
+								<xp:saveDocument var="docTema">
+								</xp:saveDocument>
+
+
+
+
+
+								<xp:executeScript>
+									<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogNuevoAnexo");
+//c.hide()
+c.show();}]]></xp:this.script>
+								</xp:executeScript>
+							</xp:actionGroup>
+						</xp:this.action>
+						<xp:this.script><![CDATA[var msg="";
+if(!validaCampoTexto(dojo.byId("#{id:numeroTema1}")))msg= msg + "Numero Tema.\n";
+if(!validaCampoTexto(dojo.byId("#{id:titulo1}")))msg= msg + "Título.\n";
+
+if(msg!=""){
+	alert("Debe incluir los siguientes Datos: \n" + msg);
+	return false;
+}]]></xp:this.script>
+					</xp:eventHandler>
+				</xp:button>
+				<xp:button id="button28" value="Salir">
+					<xp:eventHandler event="onclick" submit="true"
+						refreshMode="partial" refreshId="viewPanelAsignados">
+						<xp:this.action><![CDATA[#{javascript:var c = getComponent("dialogTemaDisponible")
+c.hide()}]]></xp:this.action>
+					</xp:eventHandler>
+				</xp:button>
+
+
+
+
+
+
+
+			</xe:dialogButtonBar>
+			<xe:dialogContent id="dialogContent1">
+				<xp:panel id="panelTemasOrden">
+
+
+
+
+
+					<xp:br></xp:br>
+
+
+					<xp:table>
+						<xp:tr>
+							<xp:td>
+								<xp:label value="Número Tema:" id="numeroTema_Label1"
+									for="numeroTema1">
+								</xp:label>
+							</xp:td>
+							<xp:td>
+
+
+								<xe:djValidationTextBox id="numeroTema1"
+									value="#{docTema.NumeroTema}">
+									<xe:this.regExp><![CDATA[^[0-9\,.]*$]]></xe:this.regExp>
+								</xe:djValidationTextBox>
+							</xp:td>
+						</xp:tr>
+						<xp:tr>
+							<xp:td>
+								<xp:label value="Título del Tema:" id="titulo_Label1"
+									for="titulo1">
+								</xp:label>
+							</xp:td>
+							<xp:td>
+
+
+								<xe:djTextarea id="titulo1" value="#{docTema.Titulo}"
+									uppercase="true">
+								</xe:djTextarea>
+							</xp:td>
+						</xp:tr>
+						<xp:tr>
+							<xp:td>
+
+								<xp:label value="Descripción:" id="label19">
+								</xp:label>
+							</xp:td>
+							<xp:td>
+
+								<xp:inputTextarea id="inputTextarea1" value="#{docTema.Descripcion}">
+								</xp:inputTextarea>
+							</xp:td>
+						</xp:tr>
+
+						<xp:tr>
+							<xp:td></xp:td>
+							<xp:td></xp:td>
+						</xp:tr>
+
+					</xp:table>
+					<xp:br></xp:br>
+					<xp:br></xp:br>
+					<xp:table>
+						<xp:tr>
+							<xp:td>
+
+
+
+
+								<xp:panel id="panelMantTemas">
+									<xe:dialog id="dialogNuevoAnexo" title="Nuevo Anexo">
+										<xp:panel id="panelNewAnexo">
+											<xp:text escape="true" id="computedField3"
+												value="#{javascript:compositeData.IDDocumento}">
+											</xp:text>
+											<xp:br></xp:br>
+											<xp:this.data>
+												<xp:dominoDocument var="newAnexo"
+													formName="Anexo" computeWithForm="both"
+													ignoreRequestParams="true">
+
+													<xp:this.querySaveDocument><![CDATA[#{javascript:
+newAnexo.replaceItemValue("IDdocTema",docTema.getItemValueString("IDdocTema"));
+newAnexo.replaceItemValue("IDdocOrden",docTema.getItemValueString("IDdocOrden"));
+newAnexo.replaceItemValue("IDdocActa",docTema.getItemValueString("IDdocActa"));
+//}]]></xp:this.querySaveDocument>
+												</xp:dominoDocument>
+											</xp:this.data>
+											<xp:table>
+												<xp:tr>
+													<xp:td>
+														<xp:label id="label3" value="Descripción">
+														</xp:label>
+													</xp:td>
+													<xp:td>
+														<xp:inputText id="inputText3" value="#{newAnexo.descripcion}">
+														</xp:inputText>
+													</xp:td>
+												</xp:tr>
+												<xp:tr>
+													<xp:td>
+														<xp:label id="label4" value="Anexo">
+														</xp:label>
+													</xp:td>
+													<xp:td>
+														<xp:fileUpload id="fileUpload2" value="#{newAnexo.Archivos}">
+														</xp:fileUpload>
+														<xp:br></xp:br>
+
+														<xp:fileUpload id="fileUpload3" value="#{newAnexo.Archivos}">
+														</xp:fileUpload>
+														<xp:br></xp:br>
+														<xp:fileUpload id="fileUpload4" value="#{newAnexo.Archivos}">
+														</xp:fileUpload>
+													</xp:td>
+												</xp:tr>
+											</xp:table>
+											<xe:dialogButtonBar id="dialogButtonBar2">
+												<xp:button value="Aceptar" id="button7">
+													<xp:eventHandler event="onclick" submit="true"
+														refreshMode="partial" refreshId="panelAnexos">
+														<xp:this.action>
+
+															<xp:actionGroup>
+
+
+
+																<xp:saveDocument var="newAnexo">
+																</xp:saveDocument>
+																<xp:executeScript>
+																	<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogNuevoAnexo")
+c.hide()}]]></xp:this.script>
+																</xp:executeScript>
+
+															</xp:actionGroup>
+														</xp:this.action>
+													</xp:eventHandler>
+												</xp:button>
+
+												<xp:button value="Cancel" id="button9">
+													<xp:eventHandler event="onclick" submit="true"
+														refreshMode="complete">
+														<xp:this.action><![CDATA[#{javascript:var c = getComponent("dialogNuevoAnexo")
+c.hide()}]]></xp:this.action>
+													</xp:eventHandler>
+												</xp:button>
+											</xe:dialogButtonBar>
+										</xp:panel>
+										<xp:eventHandler event="onHide"
+											submit="false">
+											<xe:this.script><![CDATA[var elementID = '#{id:dialogNuevoAnexo}'; 
+
+document.getElementById(elementID).className =
+   document.getElementById(elementID).className.replace
+      ( /(?:^|\s)modal_Extension(?!\S)/g , '' );]]></xe:this.script>
+										</xp:eventHandler></xe:dialog>
+									<xp:table border="1" cellpadding="2" cellspacing="0">
+										<xp:tr>
+											<xp:td>
+												&#160;&#160;
+												<xp:button value="Nuevo Anexo" id="button15"
+													rendered="#{javascript:currentDocument.isEditable()}">
+													<xp:eventHandler
+														event="onclick" submit="true" id="eventHandler6"
+														refreshMode="partial" refreshId="panelMantTemas">
+
+
+
+														<xp:this.action>
+
+															<xp:actionGroup>
+																<xp:saveDocument
+																	var="docTema">
+																</xp:saveDocument>
+
+
+																<xp:executeScript>
+																	<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogNuevoAnexo");
+//c.hide()
+c.show();}]]></xp:this.script>
+																</xp:executeScript>
+															</xp:actionGroup>
+														</xp:this.action>
+
+													</xp:eventHandler>
+												</xp:button> Hol&#160;a
+											</xp:td>
+											<xp:td><xp:button value="Agregar Nuevo Anexo" id="button4">
+															
+															<xp:eventHandler
+																event="onclick" submit="false" id="eventHandler2">
+																<xp:this.script><![CDATA[var elementID = '#{id:dialogNuevoAnexo}'; 
+document.getElementById(elementID).className += "modal_Extension";
+
+XSP.openDialog('#{id:dialogNuevoAnexo}')]]></xp:this.script>
+															</xp:eventHandler>
+</xp:button>
+
+
+											</xp:td>
+
+
+
+										</xp:tr>
+
+									</xp:table>
+									<xp:panel id="panelAnexos">
+										<xp:this.data>
+											<xp:dominoView var="vAnexos" viewName="vAnexos"
+												keysExactMatch="true">
+												<xp:this.keys><![CDATA[#{javascript:docTema.getItemValueString("IDdocTema")}]]></xp:this.keys>
+											</xp:dominoView>
+										</xp:this.data>
+
+
+										<xp:table>
+											<xp:tr>
+												<xp:td>
+													<xp:pager layout="Previous Group Next"
+														partialRefresh="true" id="pager1" for="repeatAnexos"
+														panelPosition="left">
+													</xp:pager>
+												</xp:td>
+											</xp:tr>
+										</xp:table>
+										<xp:repeat id="repeatAnexos" rows="10" value="#{vAnexos}"
+											var="colAnexos">
+
+											<xp:table border="0" cellpadding="0" cellspacing="0">
+												<xp:tr>
+													<xp:td>
+														<xp:link escape="true" text="Abrir" id="linkEditar">
+															<xp:eventHandler event="onclick" submit="false"
+																id="eventHandler1">
+																<xp:this.script><![CDATA[XSP.openDialog('#{id:dialogEditAnexo}')]]></xp:this.script>
+															</xp:eventHandler>
+														</xp:link>
+														&#160;&#160;
+														<xp:link escape="true" id="linkEliminar" text="Eliminar">
+															<xp:eventHandler event="onclick" submit="true"
+																refreshMode="partial" refreshId="panelAnexos">
+																<xp:this.action>
+
+																	<xp:actionGroup>
+																		<xp:confirm message="Esta seguro de Eliminar?">
+																		</xp:confirm>
+
+
+
+																		<xp:executeScript>
+																			<xp:this.script><![CDATA[#{javascript:var docEliminar=database.getDocumentByID(colAnexos.getNoteID());
+if(docEliminar!=null){
+	docEliminar.replaceItemValue("DeletedDocument","Si");
+	docEliminar.save();
+}}]]></xp:this.script>
+																		</xp:executeScript>
+																	</xp:actionGroup>
+																</xp:this.action>
+															</xp:eventHandler>
+														</xp:link>
+													</xp:td>
+													<xp:td>
+														<xp:text escape="true" id="idAnexo"
+															value="#{colAnexos.descripcion}">
+														</xp:text>
+														<xp:br></xp:br>
+														<xp:text escape="true" id="idArchivos" value="#{colAnexos.$2}">
+														</xp:text>
+													</xp:td>
+
+
+
+												</xp:tr>
+											</xp:table>
+											<xe:dialog id="dialogEditAnexo" title="Anexo">
+
+												<xp:panel readonly="#{javascript:!currentDocument.isEditable() }">
+													<xe:dialogButtonBar id="dialogButtonBar13">
+														<xp:button value="Aceptar" id="button8">
+															<xp:eventHandler event="onclick" submit="true"
+																refreshMode="partial" refreshId="panelAnexos">
+																<xp:this.action>
+
+																	<xp:actionGroup>
+
+
+
+
+
+
+																		<xp:saveDocument var="docAnexo">
+																		</xp:saveDocument>
+																		<xp:executeScript>
+																			<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogEditAnexo")
+c.hide()}]]></xp:this.script>
+																		</xp:executeScript>
+																	</xp:actionGroup>
+																</xp:this.action>
+															</xp:eventHandler>
+														</xp:button>
+
+														<xp:button value="Cancel" id="button42">
+															<xp:eventHandler event="onclick" submit="true"
+																refreshMode="complete">
+																<xp:this.action><![CDATA[#{javascript:var c = getComponent("dialogNuevoAnexo")
+c.hide()}]]></xp:this.action>
+															</xp:eventHandler>
+														</xp:button>
+													</xe:dialogButtonBar>
+													<xp:this.data>
+														<xp:dominoDocument var="docAnexo"
+															action="editDocument" documentId="#{javascript:colAnexos.getNoteID()}"
+															formName="Anexo" ignoreRequestParams="true">
+														</xp:dominoDocument>
+													</xp:this.data>
+
+													<xp:table>
+														<xp:tr>
+															<xp:td></xp:td>
+															<xp:td>
+
+
+															</xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td>
+																<xp:label id="label5" value="Descripción">
+																</xp:label>
+															</xp:td>
+															<xp:td>
+																<xp:inputText id="inputText1" value="#{docAnexo.descripcion}">
+																</xp:inputText>
+															</xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td>
+																<xp:label id="label2" value="Archivo ">
+																</xp:label>
+															</xp:td>
+															<xp:td>
+																<xp:fileUpload id="fileUpload1" value="#{docAnexo.Archivos}">
+																</xp:fileUpload>
+																<xp:br></xp:br>
+																<xp:fileUpload id="fileUpload5" value="#{docAnexo.Archivos}">
+																</xp:fileUpload>
+																<xp:br></xp:br>
+																<xp:fileUpload id="fileUpload6" value="#{docAnexo.Archivos}">
+																</xp:fileUpload>
+																<xp:fileDownload rows="30" id="fileDownload1"
+																	displayLastModified="false" value="#{docAnexo.Archivos}"
+																	allowDelete="${javascript:currentDocument.isEditable() }">
+																</xp:fileDownload>
+															</xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td></xp:td>
+															<xp:td>
+
+															</xp:td>
+														</xp:tr>
+													</xp:table>
+												</xp:panel>
+												</xe:dialog>
+										</xp:repeat>
+
+
+										<xp:br></xp:br>
+									</xp:panel>
+								</xp:panel>
+								<xp:br></xp:br>
+							</xp:td>
+						</xp:tr>
+					</xp:table>
+					<xp:br></xp:br>
+
+					<xp:br></xp:br>
+					<xp:br></xp:br>
+				</xp:panel>
+			</xe:dialogContent>
+		</xp:panel>
+		<xp:eventHandler event="onClose" submit="true"
+			refreshMode="partial" refreshId="viewPanelAsignados">
+		</xp:eventHandler>
+		<xp:eventHandler event="onHide" submit="true"
+			refreshMode="partial" refreshId="viewPanelAsignados">
+			<xe:this.script><![CDATA[var elementID = '#{id:dialogTemaDisponible}'; 
+
+document.getElementById(elementID).className =
+   document.getElementById(elementID).className.replace
+      ( /(?:^|\s)modal_Extension(?!\S)/g , '' );]]></xe:this.script>
+		</xp:eventHandler>
+	</xe:dialog>
+</xp:view>

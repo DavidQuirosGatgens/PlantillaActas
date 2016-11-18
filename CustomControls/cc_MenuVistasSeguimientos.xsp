@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+	
+	<xp:table>
+		<xp:tr>
+			<xp:td id="imageCell" style="width:48px">
+
+				<xp:callback facetName="facet_1" id="callback1"></xp:callback>
+			</xp:td>
+			<xp:td style="height:auto">
+				<xe:navbar id="Seguimientos" headingText="Seguimientos"
+					style="background-position:center left">
+					<xe:this.navbarBeforeLinks>
+
+
+						<xe:pageTreeNode page="Home_Seguimientos.xsp"
+							label="Activos">
+						</xe:pageTreeNode>
+						<xe:pageTreeNode label="Completados"
+							page="Home_Seguimientos_Completados.xsp">
+						</xe:pageTreeNode>
+						<xe:pageTreeNode label="Inactivos"
+							page="Home_Seguimientos_Inactivos.xsp">
+						</xe:pageTreeNode>
+						<xe:pageTreeNode label="Por Dependencia"
+							page="Home_Seguimientos_PorDependencia.xsp">
+						</xe:pageTreeNode>
+					</xe:this.navbarBeforeLinks>
+				</xe:navbar>
+			</xp:td></xp:tr></xp:table></xp:view>

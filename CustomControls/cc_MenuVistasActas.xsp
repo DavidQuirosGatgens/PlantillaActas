@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+	
+	<xp:table>
+		<xp:tr>
+			<xp:td id="imageCell" style="width:48px">
+
+				<xp:callback facetName="facet_1" id="callback1"></xp:callback>
+			</xp:td>
+			<xp:td style="height:auto">
+				<xe:navbar id="Actas" headingText="Actas"
+					style="background-position:center left">
+					<xe:this.navbarBeforeLinks>
+
+
+						<xe:pageTreeNode page="Home_Actas.xsp"
+							label="Actas">
+						</xe:pageTreeNode>
+						<xe:pageTreeNode label="Actas en Libros"
+							page="Home_Actas_Libros.xsp">
+						</xe:pageTreeNode>
+						<xe:pageTreeNode label="Actas en Libros por Año"
+							page="Home_Actas_Libros_PorAnno.xsp">
+						</xe:pageTreeNode>
+					</xe:this.navbarBeforeLinks>
+				</xe:navbar>  
+			</xp:td></xp:tr></xp:table></xp:view>

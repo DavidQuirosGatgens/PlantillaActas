@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><note class="form" maintenanceversion="1.0" replicaid="0625806D0062AD0E" version="9.0" xmlns="http://www.lotus.com/dxl">
+<noteinfo noteid="1a7a" sequence="8" unid="4A2B509438B7B3960625806F00766E72">
+<created><datetime>20161118T153335,22-06</datetime></created>
+<modified><datetime>20161118T153352,47-06</datetime></modified>
+<revised><datetime>20161118T153352,46-06</datetime></revised>
+<lastaccessed><datetime>20161118T153352,47-06</datetime></lastaccessed>
+<addedtofile><datetime>20161118T153335,23-06</datetime></addedtofile></noteinfo>
+<updatedby><name>CN=David Quiros/O=CV3</name></updatedby>
+<wassignedby><name>CN=David Quiros/O=CV3</name></wassignedby>
+<item name="$TITLE"><text>cc_Acta.xsp</text></item>
+<item name="$Flags"><text>gC~4;</text></item>
+
+
+
+
+
+
+
+
+<item name="$FileNames" sign="true"><text>cc_Acta.xsp</text></item>
+
+
+<item name="$DesignerVersion"><text>8.5.2</text></item>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</note>

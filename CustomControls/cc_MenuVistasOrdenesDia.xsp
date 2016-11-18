@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+	
+
+	<xp:table>
+		<xp:tr>
+			<xp:td id="imageCell" style="width:48px">
+
+				<xp:callback facetName="facet_1" id="callback1"></xp:callback>
+			</xp:td>
+			<xp:td style="height:auto">
+				<xe:navbar id="OrdenesDelDia"
+					headingText="Órdenes del Día"
+					style="background-position:center left">
+					<xe:this.navbarBeforeLinks>
+
+
+						<xe:pageTreeNode page="/Home_OrdenesDelDia.xsp"
+							label="Órdenes del Día">
+						</xe:pageTreeNode>
+						<xe:pageTreeNode
+							label="Histórico de Órdenes del Día"
+							page="/Home_OrdenesDelDia_Historico.xsp">
+						</xe:pageTreeNode>
+					</xe:this.navbarBeforeLinks>
+				</xe:navbar>
+			</xp:td></xp:tr></xp:table></xp:view>

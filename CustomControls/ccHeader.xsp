@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:xe="http://www.ibm.com/xsp/coreex">
+
+
+	<nav role="navigation" class="navbar navbar-inverse ">
+
+		<div class="navbar-header">
+		
+			
+			<button type="button" data-target="#div1" data-toggle="collapse"
+				class="navbar-toggle">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+
+			<xp:label value="#{javascript:database.getTitle()}" id="lbNombreDB"
+				styleClass="navbar-brand"></xp:label>
+
+		</div>
+		<div id="div1" class="collapse navbar-collapse ">
+			<ul class="nav navbar-nav">
+				<li>
+					<xp:link value="/Home.xsp" escape="true" text="Inicio" id="linkInicio"></xp:link>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+						Administración
+						<b class="caret"></b>
+					</a>
+
+					<ul class="dropdown-menu">
+						<li>
+
+							<xp:link value="/xpParametros.xsp" escape="true" text="Parametros" id="linkParametros"></xp:link>
+						</li>
+					</ul>
+
+				</li>
+			</ul>
+		</div>
+
+	</nav>
+
+
+	<xp:eventHandler event="onClientLoad" submit="true"
+		refreshMode="norefresh">
+		<xp:this.action>
+			<xp:modifyField name="lbNombreDB"
+				value="#{javascript:database.getTitle()}">
+			</xp:modifyField>
+		</xp:this.action>
+	</xp:eventHandler>
+</xp:view>
