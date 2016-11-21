@@ -21,7 +21,7 @@
 			style="font-size:8pt" rendered="#{javascript:false}">
 			<xp:viewColumnHeader value="I d documento"
 				id="viewColumnHeader1" rendered="#{javascript:false}"
-				style="font-weight:bold;width:76.0px">
+				style="font-weight:bold;width:px">
 			</xp:viewColumnHeader>
 		</xp:viewColumn>
 		<xp:viewColumn columnName="Hora" id="viewColumn2"
@@ -30,23 +30,23 @@
 				<xp:convertDateTime type="both"></xp:convertDateTime>
 			</xp:this.converter>
 			<xp:viewColumnHeader value="Fecha" id="viewColumnHeader2"
-				style="font-weight:bold;width:134.0px">
+				style="font-weight:bold;width:px">
 			</xp:viewColumnHeader>
 		</xp:viewColumn>
 		<xp:viewColumn columnName="$4" id="viewColumn3"
-			style="font-size:8pt;width:189.0px">
+			style="font-size:8pt;width:px">
 			<xp:viewColumnHeader value="Usuario" id="viewColumnHeader3"
-				style="font-weight:bold;width:110.0px">
+				style="font-weight:bold;width:px">
 			</xp:viewColumnHeader>
 		</xp:viewColumn>
 		<xp:viewColumn columnName="Accion" id="viewColumn4"
-			style="font-size:8pt;width:147.0px">
+			style="font-size:8pt;width:px">
 			<xp:viewColumnHeader value="Acción" id="viewColumnHeader4"
 				style="font-weight:bold">
 			</xp:viewColumnHeader>
 		</xp:viewColumn>
 		<xp:viewColumn id="viewColumn5" columnName="Detalle"
-			style="width:293.0px">
+			style="width:px">
 			<xp:this.facets>
 				<xp:viewColumnHeader xp:key="header"
 					id="viewColumnHeader5" value="Detalle" style="font-weight:bold">
