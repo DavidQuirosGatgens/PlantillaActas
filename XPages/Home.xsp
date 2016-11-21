@@ -7,7 +7,8 @@
 		<xp:styleSheet href="/bootstrap-theme.min.css"></xp:styleSheet>
 		<xp:styleSheet href="/bootstrap.min.css"></xp:styleSheet>
 		<xp:styleSheet href="/portada.css"></xp:styleSheet>
-	</xp:this.resources><xc:ccHeader></xc:ccHeader>
+	</xp:this.resources>
+	<xc:ccHeader></xc:ccHeader>
 
 
 
@@ -19,14 +20,15 @@
 					<xp:panel>
 						<xp:image url="/RecopeLogoPeq.png" id="image2">
 						</xp:image>
-						<xp:br></xp:br><xp:br></xp:br>
+						<xp:br></xp:br>
+						<xp:br></xp:br>
 						<xp:label value="#{javascript:database.getTitle()}" id="label1"
-							styleClass="h1" >
+							styleClass="h1">
 						</xp:label>
 						<xp:br></xp:br>
 
-</xp:panel>
-					
+					</xp:panel>
+
 				</div>
 				<div class="col-sm-6">
 					<xp:panel>
@@ -101,21 +103,6 @@
 			</div>
 
 
-			<!--Página principal Búsqueda  -->
-
-			<div class="col-sm-4">
-				<div class="panel panel-info">
-					<div class="panel-heading">
-						<xp:link escape="true" text="Búsqueda" id="link4"
-							value="/Home_Seguimientos.xsp">
-						</xp:link>
-
-					</div>
-					<div class="panel-body">Realice una búsqueda sobre las Ordenes del
-						Día, Actas,
-						Temas, Acuerdos, Seguimientos y Comunicados.</div>
-				</div>
-			</div>
 
 
 			<!--Página principal Temas Pendientes  -->
@@ -131,8 +118,24 @@
 						pendientes.</div>
 				</div>
 			</div>
+			<!--Página principal Búsqueda  -->
+
+			<div class="col-sm-4">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<xp:link escape="true" text="Búsqueda" id="link4"
+							value="/Home_Seguimientos.xsp">
+						</xp:link>
+
+					</div>
+					<div class="panel-body">Realice una búsqueda sobre las Ordenes del
+						Día, Actas,
+						Temas, Acuerdos, Seguimientos y Comunicados.</div>
+				</div>
+			</div>
 		</div>
 	</div>
+
 
 
 
