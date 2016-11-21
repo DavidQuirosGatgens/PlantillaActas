@@ -2,13 +2,13 @@
 <xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:xe="http://www.ibm.com/xsp/coreex">
 	<xp:panel>
 		<xp:button value="Nueva Orden" id="button1">
-			<xp:this.rendered><![CDATA[#{javascript:context.getUser().getRoles().contains('[Secretaria]')}]]></xp:this.rendered><xp:eventHandler event="onclick" submit="true" refreshMode="complete">
-				<xp:this.action>
-					<xp:openPage name="/xpOrden.xsp" target="newDocument">
-					</xp:openPage>
-				</xp:this.action>
-			</xp:eventHandler>
-		</xp:button>
+			<xp:this.rendered><![CDATA[#{javascript:context.getUser().getRoles().contains('[Secretaria]')}]]></xp:this.rendered>
+		<xp:eventHandler event="onclick" submit="true" refreshMode="complete">
+			<xp:this.action>
+				<xp:openPage name="/Doc_Orden.xsp"
+					target="newDocument">
+				</xp:openPage>
+			</xp:this.action></xp:eventHandler></xp:button>
 		
 		<xp:button value="Eliminar" id="button2">
 			
