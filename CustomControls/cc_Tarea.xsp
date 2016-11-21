@@ -1,0 +1,793 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xc="http://www.ibm.com/xsp/custom"
+	xmlns:xp_1="http://www.ibm.com/xsp/coreex">
+	<xp:this.data>
+		<xp:dominoDocument var="document1" formName="Tarea"></xp:dominoDocument>
+	</xp:this.data>
+	<xp:this.beforePageLoad><![CDATA[#{javascript://Se almacena la url de la pagina anterior
+if(sessionScope.RedirectTarea==""){
+	sessionScope.RedirectTarea=context.getHistoryUrl(-1);
+}}]]></xp:this.beforePageLoad>
+	<xp:this.resources>
+		<xp:styleSheet href="/bootstrapComplement.css"></xp:styleSheet>
+	</xp:this.resources>
+	
+	
+	<xp:panel>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-6">
+					<xp:panel>
+
+						<xp:panel>
+							<xp:panel id="pnlTodoContenido">
+								<xp:panel>
+									<xp:panel id="pnlInfoGeneral">
+										<div
+											class="panel panel-default">
+
+
+											<div
+												class="panel-heading">
+												<xp:label
+													value="Tarea" id="label12" styleClass="h3">
+												</xp:label>
+
+											</div>
+											<div class="panel-body">
+
+
+												<xp:panel
+													id="panelContenido">
+
+													<xp:button
+														id="button3" value="Completar Tarea">
+														<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable() && currentDocument.getItemValueString("Estado")!="Completada" &&
+( context.getUser().getRoles().contains('[Secretaria]') )}]]></xp:this.rendered>
+														<xp:eventHandler
+															event="onclick" submit="true" refreshMode="complete">
+															<xp:this.action>
+
+
+																<xp:actionGroup>
+																	<xp:actionGroup>
+
+
+																		<xp:modifyField
+																			name="NotificacionCompletadaEnviada" value="No"
+																			var="document1">
+																		</xp:modifyField>
+																		<xp:modifyField
+																			name="Estado" value="Completada" var="document1">
+																		</xp:modifyField>
+																		<xp:modifyField
+																			name="FechaCompletada" value="#{javascript:@Now()}"
+																			var="document1">
+																		</xp:modifyField>
+
+																		<xp:modifyField
+																			name="UsuarioCompletaTarea"
+																			value="#{javascript:@UserName()}" var="document1">
+																		</xp:modifyField>
+																		<xp:saveDocument
+																			var="document1">
+																		</xp:saveDocument>
+
+
+
+
+
+
+
+																		<xp:openPage
+																			name="$$PreviousPage">
+
+																		</xp:openPage>
+																	</xp:actionGroup>
+
+																</xp:actionGroup>
+															</xp:this.action>
+														</xp:eventHandler>
+													</xp:button>
+													&#160;
+													<xp:button
+														id="button5" value="Cancelar Tarea">
+														<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable() && currentDocument.getItemValueString("Estado")!="Completada" &&
+( context.getUser().getRoles().contains('[Secretaria]') )}]]></xp:this.rendered>
+														<xp:eventHandler
+															event="onclick" submit="true" refreshMode="complete">
+															<xp:this.action>
+
+
+																<xp:actionGroup>
+																	<xp:actionGroup>
+
+
+
+
+																		<xp:modifyField
+																			name="Estado" value="Cancelada" var="document1">
+																		</xp:modifyField>
+
+
+																		<xp:modifyField
+																			name="FechaCancelada" value="#{javascript:@Now()}"
+																			var="document1">
+																		</xp:modifyField>
+
+																		<xp:modifyField
+																			name="UsuarioCancelaTarea"
+																			value="#{javascript:session.getUserName()}"
+																			var="document1">
+																		</xp:modifyField>
+																		<xp:saveDocument
+																			var="document1">
+																		</xp:saveDocument>
+
+
+
+
+
+
+																		<xp:openPage
+																			name="$$PreviousPage">
+
+																		</xp:openPage>
+																	</xp:actionGroup>
+
+																</xp:actionGroup>
+															</xp:this.action>
+														</xp:eventHandler>
+													</xp:button>
+													<xp:button
+														id="button7" value="Solicitar Cambio Fecha">
+														<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable() && currentDocument.getItemValueString("Estado")!="Completada"}]]></xp:this.rendered>
+
+														<xp:eventHandler
+															event="onclick" submit="true" refreshMode="partial"
+															refreshId="panelContenido">
+															<xp:this.action><![CDATA[#{javascript:
+var c = getComponent("dlgSolicitarCambioFecha");
+//currentDocument.setValue("ComentariosWF","");
+c.show();}]]></xp:this.action>
+														</xp:eventHandler>
+													</xp:button>
+													<xp:button
+														id="button8" value="Aprobar Cambio Fecha">
+														<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable() && currentDocument.getItemValueString("Estado")=="Cambio Fecha Solicitado" &&
+context.getUser().getRoles().contains('[Secretaria]')}]]></xp:this.rendered>
+														<xp:eventHandler
+															event="onclick" submit="true" refreshMode="complete">
+															<xp:this.action>
+
+
+																<xp:actionGroup>
+																	<xp:actionGroup>
+
+
+
+
+
+
+
+																		<xp:modifyField
+																			name="Estado" value="Pendiente" var="document1">
+																		</xp:modifyField>
+																		<xp:modifyField
+																			name="FechaLimite" var="document1">
+																			<xp:this.value><![CDATA[#{javascript:currentDocument.getItemValueDateTime("FechaLimite_SolicitudCambio")}]]></xp:this.value>
+																		</xp:modifyField>
+																		<xp:modifyField
+																			name="Comentarios_SolicitudCambioFecha"
+																			var="document1">
+																			<xp:this.value><![CDATA[#{javascript:return ""}]]></xp:this.value>
+																		</xp:modifyField>
+																		<xp:modifyField
+																			name="PendienteNotificarAprobacionCambioFecha"
+																			value="Si" var="document1">
+																		</xp:modifyField>
+																		<xp:saveDocument
+																			var="document1">
+																		</xp:saveDocument>
+
+
+
+
+
+
+
+
+
+
+																		<xp:openPage
+																			name="$$PreviousPage">
+
+																		</xp:openPage>
+																	</xp:actionGroup>
+
+																</xp:actionGroup>
+															</xp:this.action>
+															<xp:this.script><![CDATA[alert('Se enviará la solicitud de cambio de fecha')]]></xp:this.script>
+														</xp:eventHandler>
+													</xp:button>
+													<xp:button
+														value="Salvar" id="button1"
+														rendered="#{javascript:currentDocument.isEditable() }">
+														<xp:eventHandler
+															event="onclick" submit="true" refreshMode="complete">
+															<xp:this.action>
+
+																<xp:actionGroup>
+
+
+																	<xp:saveDocument
+																		var="document1">
+																	</xp:saveDocument>
+
+
+
+
+																	<xp:openPage
+																		name="$$PreviousPage">
+
+																	</xp:openPage>
+																</xp:actionGroup>
+															</xp:this.action>
+														</xp:eventHandler>
+													</xp:button>
+													<xp:button
+														value="Editar" id="button4"
+														rendered="#{javascript:!currentDocument.isEditable()}">
+
+
+														<xp:eventHandler
+															event="onclick" submit="true" refreshMode="complete">
+															<xp:this.action>
+																<xp:changeDocumentMode
+																	mode="edit" var="document1">
+																</xp:changeDocumentMode>
+															</xp:this.action>
+														</xp:eventHandler>
+													</xp:button>
+													<xp:button
+														value="Salir" id="button2">
+														<xp:eventHandler
+															event="onclick" submit="true" refreshMode="complete">
+															<xp:this.action>
+
+
+																<xp:actionGroup>
+																	<xp:actionGroup>
+
+
+																		<xp:executeScript
+																			script="#{javascript:viewStateBean.restoreState=true;}">
+																		</xp:executeScript>
+
+
+
+																		<xp:openPage
+																			name="$$PreviousPage">
+																		</xp:openPage>
+																	</xp:actionGroup>
+
+																</xp:actionGroup>
+															</xp:this.action>
+														</xp:eventHandler>
+													</xp:button>
+
+
+													
+													
+													<xp:br></xp:br>
+													<xp:link
+														escape="true" text="Abrir Seguimiento" id="link2"
+														rendered="#{javascript:!document1.isNewNote()}">
+
+
+
+
+														<xp:eventHandler
+															event="onclick" submit="true" refreshMode="complete">
+															<xp:this.action>
+																<xp:openPage
+																	name="/Doc_Seguimiento.xsp" target="openDocument">
+																	<xp:this.documentId><![CDATA[#{javascript:var viewRef:NotesView=database.getView("(IdDocumentos)");
+var docRef:NotesDocument=viewRef.getDocumentByKey(document1.getItemValueString("IDDocumentoPadre"))
+if(docRef!=null){
+	return docRef.getUniversalID();
+}
+}]]></xp:this.documentId>
+																</xp:openPage>
+															</xp:this.action>
+														</xp:eventHandler>
+													</xp:link>
+
+
+													<xp:panel
+														id="pnlAprobacionCambioFecha">
+														<xp:this.rendered><![CDATA[#{javascript:currentDocument.getItemValueString("Estado")=="Cambio Fecha Solicitado"}]]></xp:this.rendered>
+														<xp:table>
+															<xp:tr>
+																<xp:td
+																	colspan="2" style="font-weight:bold">
+																	<xp:label
+																		value="Solicitud de Cambio de Fecha Límite"
+																		id="label4">
+																	</xp:label>
+																</xp:td>
+
+															</xp:tr>
+															<xp:tr>
+																<xp:td>
+																	<xp:label
+																		value="Fecha Límite Solicitada:"
+																		for="fechaLimite_SolicitudCambio1" id="label5">
+																	</xp:label>
+																</xp:td>
+																<xp:td>
+																	<xp:inputText
+																		value="#{document1.FechaLimite_SolicitudCambio}"
+																		id="inputText1" readonly="true">
+																		<xp:dateTimeHelper
+																			id="dateTimeHelper5">
+																		</xp:dateTimeHelper>
+																		<xp:this.converter>
+																			<xp:convertDateTime
+																				type="date" dateStyle="long">
+																			</xp:convertDateTime>
+																		</xp:this.converter>
+																	</xp:inputText>
+																</xp:td>
+															</xp:tr>
+															<xp:tr>
+																<xp:td>
+																	<xp:label
+																		value="Comentarios para solicitar cambio fecha límite:"
+																		id="label6" for="comentarios_SolicitudCambioFecha1">
+																	</xp:label>
+																</xp:td>
+																<xp:td>
+																	<xp:inputText
+																		value="#{document1.Comentarios_SolicitudCambioFecha}"
+																		id="inputText2" readonly="true">
+																	</xp:inputText>
+																</xp:td>
+															</xp:tr>
+															<xp:tr>
+																<xp:td
+																	colspan="2">
+
+
+
+																	&#160;
+																</xp:td>
+
+															</xp:tr>
+														</xp:table>
+													</xp:panel>
+													<xp:table
+														style="width:391.0px">
+														<xp:tr>
+															<xp:td>
+																<xp:label
+																	value="Estado:" id="estado_Label1" for="estado1">
+																</xp:label>
+															</xp:td>
+															<xp:td>
+																<xp:inputText
+																	value="#{document1.Estado}" id="estado1"
+																	readonly="true">
+																</xp:inputText>
+															</xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td>
+																<xp:label
+																	value="Descripción:" id="descripcion_Label1"
+																	for="descripcion1">
+																</xp:label>
+															</xp:td>
+															<xp:td>
+																<xp:inputText
+																	value="#{document1.Descripcion}" id="descripcion1"
+																	readonly="true">
+																</xp:inputText>
+															</xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td>
+																<xp:label
+																	value="Fecha limite:" id="fechaLimite_Label1"
+																	for="fechaLimite1">
+																</xp:label>
+															</xp:td>
+															<xp:td
+																style="width:290.0px">
+																<xp:inputText
+																	value="#{document1.FechaLimite}" id="fechaLimite1"
+																	readonly="true">
+																	<xp:dateTimeHelper
+																		id="dateTimeHelper1">
+																	</xp:dateTimeHelper>
+																	<xp:this.converter>
+																		<xp:convertDateTime
+																			type="date" dateStyle="long">
+																		</xp:convertDateTime>
+																	</xp:this.converter>
+																</xp:inputText>
+															</xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td
+																style="white-space:nowrap">
+																<xp:label
+																	value="Responsable acuerdo:"
+																	id="responsablesAcuerdo_Label1"
+																	for="responsablesAcuerdo1">
+																</xp:label>
+															</xp:td>
+															<xp:td
+																style="width:290.0px">
+																<xp:inputText
+																	value="#{document1.ResponsablesAcuerdo}"
+																	id="responsablesAcuerdo1" readonly="true">
+																</xp:inputText>
+															</xp:td>
+														</xp:tr>
+														<xp:tr></xp:tr>
+														<xp:tr>
+															<xp:td>
+
+															</xp:td>
+															<xp:td>
+
+															</xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td
+																colspan="2">
+																<xp:panel>
+																	<xp:this.rendered><![CDATA[#{javascript:currentDocument.getItemValueString("Estado")=="Completada"}]]></xp:this.rendered>
+																	<xp:table>
+																		<xp:tr>
+																			<xp:td
+																				colspan="2">
+																				<xp:label
+																					value="Tarea Completada" id="label1"
+																					style="font-weight:bold;text-decoration:underline">
+																				</xp:label>
+																			</xp:td>
+
+																		</xp:tr>
+																		<xp:tr>
+																			<xp:td>
+																				<xp:label
+																					value="Fecha completada:"
+																					id="fechaCompletada_Label1"
+																					for="fechaCompletada1">
+																				</xp:label>
+																			</xp:td>
+																			<xp:td>
+																				<xp:inputText
+																					value="#{document1.FechaCompletada}"
+																					id="fechaCompletada1" readonly="true">
+																					<xp:this.converter>
+																						<xp:convertDateTime
+																							type="both" dateStyle="long">
+																						</xp:convertDateTime>
+																					</xp:this.converter>
+																					<xp:dateTimeHelper
+																						id="dateTimeHelper2">
+																					</xp:dateTimeHelper>
+																				</xp:inputText>
+																			</xp:td>
+																		</xp:tr>
+																		<xp:tr>
+																			<xp:td
+																				style="white-space:nowrap">
+																				<xp:label
+																					value="Usuario que completó tarea:"
+																					id="usuarioCompletaTarea_Label1"
+																					for="usuarioCompletaTarea1">
+																				</xp:label>
+																			</xp:td>
+																			<xp:td>
+																				<xp:text
+																					escape="true" id="computedField4">
+																					<xp:this.value><![CDATA[#{javascript:@Name("[ABBREVIATE]", document1.getItemValueString("UsuarioCompletaTarea"))}]]></xp:this.value>
+																				</xp:text>
+																			</xp:td>
+																		</xp:tr>
+																	</xp:table>
+																</xp:panel>
+															</xp:td>
+
+														</xp:tr>
+														<xp:tr>
+															<xp:td
+																colspan="2">
+
+																<xp:panel>
+																	<xp:this.rendered><![CDATA[#{javascript:currentDocument.getItemValueString("Estado")=="Cancelada"}]]></xp:this.rendered>
+																	<xp:table>
+																		<xp:tr>
+																			<xp:td
+																				colspan="2">
+																				<xp:label
+																					value="Tarea Cancelada" id="label2">
+																				</xp:label>
+																			</xp:td>
+
+																		</xp:tr>
+																		<xp:tr>
+																			<xp:td>
+																				<xp:label
+																					value="Fecha cancelada:" id="fechaCancelada_Label1"
+																					for="fechaCancelada1">
+																				</xp:label>
+																			</xp:td>
+																			<xp:td>
+																				<xp:inputText
+																					value="#{document1.FechaCancelada}"
+																					id="fechaCancelada1" readonly="true">
+																					<xp:dateTimeHelper
+																						id="dateTimeHelper3">
+																					</xp:dateTimeHelper>
+																					<xp:this.converter>
+																						<xp:convertDateTime
+																							type="date" dateStyle="long">
+																						</xp:convertDateTime>
+																					</xp:this.converter>
+																				</xp:inputText>
+																			</xp:td>
+																		</xp:tr>
+																		<xp:tr>
+																			<xp:td>
+																				<xp:label
+																					value="Usuario cancela tarea:"
+																					id="usuarioCancelaTarea_Label1"
+																					for="usuarioCancelaTarea1">
+																				</xp:label>
+																			</xp:td>
+																			<xp:td>
+																				<xp:text
+																					escape="true" id="computedField1">
+																					<xp:this.value><![CDATA[#{javascript:@Name("[ABBREVIATE]", document1.getItemValueString("UsuarioCancelaTarea"))}]]></xp:this.value>
+																				</xp:text>
+																			</xp:td>
+																		</xp:tr>
+																		<xp:tr>
+																			<xp:td></xp:td>
+																			<xp:td></xp:td>
+																		</xp:tr>
+																	</xp:table>
+																</xp:panel>
+															</xp:td>
+														</xp:tr>
+
+
+													</xp:table>
+
+													<xp:table>
+														<xp:tr>
+															<xp:td>
+																<xp:label
+																	value="Respuesta:" id="respuesta_Label1"
+																	for="respuesta1">
+																</xp:label>
+															</xp:td>
+															<xp:td>
+																<xp:inputRichText
+																	value="#{document1.Respuesta}" id="respuesta1">
+																</xp:inputRichText>
+															</xp:td>
+														</xp:tr>
+													</xp:table>
+													<xp:panel>
+
+														<xp:tabbedPanel
+															id="tabbedPanel1">
+															<xp:tabPanel
+																label="Anexos" id="tabPanel1">
+																<xp:fileUpload
+																	id="fileUpload1" value="#{document1.Attachments}">
+																</xp:fileUpload>
+																<xp:br></xp:br>
+																<xp:fileUpload
+																	id="fileUpload2" value="#{document1.Attachments}">
+																</xp:fileUpload>
+																<xp:br></xp:br>
+																<xp:fileUpload
+																	id="fileUpload3" value="#{document1.Attachments}">
+																</xp:fileUpload>
+																<xp:fileDownload
+																	rows="30" id="fileDownload1"
+																	displayLastModified="false"
+																	value="#{document1.Attachments}" hideWhen="true"
+																	displayCreated="true">
+																</xp:fileDownload>
+															</xp:tabPanel>
+
+														</xp:tabbedPanel>
+													</xp:panel>
+													<xp:br></xp:br>
+
+													<xp_1:dialog
+														id="dlgSolicitarCambioFecha"
+														title="Solicitar Cambio de Fecha Límite">
+
+														<xp_1:dialogButtonBar
+															id="dialogButtonBar1">
+															<xp:button
+																id="button6" value="Enviar Solicitud Cambio">
+																<xp:this.rendered><![CDATA[#{javascript:currentDocument.isEditable() && currentDocument.getItemValueString("Estado")=="Pendiente"}]]></xp:this.rendered>
+																<xp:eventHandler
+																	event="onclick" submit="true" refreshMode="complete">
+																	<xp:this.action>
+
+
+																		<xp:actionGroup>
+																			<xp:actionGroup>
+
+
+
+
+
+
+
+
+																				<xp:modifyField
+																					name="Estado" value="Cambio Fecha Solicitado"
+																					var="document1">
+																				</xp:modifyField>
+																				<xp:modifyField
+																					name="PendienteNotificarSolicitudCambioFecha"
+																					value="Si" var="document1">
+																				</xp:modifyField>
+																				<xp:saveDocument
+																					var="document1">
+																				</xp:saveDocument>
+
+
+
+
+
+
+
+																				<xp:openPage>
+																					<xp:this.name><![CDATA[#{javascript://redirecciona pagina anterior
+if(sessionScope.RedirectTarea!=""){
+	var dir=sessionScope.RedirectTarea;
+	sessionScope.RedirectTarea="";
+	return dir;
+}else{
+	context.redirectToHome();
+}
+}]]></xp:this.name>
+																				</xp:openPage>
+																			</xp:actionGroup>
+
+																		</xp:actionGroup>
+																	</xp:this.action>
+																	<xp:this.script><![CDATA[alert('Se enviará la solicitud de cambio de fecha')]]></xp:this.script>
+																</xp:eventHandler>
+															</xp:button>
+															<xp:button
+																value="Cancelar" id="button10">
+																<xp:eventHandler
+																	event="onclick" submit="true" refreshMode="complete">
+																	<xp:this.action><![CDATA[#{javascript:var c = getComponent("dlgSolicitarCambioFecha")
+c.hide()
+}]]></xp:this.action>
+																</xp:eventHandler>
+															</xp:button>
+														</xp_1:dialogButtonBar>
+														<xp_1:dialogContent
+															id="dialogContent1">
+															<xp:panel>
+																<xp:panel
+																	id="pnlSolicitudCambioFecha">
+																	<xp:table>
+																		<xp:tr>
+																			<xp:td
+																				colspan="2">
+																				<xp:label
+																					value="Solicitud de Cambio de Fecha Límite"
+																					id="label3">
+																				</xp:label>
+																			</xp:td>
+
+																		</xp:tr>
+																		<xp:tr>
+																			<xp:td>
+																				<xp:label
+																					value="Fecha Límite Solicitada:"
+																					for="fechaLimite_SolicitudCambio1" id="Fecha">
+																				</xp:label>
+																			</xp:td>
+																			<xp:td>
+
+
+
+																				<xp:br></xp:br>
+
+
+																				<xp_1:djDateTextBox
+																					id="fechaLimite_SolicitudCambio1"
+																					value="#{document1.FechaLimite_SolicitudCambio}">
+
+
+																					<xp:eventHandler
+																						event="onClick" submit="true"
+																						refreshMode="norefresh">
+																					</xp:eventHandler>
+
+
+																					<xp_1:this.converter>
+																						<xp:convertDateTime
+																							type="date" dateStyle="short">
+																						</xp:convertDateTime>
+																					</xp_1:this.converter>
+																				</xp_1:djDateTextBox>
+																				<xp:br></xp:br>
+																			</xp:td>
+																		</xp:tr>
+																		<xp:tr>
+																			<xp:td>
+																				<xp:label
+																					value="Comentarios para solicitar cambio fecha límite:"
+																					id="comentarios_SolicitudCambioFecha_Label1"
+																					for="comentarios_SolicitudCambioFecha1">
+																				</xp:label>
+																			</xp:td>
+																			<xp:td>
+																				<xp:inputText
+																					value="#{document1.Comentarios_SolicitudCambioFecha}"
+																					id="comentarios_SolicitudCambioFecha1">
+																				</xp:inputText>
+																			</xp:td>
+																		</xp:tr>
+																		<xp:tr>
+																			<xp:td
+																				colspan="2">
+
+
+
+																				&#160;
+																			</xp:td>
+
+																		</xp:tr>
+																	</xp:table>
+																</xp:panel>
+															</xp:panel>
+														</xp_1:dialogContent>
+													</xp_1:dialog>
+												</xp:panel>
+
+
+
+											</div>
+										</div>
+
+									</xp:panel>
+
+
+								</xp:panel>
+
+
+
+							</xp:panel>
+
+
+						</xp:panel>
+					</xp:panel>
+				</div>
+
+
+
+			</div>
+		</div>
+	</xp:panel>
+</xp:view>

@@ -1,0 +1,1861 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core"
+	xmlns:xc="http://www.ibm.com/xsp/custom"
+	xmlns:xe="http://www.ibm.com/xsp/coreex">
+
+	<xp:this.beforePageLoad><![CDATA[#{javascript:if(docComunicado.isNewNote()){
+
+	var parentDoc = database.getDocumentByUNID(docComunicado.getParentId()); 
+	docComunicado.setValue("IDdocActa", parentDoc.getItemValue("IDdocActa"));
+	docComunicado.setValue("IDdocOrden", parentDoc.getItemValue("IDdocOrden"));
+	docComunicado.setValue("IDdocTema", parentDoc.getItemValue("IDdocTema"));
+	docComunicado.setValue("IDAcuerdo", parentDoc.getItemValue("IDAcuerdo"));
+	//Campos para Swing
+	docComunicado.setValue("IDdocActa", parentDoc.getItemValue("IDdocActa"));
+
+	//Obtiene la fecha de Creacion del Comunicado
+	var agent = database.getAgent('(Funciones)');
+		if(null != agent){
+		var document = docComunicado.getDocument(true);
+		if(null != document){
+			try{ 
+				document.replaceItemValue("FuncionSTR","FechaLetrasGen");
+				document.replaceItemValue("FuncionSTRCampo","FechaCreacion");
+				agent.runWithDocumentContext(document);
+				var fechaEnLetras= document.getItemValueString("FuncionStrResult");
+				docComunicado.setValue("FechaCreacionLetras",fechaEnLetras.right(fechaEnLetras.length()- fechaEnLetras.indexOf(" ")-1));
+			}catch(e){
+				print('Error: ' + e);
+				return;
+			}
+		}
+	}
+	//Se obtienen los campos para swing
+	var docAcuerdo:NotesDocument=database.getView("(vAcuerdos_byUNID)").getDocumentByKey(parentDoc.getItemValue("IDAcuerdo"));
+	if(docAcuerdo!=null)docComunicado.setValue("NumeroAcuerdo",docAcuerdo.getItemValueString("NumeroAcuerdo"));
+	//if(docAcuerdo!=null)docComunicado.setValue("Detalle", "\n" +"\n" +"\n" +"Acuerdo: " + docAcuerdo.getItemValueString("NumeroAcuerdo")+ "\n" +docAcuerdo.getItemValueString("Acuerdo")+ "\n" +"\"" + docAcuerdo.getItemValueString("Detalle")+"\"");
+	if(docAcuerdo!=null)docComunicado.setValue("Detalle", "\n" +"\n" +"\n" + docAcuerdo.getItemValueString("Detalle"));
+	
+	
+	
+	var docTema:NotesDocument=database.getView("(vTemas_byUNID)").getDocumentByKey(parentDoc.getItemValue("IDdocTema"));
+	if(docTema!=null)docComunicado.setValue("numeroTema",docTema.getItemValueString("numeroTema"));
+	if(docTema!=null)docComunicado.setValue("tituloTema",docTema.getItemValueString("Titulo"));
+	var docActa:NotesDocument=database.getView("(IdDocumentos)").getDocumentByKey(parentDoc.getItemValue("IDdocActa"));
+	if(docActa!=null)docComunicado.setValue("FechaOrdenLetras", docActa.getItemValueString("FechaOrdenLetras").toLowerCase() );
+	if(docActa!=null)docComunicado.setValue("TipoSesion",docActa.getItemValueString("TipoSesion"));
+	
+	var texto:string;
+	texto=docComunicado.getItemValueString("Detalle").replace(";",",");
+	texto=texto.replace("\n",";");
+	docComunicado.setValue("Detalle_1",texto)
+	
+	
+	 
+	
+	
+}
+//Se almacena la url de la pagina anterior
+if(sessionScope.RedirectComunicado==""){
+	sessionScope.RedirectComunicado=context.getHistoryUrl(-1);
+}
+}]]></xp:this.beforePageLoad>
+	<xp:this.resources>
+		<xp:script src="/GeneralSSJS.jss" clientSide="false"></xp:script>
+		<xp:script src="/ClientSideValidationV1.js" clientSide="true"></xp:script>
+		<xp:script src="/ssjs_DocsAdicionales.jss" clientSide="false"></xp:script>
+		<xp:styleSheet href="/bootstrapComplement.css"></xp:styleSheet>
+	</xp:this.resources>
+
+	<xp:this.dataContexts>
+		<xp:dataContext var="esEditorDeCampos">
+			<xp:this.value><![CDATA[#{javascript:if(!context.getUser().getRoles().contains('[Secretaria]')){
+	return false;
+}	else return true;}]]></xp:this.value>
+		</xp:dataContext>
+
+	</xp:this.dataContexts>
+
+	<xp:this.data>
+		<xp:dominoDocument var="docComunicado" formName="Comunicado"
+			computeWithForm="both">
+		</xp:dominoDocument>
+	</xp:this.data>
+	<script language="Javascript">
+		            XSP.addOnLoad(function () {              
+	</script>
+
+
+
+
+
+
+
+
+	<xp:panel>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-6">
+					<xp:panel>
+
+						<xp:panel>
+							<xp:panel id="pnlTodoContenido">
+								<xp:panel>
+									<xp:panel id="pnlInfoGeneral">
+										<div
+											class="panel panel-default">
+
+
+											<div
+												class="panel-heading">
+												<xp:label
+													value="Comunicado" id="label12" styleClass="h3">
+												</xp:label>
+
+											</div>
+											<div class="panel-body">
+
+
+												<xp:panel
+													id="pnlContenido">
+
+
+													<xp:button
+														value="Salvar" id="button1"
+														rendered="#{javascript:currentDocument.isEditable() }">
+														<xp:eventHandler
+															event="onclick" submit="true" refreshMode="complete">
+
+
+															<xp:this.script><![CDATA[var msg="";
+if(!validaCampoTexto(dojo.byId("#{id:Subject}")))msg= msg + "Encabezado.\n";
+if(msg!=""){
+	alert("Debe incluir los siguientes Datos: \n" + msg);
+	return false;
+}
+]]></xp:this.script>
+
+															<xp:this.action>
+
+																<xp:actionGroup>
+
+
+																	<xp:actionGroup>
+
+
+																		<xp:this.condition><![CDATA[#{javascript:if(docComunicado.getItemValueArray( 'ResponsablesAcuerdo' )[0]==null){
+	view.postScript("alert('Debe ingresar los notificados del comunicado');")
+	return false;
+}else{
+	return true;
+}}]]></xp:this.condition>
+
+
+																		<xp:executeScript>
+																			<xp:this.script><![CDATA[#{javascript:if(sessionScope.EsNuevo==1){
+	var User:NotesName=session.createName(@UserName()); 
+	CreateBitacora(User,"Se crea el Documento","",docAcuerdo.getDocument(true).getItemValueString("IdDocumento"));
+}
+var agent = database.getAgent('(SaveComunicado)');
+if(null != agent){
+	var document:NotesDocument = docComunicado.getDocument(true);
+	if(null != document){
+		try{
+			agent.runWithDocumentContext(document);
+		}catch(e){
+			print('Error: ' + e);
+			return;
+		}
+		//document.save();
+	}
+}
+
+}]]></xp:this.script>
+																		</xp:executeScript>
+																		<xp:saveDocument
+																			var="docComunicado">
+																		</xp:saveDocument>
+
+
+
+
+
+																		<xp:executeScript>
+																			<xp:this.script><![CDATA[#{javascript:if(sessionScope.EsNuevo==1){
+	var User:NotesName=session.createName(@UserName()); 
+	CreateBitacora(User,"Se crea el Documento","",docComunicado.getDocument(true).getItemValueString("IdDocumento"));
+}}]]></xp:this.script>
+																		</xp:executeScript>
+																		<xp:openPage
+																			name="/xpComunicado.xsp" target="editDocument"
+																			documentId="#{javascript:docComunicado.getDocument(true).getUniversalID()}">
+																		</xp:openPage>
+
+																	</xp:actionGroup>
+																</xp:actionGroup>
+															</xp:this.action>
+														</xp:eventHandler>
+													</xp:button>
+
+													<xp:button
+														value="Editar" id="button4"
+														rendered="#{javascript:!currentDocument.isEditable()}">
+
+														<xp:eventHandler
+															event="onclick" submit="true" refreshMode="complete">
+															<xp:this.action>
+
+																<xp:actionGroup>
+
+
+
+																	<xp:changeDocumentMode
+																		mode="edit" var="docComunicado">
+																	</xp:changeDocumentMode>
+
+																	<xp:executeScript>
+																		<xp:this.script><![CDATA[#{javascript:var texto:string;
+texto=docComunicado.getItemValueString("Detalle").replace(";",",");
+texto=texto.replace("\n",";");
+docComunicado.setValue("Detalle_1",texto)}]]></xp:this.script>
+																	</xp:executeScript>
+
+																</xp:actionGroup>
+															</xp:this.action>
+														</xp:eventHandler>
+													</xp:button>
+													<xp:button
+														value="Enviar Comunicado" id="button3" rendered="false">
+														<xp:eventHandler
+															event="onclick" submit="true" refreshMode="complete">
+
+															<xp:this.script><![CDATA[var msg="";
+if(!validaCampoTexto(dojo.byId("#{id:Subject}")))msg= msg + "Encabezado.\n";
+if(msg!=""){
+	alert("Debe incluir los siguientes Datos: \n" + msg);
+	return false;
+}
+]]></xp:this.script>
+
+															<xp:this.action>
+
+																<xp:actionGroup>
+																	<xp:actionGroup>
+																		<xp:this.condition><![CDATA[#{javascript:if(docComunicado.getItemValueArray( 'ResponsablesAcuerdo' )[0]==null){
+	view.postScript("alert('Debe ingresar los notificados del comunicado');")
+	return false;
+}else{
+	return true;
+}}]]></xp:this.condition>
+																		<xp:modifyField
+																			name="Estado" value="Generado" var="docComunicado">
+																		</xp:modifyField>
+																		<xp:saveDocument
+																			var="docComunicado">
+																		</xp:saveDocument>
+
+
+
+
+																		<xp:executeScript>
+																			<xp:this.script><![CDATA[#{javascript:var agent = database.getAgent('(SaveComunicado)');
+if(null != agent){
+	var document:NotesDocument = docComunicado.getDocument(true);
+	if(null != document){
+		try{
+			document.replaceItemValue("AccionSave","Notificar");
+			agent.runWithDocumentContext(document);
+		}catch(e){
+			print('Error: ' + e);
+			return;
+		}
+		//document.save();
+	}
+}
+
+}]]></xp:this.script>
+																		</xp:executeScript>
+																		<xp:openPage>
+																			<xp:this.name><![CDATA[#{javascript://redirecciona pagina anterior
+try {
+if(sessionScope.RedirectComunicado!=""){
+	var dir=sessionScope.RedirectComunicado;
+	sessionScope.RedirectComunicado="";
+	return dir;
+}else{
+	context.redirectToHome();
+}
+}
+catch(err) {
+    context.redirectToHome();
+}
+}]]></xp:this.name>
+																		</xp:openPage>
+
+																	</xp:actionGroup>
+
+																</xp:actionGroup>
+															</xp:this.action>
+														</xp:eventHandler>
+													</xp:button>
+													<xp:button
+														value="Salir" id="button2">
+														<xp:eventHandler
+															event="onclick" submit="true" refreshMode="complete">
+															<xp:this.action>
+
+
+																<xp:actionGroup>
+																	<xp:actionGroup>
+
+
+
+
+
+
+																		<xp:executeScript>
+																			<xp:this.script><![CDATA[#{javascript:try {
+	viewStateBean.restoreState=true;
+}catch(err) {
+    print(err);
+}
+}]]></xp:this.script>
+																		</xp:executeScript>
+
+
+																		<xp:openPage>
+																			<xp:this.name><![CDATA[#{javascript://redirecciona pagina anterior
+try {
+	if(sessionScope.RedirectComunicado!=""){
+		var dir=sessionScope.RedirectComunicado;
+		sessionScope.RedirectComunicado="";
+		return dir;
+	}else{
+		context.redirectToHome();
+	}
+}
+catch(err) {
+	print(err);
+}
+}]]></xp:this.name>
+																		</xp:openPage>
+																	</xp:actionGroup>
+
+																</xp:actionGroup>
+															</xp:this.action>
+														</xp:eventHandler>
+													</xp:button>
+
+
+													
+													<xp:this.data>
+														<xp:dominoDocument
+															var="docComunicado" formName="Comunicado"
+															computeWithForm="both">
+
+															<xp:this.postSaveDocument>
+																<xp:executeScript>
+																	<xp:this.script><![CDATA[#{javascript:var agent = database.getAgent("SwXPagesAfterSave");
+//agent.runOnServer(document1.getNoteID());
+var doc:NotesDocument = docComunicado.getDocument();
+agent.runWithDocumentContext(doc);}]]></xp:this.script>
+																</xp:executeScript>
+															</xp:this.postSaveDocument>
+														</xp:dominoDocument>
+													</xp:this.data>
+
+
+
+
+													<xp:br></xp:br>
+													<xp:link
+														escape="true" text="Abrir Acuerdo" id="link2"
+														rendered="#{javascript:!docComunicado.isNewNote()}">
+
+
+
+
+
+
+														<xp:eventHandler
+															event="onclick" submit="true" refreshMode="complete">
+															<xp:this.action>
+																<xp:openPage
+																	name="/Doc_Acuerdo.xsp" target="openDocument">
+																	<xp:this.documentId><![CDATA[#{javascript:var viewRef:NotesView=database.getView("(IdDocumentos)");
+var docRef:NotesDocument=viewRef.getDocumentByKey(docComunicado.getItemValueString("IDAcuerdo"))
+if(docRef!=null){
+	return docRef.getUniversalID();
+}
+}]]></xp:this.documentId>
+																</xp:openPage>
+															</xp:this.action>
+														</xp:eventHandler>
+													</xp:link>
+													<xp:table>
+														<xp:tr>
+															<xp:td>
+																<xp:label
+																	value="# Acta:" id="numerOrden_Label1"
+																	for="numerOrden1">
+																</xp:label>
+															</xp:td>
+															<xp:td>
+
+																<xp:eventHandler
+																	event="onclick" submit="true" refreshMode="complete"
+																	id="eventHandler2">
+																</xp:eventHandler>
+																<xp:text
+																	escape="true" id="computedField13">
+																	<xp:this.converter>
+																		<xp:convertNumber
+																			type="number">
+																		</xp:convertNumber>
+																	</xp:this.converter>
+																	<xp:this.value><![CDATA[#{javascript:var docAsociado:NotesDocument=database.getView("(vActas_byUNID)").getDocumentByKey(docComunicado.getItemValueString("IDdocActa"));
+return docAsociado.getItemValueString("NumerOrden")
+}]]></xp:this.value>
+																</xp:text>
+																<xp:inputText
+																	id="FechaOrdenLetras"
+																	value="#{docComunicado.FechaOrdenLetras}"
+																	rendered="#{javascript:currentDocument.isEditable()}">
+																</xp:inputText>
+																<xp:inputText
+																	id="TipoSesion" value="#{docComunicado.TipoSesion}"
+																	rendered="#{javascript:currentDocument.isEditable()}">
+																</xp:inputText>
+																<xp:inputText
+																	id="NumerOrden" value="#{docComunicado.NumerOrden}"
+																	rendered="#{javascript:currentDocument.isEditable()}">
+																</xp:inputText>
+															</xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td>
+																<xp:label
+																	value="Tema:" id="label1" for="numerOrden1"
+																	style="font-weight:bold">
+																</xp:label>
+															</xp:td>
+															<xp:td>
+																<xp:text
+																	escape="true" id="computedField1"
+																	value="#{docComunicado.tituloTema}">
+																</xp:text>
+																<xp:inputText
+																	id="numeroTema" value="#{docComunicado.numeroTema}"
+																	rendered="#{javascript:currentDocument.isEditable()}">
+																</xp:inputText>
+																<xp:inputText
+																	id="tituloTema" value="#{docComunicado.tituloTema}"
+																	rendered="#{javascript:currentDocument.isEditable()}">
+																</xp:inputText>
+															</xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td>
+																<xp:label
+																	value="Acuerdo:" id="label2" for="numerOrden1">
+																</xp:label>
+															</xp:td>
+															<xp:td>
+																<xp:text
+																	escape="true" id="computedField2"
+																	value="#{docComunicado.NumeroAcuerdo}">
+																</xp:text>
+																<xp:inputText
+																	id="NumeroAcuerdo"
+																	value="#{docComunicado.NumeroAcuerdo}"
+																	rendered="#{javascript:currentDocument.isEditable()}">
+																</xp:inputText>
+															</xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td>
+																<xp:label
+																	value="Autor:" id="label7" for="numerOrden1">
+																</xp:label>
+															</xp:td>
+															<xp:td>
+																<xp:text
+																	escape="true" id="computedField4">
+																	<xp:this.value><![CDATA[#{javascript:@Name("[ABBREVIATE]",docComunicado.getItemValueString("Autor"))}]]></xp:this.value>
+																</xp:text>
+															</xp:td>
+														</xp:tr>
+
+														<xp:tr>
+															<xp:td>
+																<xp:label
+																	value="Número:" id="label4" for="numerOrden1">
+																</xp:label>
+															</xp:td>
+															<xp:td>
+																<xp:text
+																	escape="true" id="computedField5"
+																	value="#{docComunicado.NumeroComunicado}">
+																</xp:text>
+															</xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td>
+																<xp:label
+																	value="Creación:" id="label8" for="numerOrden1">
+																</xp:label>
+															</xp:td>
+															<xp:td>
+																<xp:text
+																	escape="true" id="computedField14"
+																	value="#{docComunicado.FechaCreacion}">
+																	<xp:this.converter>
+																		<xp:convertDateTime
+																			type="date" dateStyle="short">
+																		</xp:convertDateTime>
+																	</xp:this.converter>
+																</xp:text>
+																&#160;&#160;
+																<xp:text
+																	escape="true" id="computedField15"
+																	value="#{docComunicado.FechaCreacionLetras}">
+																</xp:text>
+																<xp:inputText
+																	id="FechaCreacionLetras"
+																	value="#{docComunicado.FechaCreacionLetras}"
+																	rendered="#{javascript:currentDocument.isEditable()}">
+																</xp:inputText>
+															</xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td>
+																<xp:label
+																	value="Encabezado:" id="descripción_Label1"
+																	for="descripción1">
+																</xp:label>
+															</xp:td>
+															<xp:td>
+																<xp:inputText
+																	value="#{docComunicado.Subject}" id="Subject">
+																</xp:inputText>
+															</xp:td>
+														</xp:tr>
+
+														<xp:tr>
+															<xp:td>
+																<xp:label
+																	value="Notificar a:" id="label3" for="acuerdo1">
+																</xp:label>
+															</xp:td>
+															<xp:td>
+																<xp:button
+																	id="button14" value="..."
+																	rendered="#{javascript:currentDocument.isEditable()}">
+																	<xp:eventHandler
+																		event="onclick" submit="false" id="eventHandler7">
+																		<xp:this.script><![CDATA[var elementID = '#{id:dialogNewResponsable}'; 
+document.getElementById(elementID).className += "modal_Extension";
+
+XSP.openDialog('#{id:dialogNewResponsable}')]]></xp:this.script>
+																	</xp:eventHandler>
+																</xp:button>
+															</xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td
+																colspan="2" rowspan="2">
+
+
+
+
+
+
+
+																<xp:panel
+																	id="panelResponsables">
+
+
+
+																	
+																	<xe:dialog
+																		id="dialogNewResponsable"
+																		title="Seleccione o digite los usuarios a comunicar">
+
+																		<xe:dialogButtonBar
+																			id="dialogButtonBar4">
+																			<xp:button
+																				value="Aceptar" id="button17">
+																				<xp:eventHandler
+																					event="onclick" submit="true" refreshMode="partial"
+																					refreshId="panelResponsables" id="eventHandler3">
+																					<xp:this.action>
+
+																						<xp:actionGroup>
+
+																							<xp:executeScript>
+																								<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogNewResponsable")
+c.hide()}]]></xp:this.script>
+																							</xp:executeScript>
+
+
+
+
+
+
+
+
+																							<xp:executeScript>
+																								<xp:this.script><![CDATA[#{javascript:
+var field = docComunicado.getValue( 'ResponsablesAcuerdo' );
+
+if(field==""){
+	field=getComponent("inputNombreResponsable").getValue();
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+}else{
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+	field.push(getComponent("inputNombreResponsable").getValue());
+}
+docComunicado.setValue( 'ResponsablesAcuerdo', field );
+docComunicado.setValue( 'ResponsablesAcuerdo1', field );
+
+var field = docComunicado.getValue( 'ResponsablesIdentificador' );
+
+if(field==""){
+	field=getComponent("inputIdentificadorResponsable").getValue();
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+}else{
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+	field.push(getComponent("inputIdentificadorResponsable").getValue());
+}
+docComunicado.setValue( 'ResponsablesIdentificador', field );
+docComunicado.setValue( 'ResponsablesIdentificador1', field );
+
+
+var field = docComunicado.getValue( 'ResponsablesPuesto' );
+
+if(field==""){
+	field=getComponent("inputPuestoResponsable").getValue();
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+}else{
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+	field.push(getComponent("inputPuestoResponsable").getValue());
+}
+docComunicado.setValue( 'ResponsablesPuesto', field );
+docComunicado.setValue( 'ResponsablesPuesto1', field );
+}]]></xp:this.script>
+																							</xp:executeScript>
+																						</xp:actionGroup>
+																					</xp:this.action>
+																				</xp:eventHandler>
+																			</xp:button>
+																			<xp:button
+																				value="Cancelar" id="button5">
+																				<xp:eventHandler
+																					event="onclick" submit="false"
+																					id="eventHandler1">
+																					<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogNewResponsable}')]]></xp:this.script>
+																				</xp:eventHandler>
+																			</xp:button>
+
+
+																		</xe:dialogButtonBar>
+																		<xe:dialogContent
+																			id="dialogContent3">
+																			<xp:panel>
+																				<xp:table>
+																					<xp:tr>
+																						<xp:td>
+																							Usuario
+																							o
+																							Correo
+																						</xp:td>
+																						<xp:td>
+																							<xe:namePicker
+																								id="namePicker1" for="inputNombreResponsable"
+																								dialogTitle="Seleccione los Nombres">
+																								<xe:this.dataProvider>
+																									<xe:namePickerAggregator>
+
+																										<xe:this.dataProviders>
+																											<xe:dominoViewNamePicker
+																												label="Nombre" labelColumn="Nombre"
+																												loaded="true" viewName="vUsuario">
+																											</xe:dominoViewNamePicker>
+																										</xe:this.dataProviders>
+																									</xe:namePickerAggregator>
+																								</xe:this.dataProvider>
+																							</xe:namePicker>
+																						</xp:td>
+																						<xp:td>
+																							<xp:inputText
+																								id="inputNombreResponsable" required="true">
+																								<xp:this.validators>
+																									<xp:validateRequired
+																										message="El dato es requerido">
+																									</xp:validateRequired>
+																								</xp:this.validators>
+
+																							</xp:inputText>
+																						</xp:td>
+																						<xp:td></xp:td>
+																					</xp:tr>
+
+
+
+																					<xp:tr>
+																						<xp:td>
+																							Nombre
+																						</xp:td>
+																						<xp:td></xp:td>
+																						<xp:td>
+																							<xp:inputText
+																								id="inputIdentificadorResponsable"
+																								required="true">
+																								<xp:this.validators>
+																									<xp:validateRequired
+																										message="El dato es requerido">
+																									</xp:validateRequired>
+																								</xp:this.validators>
+
+																							</xp:inputText>
+																						</xp:td>
+																						<xp:td></xp:td>
+																					</xp:tr>
+																					<xp:tr>
+																						<xp:td>
+																							Puesto
+																						</xp:td>
+																						<xp:td></xp:td>
+																						<xp:td>
+																							<xp:inputText
+																								id="inputPuestoResponsable" required="true">
+																								<xp:this.validators>
+																									<xp:validateRequired
+																										message="El dato es requerido">
+																									</xp:validateRequired>
+																								</xp:this.validators>
+
+																							</xp:inputText>
+																						</xp:td>
+																						<xp:td></xp:td>
+																					</xp:tr>
+																				</xp:table>
+
+																			</xp:panel>
+																		</xe:dialogContent>
+																		<xp:eventHandler
+																			event="onHide" submit="false">
+																			<xe:this.script><![CDATA[var elementID = '#{id:dialogNewResponsable}'; 
+
+document.getElementById(elementID).className =
+   document.getElementById(elementID).className.replace
+      ( /(?:^|\s)modal_Extension(?!\S)/g , '' );]]></xe:this.script>
+																		</xp:eventHandler></xe:dialog>
+
+
+
+																	<xp:repeat
+																		value="#{docComunicado.ResponsablesAcuerdo}"
+																		var="Responsables" indexVar="ResponsablesIndex"
+																		id="repeatItemsResponsables">
+																		<xp:table>
+																			<xp:tr>
+																				<xp:td>
+																					<xp:text
+																						escape="true" id="computedField3"
+																						value="#{javascript:ResponsablesIndex + 1}">
+																						<xp:this.converter>
+																							<xp:convertNumber
+																								type="number" integerOnly="true">
+																							</xp:convertNumber>
+																						</xp:this.converter>
+																					</xp:text>
+																				</xp:td>
+																				<xp:td></xp:td>
+																				<xp:td>
+																					<xp:link
+																						escape="true" text="edit" id="link6"
+																						rendered="#{javascript:currentDocument.isEditable()}">
+
+																						<xp:eventHandler
+																							event="onclick" submit="false"
+																							id="eventHandler6">
+																							<xp:this.script><![CDATA[XSP.openDialog('#{id:dialogEditResponsable}')]]></xp:this.script>
+																						</xp:eventHandler>
+																					</xp:link>
+																				</xp:td>
+																				<xp:td>
+																					<xp:link
+																						escape="true" text="eliminar" id="link4"
+																						rendered="#{javascript:currentDocument.isEditable()}">
+																						<xp:eventHandler
+																							event="onclick" submit="true"
+																							refreshMode="partial" id="eventHandler4"
+																							refreshId="panelResponsables">
+																							<xp:this.action><![CDATA[#{javascript:var field:Array = docComunicado.getValue( 'ResponsablesAcuerdo' );
+docComunicado.replaceItemValue( 'ResponsablesAcuerdo', SpliceArray(field,ResponsablesIndex,1));
+docComunicado.replaceItemValue( 'ResponsablesAcuerdo1', SpliceArray(field,ResponsablesIndex,1));
+
+var field:Array = docComunicado.getValue( 'ResponsablesIdentificador' );
+docComunicado.replaceItemValue( 'ResponsablesIdentificador', SpliceArray(field,ResponsablesIndex,1));
+docComunicado.replaceItemValue( 'ResponsablesIdentificador1', SpliceArray(field,ResponsablesIndex,1));
+
+var field:Array = docComunicado.getValue( 'ResponsablesPuesto' );
+docComunicado.replaceItemValue( 'ResponsablesPuesto', SpliceArray(field,ResponsablesIndex,1));
+docComunicado.replaceItemValue( 'ResponsablesPuesto1', SpliceArray(field,ResponsablesIndex,1));
+ 
+
+
+}]]></xp:this.action>
+																						</xp:eventHandler>
+																					</xp:link>
+																				</xp:td>
+
+																				<xp:td>
+
+																					<xp:inputText
+																						id="inputIterResponsablesAcuerdo"
+																						readonly="#{javascript:true}">
+																						<xp:this.rendered><![CDATA[#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesAcuerdo' ).length > 1 );}]]></xp:this.rendered>
+
+																						<xp:this.value><![CDATA[#{docComunicado.ResponsablesAcuerdo[ResponsablesIndex]}]]></xp:this.value>
+																					</xp:inputText>
+
+																					<xp:text
+																						escape="true" id="computedField7"
+																						value="#{docComunicado.ResponsablesAcuerdo}"
+																						rendered="#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesAcuerdo' ).length == 1 );}">
+																					</xp:text>
+																				</xp:td>
+
+
+
+																				<xp:td>
+																					<xp:inputText
+																						id="inputText1" readonly="#{javascript:true}">
+																						<xp:this.rendered><![CDATA[#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesAcuerdo' ).length > 1 );}]]></xp:this.rendered>
+
+																						<xp:this.value><![CDATA[#{docComunicado.ResponsablesIdentificador[ResponsablesIndex]}]]></xp:this.value>
+																					</xp:inputText>
+																					<xp:text
+																						escape="true" id="computedField6"
+																						value="#{docComunicado.ResponsablesIdentificador}"
+																						rendered="#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesAcuerdo' ).length == 1 );}">
+																					</xp:text>
+																				</xp:td>
+																				<xp:td>
+																					<xp:inputText
+																						id="inputText6" readonly="#{javascript:true}">
+																						<xp:this.rendered><![CDATA[#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesAcuerdo' ).length > 1 );}]]></xp:this.rendered>
+
+																						<xp:this.value><![CDATA[#{docComunicado.ResponsablesPuesto[ResponsablesIndex]}]]></xp:this.value>
+																					</xp:inputText>
+																					<xp:text
+																						escape="true" id="computedField8"
+																						value="#{docComunicado.ResponsablesPuesto}"
+																						rendered="#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesAcuerdo' ).length == 1 );}">
+																					</xp:text>
+																				</xp:td>
+																			</xp:tr>
+
+																		</xp:table>
+
+
+																		<xe:dialog
+																			id="dialogEditResponsable"
+																			title="Seleccione o digite los usuarios a comunicar">
+																			<xe:dialogContent
+																				id="dialogContent4">
+																				<xp:panel>
+																					<xp:table>
+																						<xp:tr>
+																							<xp:td>
+																								Usuario
+																								o
+																								Correo
+																							</xp:td>
+																							<xp:td>
+
+																								<xe:namePicker
+																									id="namePicker2"
+																									dialogTitle="Seleccione los Nombres">
+																									<xe:this.dataProvider>
+																										<xe:namePickerAggregator>
+
+																											<xe:this.dataProviders>
+																												<xe:dominoViewNamePicker
+																													label="Nombre" labelColumn="Nombre"
+																													loaded="true" viewName="vUsuario">
+																												</xe:dominoViewNamePicker>
+																											</xe:this.dataProviders>
+																										</xe:namePickerAggregator>
+																									</xe:this.dataProvider>
+																									<xe:this.for><![CDATA[#{javascript:if(docComunicado.getItemValueArray( 'ResponsablesAcuerdo' ).length > 1 ){
+	return "inputEditResponsableMult";
+}else{
+	return "inputEditResponsable";
+}}]]></xe:this.for>
+																								</xe:namePicker>
+																							</xp:td>
+																							<xp:td>
+																								<xp:inputText
+																									id="inputEditResponsableMult"
+																									required="true">
+																									<xp:this.rendered><![CDATA[#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesAcuerdo' ).length > 1 );}]]></xp:this.rendered>
+																									<xp:this.value><![CDATA[#{docComunicado.ResponsablesAcuerdo[ResponsablesIndex]}]]></xp:this.value>
+																								</xp:inputText>
+																								<xp:br></xp:br>
+																								<xp:inputText
+																									id="inputEditResponsable" required="true"
+																									value="#{docComunicado.ResponsablesAcuerdo}"
+																									rendered="#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesAcuerdo' ).length == 1 );}">
+																								</xp:inputText>
+																							</xp:td>
+																							<xp:td></xp:td>
+																						</xp:tr>
+
+
+
+																						<xp:tr>
+																							<xp:td>
+																								Nombre
+																							</xp:td>
+																							<xp:td></xp:td>
+																							<xp:td>
+																								<xp:inputText
+																									id="inputText3" required="true">
+																									<xp:this.rendered><![CDATA[#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesAcuerdo' ).length > 1 );}]]></xp:this.rendered>
+																									<xp:this.value><![CDATA[#{docComunicado.ResponsablesIdentificador[ResponsablesIndex]}]]></xp:this.value>
+																								</xp:inputText>
+																								<xp:br></xp:br>
+																								<xp:inputText
+																									id="inputText4" required="true"
+																									value="#{docComunicado.ResponsablesIdentificador}"
+																									rendered="#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesAcuerdo' ).length == 1 );}">
+																								</xp:inputText>
+																							</xp:td>
+																							<xp:td></xp:td>
+																						</xp:tr>
+																						<xp:tr>
+																							<xp:td>
+																								Puesto
+																							</xp:td>
+																							<xp:td></xp:td>
+																							<xp:td>
+																								<xp:inputText
+																									id="inputText8" required="true">
+																									<xp:this.rendered><![CDATA[#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesAcuerdo' ).length > 1 );}]]></xp:this.rendered>
+																									<xp:this.value><![CDATA[#{docComunicado.ResponsablesPuesto[ResponsablesIndex]}]]></xp:this.value>
+																								</xp:inputText>
+																								<xp:br></xp:br>
+																								<xp:inputText
+																									id="inputText9" required="true"
+																									value="#{docComunicado.ResponsablesPuesto}"
+																									rendered="#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesAcuerdo' ).length == 1 );}">
+																								</xp:inputText>
+																							</xp:td>
+																							<xp:td></xp:td>
+																						</xp:tr>
+																					</xp:table>
+																				</xp:panel>
+																			</xe:dialogContent>
+																			<xe:dialogButtonBar
+																				id="dialogButtonBar5">
+																				<xp:button
+																					value="Aceptar" id="button13">
+																					<xp:eventHandler
+																						event="onclick" submit="true"
+																						refreshMode="partial"
+																						refreshId="panelResponsables"
+																						id="eventHandler9">
+																						<xp:this.action>
+
+																							<xp:actionGroup>
+
+
+
+																								<xp:executeScript>
+																									<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogEditResponsable")
+c.hide()}]]></xp:this.script>
+																								</xp:executeScript>
+
+
+
+
+
+																								<xp:executeScript>
+																									<xp:this.script><![CDATA[#{javascript:
+var field = docComunicado.getValue( 'ResponsablesAcuerdo' );
+
+if( !field ){ field = []; }
+if( typeof field === 'string' ){
+	field = [ field ];
+}
+
+docComunicado.setValue( 'ResponsablesAcuerdo', field );
+
+
+var field = docComunicado.getValue( 'ResponsablesIdentificador' );
+
+if( !field ){ field = []; }
+if( typeof field === 'string' ){
+	field = [ field ];
+}
+
+docComunicado.setValue( 'ResponsablesIdentificador', field );
+
+var field = docComunicado.getValue( 'ResponsablesPuesto' );
+
+if( !field ){ field = []; }
+if( typeof field === 'string' ){
+	field = [ field ];
+}
+
+docComunicado.setValue( 'ResponsablesPuesto', field );
+
+
+
+
+
+
+}]]></xp:this.script>
+																								</xp:executeScript>
+																							</xp:actionGroup>
+																						</xp:this.action>
+																					</xp:eventHandler>
+																				</xp:button>
+																				<xp:button
+																					value="Cancelar" id="button6">
+																					<xp:eventHandler
+																						event="onclick" submit="false"
+																						id="eventHandler5">
+																						<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogEditResponsable}')]]></xp:this.script>
+																					</xp:eventHandler>
+																				</xp:button>
+
+
+																			</xe:dialogButtonBar>
+																		</xe:dialog>
+
+																	</xp:repeat>
+																	<xp:inputText
+																		value="#{docComunicado.ResponsablesAcuerdo}"
+																		readonly="#{javascript:return !docComunicado.isEditable();}"
+																		id="inputText2">
+																		<xp:this.rendered><![CDATA[#{javascript://return ( docComunicado.getItemValueArray( 'field' ).length < 1 );
+return false}]]></xp:this.rendered>
+																	</xp:inputText>
+
+
+
+
+
+																	<xp:inputText
+																		value="#{docComunicado.ResponsablesIdentificador}"
+																		readonly="#{javascript:return !docComunicado.isEditable();}"
+																		id="inputText5">
+																		<xp:this.rendered><![CDATA[#{javascript://return ( docComunicado.getItemValueArray( 'field' ).length < 1 );
+return false}]]></xp:this.rendered>
+																	</xp:inputText>
+																	<xp:inputText
+																		value="#{docComunicado.ResponsablesPuesto}"
+																		readonly="#{javascript:return !docComunicado.isEditable();}"
+																		id="inputText10">
+																		<xp:this.rendered><![CDATA[#{javascript://return ( docComunicado.getItemValueArray( 'field' ).length < 1 );
+return false}]]></xp:this.rendered>
+																	</xp:inputText>
+																	<xp:inputTextarea
+																		multipleSeparator=";"
+																		value="#{docComunicado.ResponsablesAcuerdo1}"
+																		rendered="#{javascript:currentDocument.isEditable()}"
+																		id="ResponsablesAcuerdo">
+																	</xp:inputTextarea>
+																	<xp:inputTextarea
+																		multipleSeparator=";"
+																		value="#{docComunicado.ResponsablesIdentificador1}"
+																		rendered="#{javascript:currentDocument.isEditable()}"
+																		id="ResponsablesIdentificador">
+																	</xp:inputTextarea>
+																	<xp:inputTextarea
+																		multipleSeparator=";"
+																		value="#{docComunicado.ResponsablesPuesto1}"
+																		rendered="#{javascript:currentDocument.isEditable()}"
+																		id="ResponsablesPuesto">
+																	</xp:inputTextarea>
+																</xp:panel>
+															</xp:td>
+
+														</xp:tr>
+														<xp:tr>
+
+
+														</xp:tr>
+
+
+														<xp:tr>
+															<xp:td>
+																<xp:label
+																	value="Copiar a:" id="label6">
+																</xp:label>
+															</xp:td>
+															<xp:td>
+																<xp:button
+																	id="button11" value="..."
+																	rendered="#{javascript:currentDocument.isEditable()}">
+																	<xp:eventHandler
+																		event="onclick" submit="false" id="eventHandler15">
+																		<xp:this.script><![CDATA[XSP.openDialog('#{id:dialogNuevoCopiar}')]]></xp:this.script>
+																	</xp:eventHandler>
+																</xp:button>
+															</xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td
+																colspan="2">
+																<xp:panel
+																	id="panelCopiar">
+
+
+
+																	<xe:dialog
+																		id="dialogNuevoCopiar"
+																		title="Seleccione o digite los usuarios a comunicar">
+
+																		<xe:dialogButtonBar
+																			id="dialogButtonBar1">
+																			<xp:button
+																				value="Aceptar" id="button7">
+																				<xp:eventHandler
+																					event="onclick" submit="true" refreshMode="partial"
+																					refreshId="repeatOtros" id="eventHandler8">
+																					<xp:this.action>
+
+																						<xp:actionGroup>
+
+
+
+
+
+
+
+
+
+																							<xp:executeScript>
+																								<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogNuevoCopiar")
+c.hide()}]]></xp:this.script>
+																							</xp:executeScript>
+
+
+																							<xp:executeScript>
+																								<xp:this.script><![CDATA[#{javascript:
+var field = docComunicado.getValue( 'ResponsablesOtros' );
+
+if(field==""){
+	field=getComponent("inputNewCorreoCopiar").getValue();
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+}else{
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+	field.push(getComponent("inputNewCorreoCopiar").getValue());
+}
+docComunicado.setValue( 'ResponsablesOtros', field );
+
+var field = docComunicado.getValue( 'ResponsablesIOtrosNombres' );
+
+if(field==""){
+	field=getComponent("inputNewNombreCopiar").getValue();
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+}else{
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+	field.push(getComponent("inputNewNombreCopiar").getValue());
+}
+docComunicado.setValue( 'ResponsablesIOtrosNombres', field );
+
+
+var field = docComunicado.getValue( 'ResponsablesIOtrosPuestos' );
+
+if(field==""){
+	field=getComponent("inputNewPuestoCopiar").getValue();
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+}else{
+	if( !field ){ field = []; }
+	if( typeof field === 'string' ){
+		field = [ field ];
+	}
+	field.push(getComponent("inputNewPuestoCopiar").getValue());
+}
+docComunicado.setValue( 'ResponsablesIOtrosPuestos', field );
+
+}]]></xp:this.script>
+																							</xp:executeScript>
+																						</xp:actionGroup>
+																					</xp:this.action>
+																				</xp:eventHandler>
+																			</xp:button>
+																			<xp:button
+																				value="Cancelar" id="button8">
+																				<xp:eventHandler
+																					event="onclick" submit="false"
+																					id="eventHandler10">
+																					<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogNuevoCopiar}')]]></xp:this.script>
+																				</xp:eventHandler>
+																			</xp:button>
+
+
+																		</xe:dialogButtonBar>
+																		<xe:dialogContent
+																			id="dialogContent1">
+																			<xp:panel>
+																				<xp:table>
+																					<xp:tr>
+																						<xp:td>
+																							Usuario
+																							o
+																							Correo
+																						</xp:td>
+																						<xp:td>
+																							<xe:namePicker
+																								id="namePicker3" for="inputNewCorreoCopiar"
+																								dialogTitle="Seleccione los Nombres">
+																								<xe:this.dataProvider>
+																									<xe:namePickerAggregator>
+
+																										<xe:this.dataProviders>
+																											<xe:dominoViewNamePicker
+																												label="Nombre" labelColumn="Nombre"
+																												loaded="true" viewName="vUsuario">
+																											</xe:dominoViewNamePicker>
+																										</xe:this.dataProviders>
+																									</xe:namePickerAggregator>
+																								</xe:this.dataProvider>
+																							</xe:namePicker>
+																						</xp:td>
+																						<xp:td>
+																							<xp:inputText
+																								id="inputNewCorreoCopiar" required="true">
+																								<xp:this.validators>
+																									<xp:validateRequired
+																										message="El dato es requerido">
+																									</xp:validateRequired>
+																								</xp:this.validators>
+
+																							</xp:inputText>
+																						</xp:td>
+																						<xp:td></xp:td>
+																					</xp:tr>
+
+
+
+																					<xp:tr>
+																						<xp:td>
+																							Nombre
+																						</xp:td>
+																						<xp:td></xp:td>
+																						<xp:td>
+																							<xp:inputText
+																								id="inputNewNombreCopiar" required="true">
+																								<xp:this.validators>
+																									<xp:validateRequired
+																										message="El dato es requerido">
+																									</xp:validateRequired>
+																								</xp:this.validators>
+
+																							</xp:inputText>
+																						</xp:td>
+																						<xp:td></xp:td>
+																					</xp:tr>
+																					<xp:tr>
+																						<xp:td>
+																							Puesto
+																						</xp:td>
+																						<xp:td></xp:td>
+																						<xp:td>
+																							<xp:inputText
+																								id="inputNewPuestoCopiar" required="true">
+																								<xp:this.validators>
+																									<xp:validateRequired
+																										message="El dato es requerido">
+																									</xp:validateRequired>
+																								</xp:this.validators>
+
+																							</xp:inputText>
+																						</xp:td>
+																						<xp:td></xp:td>
+																					</xp:tr>
+																				</xp:table>
+
+																			</xp:panel>
+																		</xe:dialogContent>
+																	</xe:dialog>
+
+
+
+																	<xp:repeat
+																		value="#{docComunicado.ResponsablesOtros}"
+																		var="OtrosCollection" indexVar="OtrosIndex"
+																		id="repeatOtros">
+																		<xp:table>
+																			<xp:tr>
+																				<xp:td>
+																					<xp:text
+																						escape="true" id="computedField9"
+																						value="#{javascript:OtrosIndex + 1}">
+																						<xp:this.converter>
+																							<xp:convertNumber
+																								type="number" integerOnly="true">
+																							</xp:convertNumber>
+																						</xp:this.converter>
+																					</xp:text>
+																				</xp:td>
+																				<xp:td></xp:td>
+																				<xp:td>
+																					<xp:link
+																						escape="true" text="edit" id="link1"
+																						rendered="#{javascript:currentDocument.isEditable()}">
+
+																						<xp:eventHandler
+																							event="onclick" submit="false"
+																							id="eventHandler11">
+																							<xp:this.script><![CDATA[XSP.openDialog('#{id:dialogEditCopiar}')]]></xp:this.script>
+																						</xp:eventHandler>
+																					</xp:link>
+																				</xp:td>
+																				<xp:td>
+																					<xp:link
+																						escape="true" text="eliminar" id="link3"
+																						rendered="#{javascript:currentDocument.isEditable()}">
+																						<xp:eventHandler
+																							event="onclick" submit="true"
+																							refreshMode="partial" id="eventHandler12"
+																							refreshId="repeatOtros">
+																							<xp:this.action><![CDATA[#{javascript:var field:Array = docComunicado.getValue( 'ResponsablesOtros' );
+docComunicado.replaceItemValue( 'ResponsablesOtros', SpliceArray(field,OtrosIndex,1));
+var field:Array = docComunicado.getValue( 'ResponsablesIOtrosNombres' );
+docComunicado.replaceItemValue( 'ResponsablesIOtrosNombres', SpliceArray(field,OtrosIndex,1));
+var field:Array = docComunicado.getValue( 'ResponsablesIOtrosPuestos' );
+docComunicado.replaceItemValue( 'ResponsablesIOtrosPuestos', SpliceArray(field,OtrosIndex,1));
+ 
+
+
+}]]></xp:this.action>
+																						</xp:eventHandler>
+																					</xp:link>
+																				</xp:td>
+
+																				<xp:td>
+
+																					<xp:inputText
+																						id="inputText12" readonly="#{javascript:true}">
+																						<xp:this.rendered><![CDATA[#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesOtros' ).length > 1 );}]]></xp:this.rendered>
+
+																						<xp:this.value><![CDATA[#{docComunicado.ResponsablesOtros[OtrosIndex]}]]></xp:this.value>
+																					</xp:inputText>
+
+																					<xp:text
+																						escape="true" id="computedField10"
+																						value="#{docComunicado.ResponsablesOtros}"
+																						rendered="#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesOtros' ).length == 1 );}">
+																					</xp:text>
+																				</xp:td>
+
+
+
+																				<xp:td>
+																					<xp:inputText
+																						id="inputText13" readonly="#{javascript:true}">
+																						<xp:this.rendered><![CDATA[#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesOtros' ).length > 1 );}]]></xp:this.rendered>
+
+																						<xp:this.value><![CDATA[#{docComunicado.ResponsablesIOtrosNombres[OtrosIndex]}]]></xp:this.value>
+																					</xp:inputText>
+																					<xp:text
+																						escape="true" id="computedField11"
+																						value="#{docComunicado.ResponsablesIOtrosNombres}"
+																						rendered="#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesOtros' ).length == 1 );}">
+																					</xp:text>
+																				</xp:td>
+																				<xp:td>
+																					<xp:inputText
+																						id="inputText14" readonly="#{javascript:true}">
+																						<xp:this.rendered><![CDATA[#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesOtros' ).length > 1 );}]]></xp:this.rendered>
+
+																						<xp:this.value><![CDATA[#{docComunicado.ResponsablesIOtrosPuestos[OtrosIndex]}]]></xp:this.value>
+																					</xp:inputText>
+																					<xp:text
+																						escape="true" id="computedField12"
+																						value="#{docComunicado.ResponsablesIOtrosPuestos}"
+																						rendered="#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesOtros' ).length == 1 );}">
+																					</xp:text>
+																				</xp:td>
+																			</xp:tr>
+
+																		</xp:table>
+
+
+																		<xe:dialog
+																			id="dialogEditCopiar"
+																			title="Seleccione o digite los usuarios a comunicar">
+																			<xe:dialogContent
+																				id="dialogContent2">
+																				<xp:panel>
+																					<xp:table>
+																						<xp:tr>
+																							<xp:td>
+																								Usuario
+																								o
+																								Correo
+																							</xp:td>
+																							<xp:td>
+
+																								<xe:namePicker
+																									id="namePicker4"
+																									dialogTitle="Seleccione los Nombres">
+																									<xe:this.dataProvider>
+																										<xe:namePickerAggregator>
+
+																											<xe:this.dataProviders>
+																												<xe:dominoViewNamePicker
+																													label="Nombre" labelColumn="Nombre"
+																													loaded="true" viewName="vUsuario">
+																												</xe:dominoViewNamePicker>
+																											</xe:this.dataProviders>
+																										</xe:namePickerAggregator>
+																									</xe:this.dataProvider>
+																									<xe:this.for><![CDATA[#{javascript:if(docComunicado.getItemValueArray( 'ResponsablesAcuerdo' ).length > 1 ){
+	return "inputEditOtrosMult";
+}else{
+	return "inputEditOtrosSimple";
+}}]]></xe:this.for>
+																								</xe:namePicker>
+																							</xp:td>
+																							<xp:td>
+																								<xp:inputText
+																									id="inputEditOtrosMult" required="true">
+																									<xp:this.rendered><![CDATA[#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesOtros' ).length > 1 );}]]></xp:this.rendered>
+																									<xp:this.value><![CDATA[#{docComunicado.ResponsablesOtros[OtrosIndex]}]]></xp:this.value>
+																								</xp:inputText>
+																								<xp:br></xp:br>
+																								<xp:inputText
+																									id="inputEditOtrosSimple" required="true"
+																									value="#{docComunicado.ResponsablesOtros}"
+																									rendered="#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesOtros' ).length == 1 );}">
+																								</xp:inputText>
+																							</xp:td>
+																							<xp:td></xp:td>
+																						</xp:tr>
+
+
+
+																						<xp:tr>
+																							<xp:td>
+																								Nombre
+																							</xp:td>
+																							<xp:td></xp:td>
+																							<xp:td>
+																								<xp:inputText
+																									id="inputText17" required="true">
+																									<xp:this.rendered><![CDATA[#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesOtros' ).length > 1 );}]]></xp:this.rendered>
+																									<xp:this.value><![CDATA[#{docComunicado.ResponsablesIOtrosNombres[OtrosIndex]}]]></xp:this.value>
+																								</xp:inputText>
+																								<xp:br></xp:br>
+																								<xp:inputText
+																									id="inputText18" required="true"
+																									value="#{docComunicado.ResponsablesIOtrosNombres}"
+																									rendered="#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesOtros' ).length == 1 );}">
+																								</xp:inputText>
+																							</xp:td>
+																							<xp:td></xp:td>
+																						</xp:tr>
+																						<xp:tr>
+																							<xp:td>
+																								Puesto
+																							</xp:td>
+																							<xp:td></xp:td>
+																							<xp:td>
+																								<xp:inputText
+																									id="inputText19" required="true">
+																									<xp:this.rendered><![CDATA[#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesOtros' ).length > 1 );}]]></xp:this.rendered>
+																									<xp:this.value><![CDATA[#{docComunicado.ResponsablesIOtrosPuestos[OtrosIndex]}]]></xp:this.value>
+																								</xp:inputText>
+																								<xp:br></xp:br>
+																								<xp:inputText
+																									id="inputText20" required="true"
+																									value="#{docComunicado.ResponsablesIOtrosPuestos}"
+																									rendered="#{javascript:return ( docComunicado.getItemValueArray( 'ResponsablesOtros' ).length == 1 );}">
+																								</xp:inputText>
+																							</xp:td>
+																							<xp:td></xp:td>
+																						</xp:tr>
+																					</xp:table>
+																				</xp:panel>
+																			</xe:dialogContent>
+																			<xe:dialogButtonBar
+																				id="dialogButtonBar2">
+																				<xp:button
+																					value="Aceptar" id="button9">
+																					<xp:eventHandler
+																						event="onclick" submit="true"
+																						refreshMode="partial" refreshId="repeatOtros"
+																						id="eventHandler13">
+																						<xp:this.action>
+
+																							<xp:actionGroup>
+
+
+
+
+
+
+
+
+
+																								<xp:executeScript>
+																									<xp:this.script><![CDATA[#{javascript:var c = getComponent("dialogEditCopiar")
+c.hide()}]]></xp:this.script>
+																								</xp:executeScript>
+																								<xp:executeScript>
+																									<xp:this.script><![CDATA[#{javascript:
+var field = docComunicado.getValue( 'ResponsablesAcuerdo' );
+
+if( !field ){ field = []; }
+if( typeof field === 'string' ){
+	field = [ field ];
+}
+
+docComunicado.setValue( 'ResponsablesAcuerdo', field );
+
+
+var field = docComunicado.getValue( 'ResponsablesIdentificador' );
+
+if( !field ){ field = []; }
+if( typeof field === 'string' ){
+	field = [ field ];
+}
+
+docComunicado.setValue( 'ResponsablesIdentificador', field );
+
+var field = docComunicado.getValue( 'ResponsablesPuesto' );
+
+if( !field ){ field = []; }
+if( typeof field === 'string' ){
+	field = [ field ];
+}
+
+docComunicado.setValue( 'ResponsablesPuesto', field );
+
+
+
+
+
+
+}]]></xp:this.script>
+																								</xp:executeScript>
+																							</xp:actionGroup>
+																						</xp:this.action>
+																					</xp:eventHandler>
+																				</xp:button>
+																				<xp:button
+																					value="Cancelar" id="button10">
+																					<xp:eventHandler
+																						event="onclick" submit="false"
+																						id="eventHandler14">
+																						<xp:this.script><![CDATA[XSP.closeDialog('#{id:dialogEditCopiar}')]]></xp:this.script>
+																					</xp:eventHandler>
+																				</xp:button>
+
+
+																			</xe:dialogButtonBar>
+																		</xe:dialog>
+
+																	</xp:repeat>
+																	<xp:inputText
+																		value="#{docComunicado.ResponsablesOtros}"
+																		readonly="#{javascript:return !docComunicado.isEditable();}"
+																		id="inputText21">
+																		<xp:this.rendered><![CDATA[#{javascript://return ( docComunicado.getItemValueArray( 'field' ).length < 1 );
+return false}]]></xp:this.rendered>
+																	</xp:inputText>
+
+
+
+
+
+																	<xp:inputText
+																		value="#{docComunicado.ResponsablesIOtrosNombres}"
+																		readonly="#{javascript:return !docComunicado.isEditable();}"
+																		id="ResponsablesOtrosNombres">
+																		<xp:this.rendered><![CDATA[#{javascript://return ( docComunicado.getItemValueArray( 'field' ).length < 1 );
+return false}]]></xp:this.rendered>
+																	</xp:inputText>
+																	<xp:inputText
+																		value="#{docComunicado.ResponsablesIOtrosPuestos}"
+																		readonly="#{javascript:return !docComunicado.isEditable();}"
+																		id="inputText7">
+																		<xp:this.rendered><![CDATA[#{javascript://return ( docComunicado.getItemValueArray( 'field' ).length < 1 );
+return false}]]></xp:this.rendered>
+																	</xp:inputText>
+																</xp:panel>
+															</xp:td>
+
+														</xp:tr>
+														<xp:tr>
+															<xp:td>
+																<xp:label
+																	value="Detalle" id="observaciones_Label1"
+																	for="observaciones1">
+																</xp:label>
+															</xp:td>
+															<xp:td>
+
+																<xp:inputTextarea
+																	id="DetalleDsp" value="#{docComunicado.Detalle}">
+
+																	<xp:eventHandler
+																		event="onchange" submit="true" refreshMode="partial"
+																		refreshId="Detalle">
+																		<xp:this.action><![CDATA[#{javascript:var texto:string;
+texto=docComunicado.getItemValueString("Detalle").replace(";",",");
+texto=texto.replace("\n",";");
+docComunicado.setValue("Detalle_1",texto)}]]></xp:this.action>
+																	</xp:eventHandler>
+																</xp:inputTextarea>
+																<xp:br></xp:br>
+																<xp:inputTextarea
+																	id="Detalle" multipleSeparator=";"
+																	value="#{docComunicado.Detalle_1}"
+																	rendered="#{javascript:currentDocument.isEditable()}">
+																</xp:inputTextarea>
+															</xp:td>
+														</xp:tr>
+
+														<xp:tr>
+															<xp:td>
+																<xp:label
+																	value="Adjuntar Tema" id="label5"
+																	for="observaciones1">
+																</xp:label>
+																:&#160;
+															</xp:td>
+															<xp:td>
+																<xp:checkBox
+																	text="Si" id="checkBox1"
+																	value="#{docComunicado.AdjuntarTema}"
+																	checkedValue="Si">
+																</xp:checkBox>
+															</xp:td>
+														</xp:tr>
+														<xp:tr>
+															<xp:td
+																colspan="2">
+																
+															</xp:td>
+
+														</xp:tr>
+													</xp:table>
+													
+
+										
+
+
+												</xp:panel>
+
+
+
+											</div>
+										</div>
+
+									</xp:panel>
+
+
+								</xp:panel>
+
+
+
+							</xp:panel>
+
+
+						</xp:panel>
+					</xp:panel>
+				</div>
+
+
+
+				<div class="col-sm-6">
+
+
+					<xp:panel>
+
+						<xp:panel id="pnlDocsAdicionales"
+							rendered="#{javascript:!docComunicado.isNewNote()}">
+
+
+							<div class="panel panel-default">
+
+
+								<div class="panel-heading">
+									<xp:label
+										value="Información Adicional" id="label14" styleClass="h3">
+									</xp:label>
+
+								</div>
+							</div>
+
+							<div class="">
+								<div class="panel-group"
+									id="accordion">
+
+
+
+
+									<div class="panel panel-default">
+
+
+
+										<div class="panel-heading">
+											<h4 class="panel-title">
+												<a
+													data-toggle="collapse" data-parent="#accordion"
+													href="#collapse1">
+													Anexos Adicionales
+												</a>
+												&#160;
+ 
+											</h4>
+										</div>
+
+										<div id="collapse1"
+											class="panel-collapse collapse in">
+
+
+											<div class="panel-body">
+
+												<xp:fileUpload
+													id="fileUpload1" value="#{docComunicado.Body}">
+												</xp:fileUpload>
+												<xp:br></xp:br>
+												<xp:fileUpload
+													id="fileUpload2" value="#{docComunicado.Body}">
+												</xp:fileUpload>
+												<xp:br></xp:br>
+												<xp:fileUpload
+													id="fileUpload3" value="#{docComunicado.Body}">
+												</xp:fileUpload>
+												<xp:br></xp:br>
+												<xp:fileDownload
+													rows="30" id="fileDownload1" displayLastModified="false"
+													value="#{docComunicado.Body}">
+												</xp:fileDownload>
+
+											</div>
+
+
+
+										</div>
+
+
+
+
+									</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+									<div class="panel panel-default">
+										<div class="panel-heading">
+											<h4 class="panel-title">
+												<a
+													data-toggle="collapse" data-parent="#accordion"
+													href="#collapse2">
+													Bitácora
+												</a>
+												&#160;
+<span class="badge badgeColor" ><xp:text
+															escape="true" id="computedField16">
+
+														<xp:this.value><![CDATA[#{javascript:
+labelCantidadDocsAdicionales("vBitacora", docComunicado.getItemValueString("IDDocumento"))}]]></xp:this.value></xp:text></span>
+
+											</h4>
+										</div>
+										<div id="collapse2"
+											class="panel-collapse collapse">
+											<div class="panel-body">
+
+												<xc:ccBitacora>
+													<xc:this.key><![CDATA[#{javascript:docComunicado.getItemValueString("IDDocumento")}]]></xc:this.key>
+												</xc:ccBitacora>
+
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+
+						</xp:panel>
+
+					</xp:panel>
+
+				</div>
+
+
+
+			</div>
+		</div>
+	</xp:panel>
+
+
+
+
+
+
+
+
+
+
+
+
+</xp:view>
