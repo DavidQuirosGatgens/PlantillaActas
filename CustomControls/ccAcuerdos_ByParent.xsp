@@ -25,7 +25,7 @@ if (docIDArray.length>0){
 }]]></xp:this.action>
 					</xp:eventHandler></xp:button>
 
-	<xp:viewPanel rows="30" id="viewPanel1" pageName="/xpAcuerdo.xsp">
+	<xp:viewPanel rows="30" id="viewPanel1" pageName="/Doc_Acuerdo.xsp">
 		<xp:this.facets>
 			<xp:pager partialRefresh="true" layout="Previous Group Next"
 				xp:key="headerPager" id="pager1">
