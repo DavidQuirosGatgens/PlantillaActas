@@ -2,7 +2,7 @@
 <xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:xe="http://www.ibm.com/xsp/coreex">
 	<xp:button value="Nuevo Tema" id="button1"><xp:this.rendered><![CDATA[#{javascript:context.getUser().getRoles().contains('[Secretaria]')}]]></xp:this.rendered><xp:eventHandler event="onclick" submit="true" refreshMode="complete">
 	<xp:this.action>
-		<xp:openPage name="/xpTema.xsp" target="newDocument"></xp:openPage>
+		<xp:openPage name="/Doc_Tema.xsp" target="newDocument"></xp:openPage>
 	</xp:this.action></xp:eventHandler></xp:button>
 
 	<xp:this.data>
@@ -47,7 +47,7 @@ if (docIDArray.length>0){
 					</xp:executeScript>
 				</xp:actionGroup>
 			</xp:this.action></xp:eventHandler></xp:button><xp:br></xp:br>
-	<xp:viewPanel rows="30" value="#{view1}" id="viewPanel1" pageName="/xpTema.xsp">
+	<xp:viewPanel rows="30" value="#{view1}" id="viewPanel1" pageName="/Doc_Tema.xsp">
 		<xp:this.facets>
 			<xp:pager partialRefresh="true" layout="Previous Group Next"
 				xp:key="headerPager" id="pager1">
@@ -64,7 +64,7 @@ if (docIDArray.length>0){
 			</xp:viewColumnHeader>
 		</xp:viewColumn>
 		<xp:viewColumn columnName="Titulo" id="viewColumn2"
-			style="width:598.0px" displayAs="link" openDocAsReadonly="true">
+			 displayAs="link" openDocAsReadonly="true">
 			<xp:viewColumnHeader value="Título"
 				id="viewColumnHeader2" style="font-weight:bold">
 			</xp:viewColumnHeader>
