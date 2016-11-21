@@ -77,44 +77,13 @@
 			</xe:dialogContent>
 			<xe:dialogButtonBar id="dialogButtonBar1">
 
-				<xp:button id="button7" value="ok">
+				<xp:button id="button7" value="Aceptar">
 					<xp:eventHandler event="onclick" submit="true"
 						refreshMode="partial" id="eventHandler10"
 						refreshId="panelComentarios">
 						<xp:this.action>
 
 							<xp:actionGroup>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 								<xp:executeScript>
 									<xp:this.script><![CDATA[#{javascript:try{
 	var document = database.createDocument();
@@ -160,7 +129,7 @@ c.hide()}]]></xp:this.action>
 		</xp:panel>
 	</xe:dialog>
 	<xp:br></xp:br>
-	<xp:panel style="width:801.0px" id="panelComentarios">
+	<xp:panel id="panelComentarios">
 		<xp:this.data>
 			<xp:dominoView var="viewComentarios"
 				viewName="(vComentarios)"
@@ -186,21 +155,18 @@ c.hide()}]]></xp:this.action>
 						style="font-weight:bold;color:rgb(0,0,64)">
 					</xp:label>
 				</xp:td>
-				<xp:td style="width:100px">
+				<xp:td>
 					<xp:label value="Comentario" id="label12"
 						style="font-weight:bold;color:rgb(0,0,64)">
 					</xp:label>
 				</xp:td>
-				<xp:td style="width:100.0px">
 
-				</xp:td>
 
 			</xp:tr>
 			<xp:tr>
 				<xp:td></xp:td>
 				<xp:td></xp:td>
 				<xp:td colspan="4">
-					<HR width="" align=""></HR>
 				</xp:td>
 
 
@@ -212,10 +178,10 @@ c.hide()}]]></xp:this.action>
 			<xp:div id="rowDataContainer">
 				<xp:span id="inform">
 
-					<xp:table border="1" cellpadding="2"
+					<xp:table cellpadding="2"
 						cellspacing="0">
 						<xp:tr>
-							<xp:td style="width:50.0px">
+							<xp:td>
 								<xp:link escape="true" id="link2"
 									text="Editar">
 									<xp:this.rendered><![CDATA[#{javascript:var doc:NotesDocument=database.getDocumentByID(comentario.getNoteID());
@@ -234,7 +200,7 @@ if(doc!=null){
 									</xp:eventHandler>
 								</xp:link>
 							</xp:td>
-							<xp:td style="width:50.0px">
+							<xp:td >
 								<xp:link escape="true" id="link1"
 									text="Eliminar">
 
@@ -292,7 +258,7 @@ if(docEliminar!=null){
 									style="font-weight:bold;font-size:8pt">
 								</xp:text>
 							</xp:td>
-							<xp:td style="width:350.0px">
+							<xp:td>
 								<xp:text escape="true"
 									id="computedField3" value="#{comentario.Comentarios}"
 									style="font-size:8pt">
@@ -379,6 +345,7 @@ c.hide()}]]></xp:this.script>
 														<xp:this.script><![CDATA[#{javascript:var c = getComponent("tooltipDialog2")
 c.hide()}]]></xp:this.script>
 													</xp:executeScript>
+										
 												</xp:actionGroup>
 											</xp:this.action>
 										</xp:eventHandler>
