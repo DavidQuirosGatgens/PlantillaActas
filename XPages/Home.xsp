@@ -124,7 +124,7 @@
 				<div class="panel panel-info">
 					<div class="panel-heading">
 						<xp:link escape="true" text="Búsqueda" id="link4"
-							value="/Home_Seguimientos.xsp">
+							value="/xpBusquedaAvanzada.xsp">
 						</xp:link>
 
 					</div>
