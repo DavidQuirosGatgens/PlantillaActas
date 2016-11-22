@@ -1,42 +1,13 @@
 <?xml version='1.0' encoding='utf-8'?>
 <note default='true' class='icon' xmlns='http://www.lotus.com/dxl' version='9.0'
  maintenanceversion='1.0' replicaid='0625806D0062AD0E'>
-<noteinfo noteid='11e' unid='A97E3BD1B08ECEB906257CA1007A841B' sequence='122'>
+<noteinfo noteid='11e' unid='A97E3BD1B08ECEB906257CA1007A841B' sequence='0'>
 <created><datetime>20140320T161812,11-06</datetime></created>
-<modified><datetime>20161118T102906,65-06</datetime></modified>
-<revised><datetime>20161118T102906,64-06</datetime></revised>
-<lastaccessed><datetime>20161118T102906,65-06</datetime></lastaccessed>
+<modified><datetime>20161118T151042,84-06</datetime></modified>
+<revised><datetime>20161118T150810,26-06</datetime></revised>
+<lastaccessed><datetime>20161118T151042,84-06</datetime></lastaccessed>
 <addedtofile><datetime>20161116T115749,77-06</datetime></addedtofile></noteinfo>
-<updatedby><name>CN=Franklin Gomez/O=CV3</name><name>CN=Johan Arroyo/O=CV3</name><name
->CN=CV3JOHAN/O=CV3</name><name>CN=Johan Arroyo/O=CV3</name><name>CN=CV3DEV01/OU=DEV/O=CV3</name><name
->CN=CV3JOHAN/O=CV3</name><name>CN=Johan Arroyo/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name
->CN=Elisa Núñez/OU=Tec/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name
->CN=Johan Arroyo/O=CV3</name><name>CN=CV3JOHAN/O=CV3</name><name>CN=Johan Arroyo/O=CV3</name><name
->CN=CV3SJO02/OU=SVR/O=CV3</name><name>CN=Johan Arroyo/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name
->CN=Milton Villegas/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name
->CN=Johan Arroyo/O=CV3</name><name>CN=CV3JOHAN/O=CV3</name><name>CN=Johan Arroyo/O=CV3</name><name
->CN=CV3JOHAN/O=CV3</name><name>CN=Johan Arroyo/O=CV3</name><name>CN=CV3SJO02/OU=SVR/O=CV3</name><name
->CN=Elisa Núñez/OU=Tec/O=CV3</name><name>CN=SJODOMDES/OU=SVR/O=Recope</name><name
->CN=Desarrollo Recope/OU=USR/O=Recope</name><name>CN=SJODOMDES/OU=SVR/O=Recope</name><name
->CN=Desarrollo Recope/OU=USR/O=Recope</name><name>CN=SJODOMDES/OU=SVR/O=Recope</name><name
->CN=Desarrollo Recope/OU=USR/O=Recope</name><name>CN=SJODOMDES/OU=SVR/O=Recope</name><name
->CN=Desarrollo Recope/OU=USR/O=Recope</name><name>CN=SJODOMDES/OU=SVR/O=Recope</name><name
->CN=Desarrollo Recope/OU=USR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
->CN=Desarrollo Recope/OU=USR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
->CN=Desarrollo Recope/OU=USR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
->CN=Desarrollo Recope/OU=USR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
->CN=Desarrollo Recope/OU=USR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
->CN=Desarrollo Recope/OU=USR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
->CN=Desarrollo Recope/OU=USR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
->CN=Desarrollo Recope/OU=USR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
->CN=Desarrollo Recope/OU=USR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
->CN=Desarrollo Recope/OU=USR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
->CN=Desarrollo Recope/OU=USR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
->CN=Desarrollo Recope/OU=USR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
->CN=Desarrollo Recope/OU=USR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
->CN=Desarrollo Recope/OU=USR/O=Recope</name><name>CN=AIXPROD01/OU=SVR/O=Recope</name><name
->CN=Desarrollo Recope/OU=USR/O=Recope</name><name>CN=localCristhian/OU=DEV/O=CV3</name></updatedby>
-<wassignedby><name>CN=localCristhian/OU=DEV/O=CV3</name></wassignedby>
+<updatedby><name>CN=David Quiros/O=CV3</name></updatedby>
 <item name='IconBitmap' summary='true' sign='true'>
 <rawitemdata type='6'>
 AiAgAQAA///////wD///4Af//8AD//4AAH/8AAA/+AAAH/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAA
@@ -56,7 +27,6 @@ AAAAUEECICABAAD/////+A4DgA==
 <item name='$ImageExpires' sign='true'><text>365</text></item>
 <item name='$JSExpires' sign='true'><text>365</text></item>
 <item name='$DBTheme' sign='true'><text>yellow.theme</text></item>
-<item name='$DefaultXPage' sign='true'><text>vxpOrdenes.xsp</text></item>
 <item name='$DefaultFrameset' sign='true'><text>SistemaActas</text></item>
 <item name='$DefaultClientXPage' sign='true'><text>Principal.xsp</text></item>
 <item name='$LaunchXPageRunOnServer' sign='true'><text>0</text></item>
@@ -67,7 +37,8 @@ AAAAUEECICABAAD/////+A4DgA==
 <item name='$PIRCRefreshModTime' sign='true'><datetime>20160622T082018,43-06</datetime></item>
 <item name='$TemplateModTime' sign='true'><datetime>20160614T161428,72-06</datetime></item>
 <item name='$TemplateFileName' sign='true'><text>c:\Program Files (x86)\IBM\Notes\Data\PlantillaActas\20160614_ControldeActasRCP.ntf</text></item>
-<item name='$Daos' sign='true'><text>0</text></item>
 <item name='$TITLE'><text>20161116_Plantilla_Control Actas Recope
-Discussion</text></item></note>
+Discussion</text></item>
+<item name='$DefaultXPage'><text>Home.xsp</text></item>
+<item name='$Daos'><text>0</text></item></note>
 

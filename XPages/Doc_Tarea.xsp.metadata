@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?><note class="form" maintenanceversion="1.0" replicaid="0625806D0062AD0E" version="9.0" xmlns="http://www.lotus.com/dxl">
-<noteinfo noteid="1aae" sequence="2" unid="3CDAD61DBA4FE78E062580720071AF7B">
+<noteinfo noteid="1aae" sequence="6" unid="3CDAD61DBA4FE78E062580720071AF7B">
 <created><datetime>20161121T144144,91-06</datetime></created>
-<modified><datetime>20161121T144144,94-06</datetime></modified>
-<revised><datetime>20161121T144144,93-06</datetime></revised>
-<lastaccessed><datetime>20161121T144144,94-06</datetime></lastaccessed>
+<modified><datetime>20161121T144216,50-06</datetime></modified>
+<revised><datetime>20161121T144216,49-06</datetime></revised>
+<lastaccessed><datetime>20161121T144216,50-06</datetime></lastaccessed>
 <addedtofile><datetime>20161121T144144,92-06</datetime></addedtofile></noteinfo>
 <updatedby><name>CN=David Quiros/O=CV3</name></updatedby>
 <wassignedby><name>CN=David Quiros/O=CV3</name></wassignedby>
@@ -11,4 +11,10 @@
 <item name="$Flags"><text>gC~4K</text></item>
 
 
-<item name="$FileNames" sign="true"><text>Doc_Tarea.xsp</text></item></note>
+<item name="$FileNames" sign="true"><text>Doc_Tarea.xsp</text></item>
+<item name="$DesignerVersion"><text>8.5</text></item>
+
+
+
+
+</note>
