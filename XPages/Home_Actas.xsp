@@ -14,5 +14,5 @@
 
 
 
-	<xc:cc_MenuVistasActas><xp:this.facets><xp:image url="/OrdenDia.png" id="image1" xp:key="facet_1"></xp:image></xp:this.facets></xc:cc_MenuVistasActas>
+	<xc:cc_MenuVistasActasPreliminar><xp:this.facets><xp:image url="/OrdenDia.png" id="image1" xp:key="facet_1"></xp:image></xp:this.facets></xc:cc_MenuVistasActasPreliminar>
 	<xc:ccActasDataView></xc:ccActasDataView></xp:view>

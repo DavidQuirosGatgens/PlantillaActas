@@ -69,19 +69,37 @@
 
 			</div>
 
-			<!--Página principal Actas  -->
-
+			<!--Página principal Actas Preliminares -->
 			<div class="col-sm-4">
 
 				<div class="panel panel-info">
 					<div class="panel-heading">
-						<xp:link escape="true" text="Actas" id="link2" value="/Home_Actas.xsp">
+						<xp:link escape="true" text="Actas Preliminares" id="link6" value="/Home_Actas.xsp">
 						</xp:link>
 
 
 					</div>
-					<div class="panel-body">Completa las actas que han sido generadas y
+					<div class="panel-body">Complete las Actas en Borrador que han sido generadas y
 						siga el flujo de trabajo hasta dejar las actas en firme.</div>
+				</div>
+
+
+			</div>
+
+
+			<!--Página principal Actas En Libros -->
+			
+			<div class="col-sm-4">
+
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<xp:link escape="true" text="Actas en Libros" id="link2" value="/Home_Actas_Libros.xsp">
+						</xp:link>
+
+
+					</div>
+					<div class="panel-body">Consulte todas las Actas que han sido generadas y que se encuentran 
+											en Libros y Libros por Año.</div>
 				</div>
 
 
