@@ -1,0 +1,30 @@
+
+.imgCursorPointer{
+	 cursor: pointer;
+}
+
+
+.badgeColor {
+	background-color: #337AB7 !important;
+}
+
+
+.tableNoPadding td{
+	padding-left: 4px !important;
+	padding-right: 4px !important;
+	padding-top: 5px !important;
+	padding-bottom: 5px !important;
+}
+
+
+.btn-NoBackground{
+
+	background-image: none !important;
+}
+
+.modal_Extension{
+  display: block !important;
+  
+}
+
+

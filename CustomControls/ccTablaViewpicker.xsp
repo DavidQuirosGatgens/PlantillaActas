@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xp:view xmlns:xp="http://www.ibm.com/xsp/core" xmlns:xe="http://www.ibm.com/xsp/coreex">
+
+
+
+
+	<xp:button value="..." id="BntBuscar">
+
+
+		<xp:eventHandler event="onclick" submit="true"
+			refreshMode="partial" refreshId="PanelDialog">
+
+
+			<xp:this.action>
+				<xp:actionGroup>
+
+					<xp:executeScript>
+						<xp:this.script><![CDATA[#{javascript:var c = getComponent("DialogTablaTemas");
+c.show();}]]></xp:this.script>
+					</xp:executeScript>
+				</xp:actionGroup>
+			</xp:this.action>
+		</xp:eventHandler>
+	</xp:button>
+	<xp:panel id="PanelDialog">
+
+
+		<xe:dialog title="Temas" id="DialogTablaTemas" tooltip="Temas"
+			styleClass="modal-dialog">
+
+			<xp:table id="table1">
+				<xp:tr>
+					<xp:td>
+						<xp:inputText id="TextoBuscar">
+
+							<xp:eventHandler event="onkeypress" submit="false">
+								<xp:this.script><![CDATA[if (typeof thisEvent == 'undefined' && window.event) { thisEvent = window.event; }
+if (thisEvent.keyCode == dojo.keys.ENTER)
+{
+    dojo.byId("#{id:BtnBuscar}").click();
+    thisEvent.preventDefault();
+} ]]></xp:this.script>
+							</xp:eventHandler>
+						</xp:inputText>
+					</xp:td>
+					<xp:td>
+						<xp:button value="Buscar" id="BtnBuscar">
+							<xp:eventHandler event="onclick" submit="true"
+								refreshMode="complete">
+
+								<xp:this.script>
+
+									<xp:scriptGroup>
+
+
+
+									</xp:scriptGroup>
+								</xp:this.script>
+								<xp:this.action><![CDATA[#{javascript:viewScope.strBusqueda=getComponent("TextoBuscar").getValue();}]]></xp:this.action>
+							</xp:eventHandler>
+						</xp:button>
+
+
+						&#160;
+					</xp:td>
+				</xp:tr>
+				</xp:table>
+			<xp:panel styleClass="panel panel-default">
+
+
+				<xp:this.data>
+					<xp:dominoView var="vTemas" viewName="vTemasDialog"
+						search="#{javascript:viewScope.strBusqueda}">
+
+					</xp:dominoView>
+
+				</xp:this.data>
+				<xp:text escape="true" id="Buscar"
+					value="#{javascript:viewScope.strBusqueda}" rendered="false">
+				</xp:text>
+				<xp:pager layout="Previous Group Next" partialRefresh="true"
+					id="pager1" for="repeat1">
+				</xp:pager>
+				<xp:repeat id="repeat1" rows="10" value="#{vTemas}" var="row">
+
+					<xp:table styleClass="table">
+
+						<xp:tr styleClass="row">
+							<xp:td style="padding-right:0.0px;width:2%;padding-left:0.0px">
+								<xp:button id="button1"
+									icon="/agregar.png" type="submit">
+
+
+									<xp:eventHandler event="onclick"
+										submit="true" refreshMode="complete">
+										<xp:this.action>
+
+											<xp:actionGroup>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+												<xp:executeScript>
+													<xp:this.script><![CDATA[#{javascript:var docIter:NotesDocument= database.getDocumentByID(row.getNoteID());
+if(docIter!=null){
+	document1.replaceItemValue("SesionReferencia",docIter.getItemValueString("NumerOrden"));
+	document1.replaceItemValue("ArticuloReferencia",docIter.getItemValueString("NumeroTema"));
+	document1.replaceItemValue("IDTemaReferencia",docIter.getItemValueString("IDDocumento"));
+	currentDocument.save();
+}}]]></xp:this.script>
+												</xp:executeScript>
+												<xp:openPage
+													name="/Doc_Tema.xsp" target="editDocument"
+													documentId="#{javascript:currentDocument.getNoteID()}">
+												</xp:openPage>
+											</xp:actionGroup>
+										</xp:this.action>
+									</xp:eventHandler>
+								</xp:button>
+							</xp:td>
+							<xp:td style="text-align:left;font-size:8pt">
+								<xp:text escape="true" id="computedField1" value="#{row.Titulo}"
+									style="text-align:left;font-size:8pt">
+								</xp:text>
+							&#160;&#160;&#160;&#160;&#160;&#160;
+								<xp:text escape="true"
+									id="computedField4">
+								<xp:this.value><![CDATA[#{javascript:var docIter:NotesDocument= database.getDocumentByID(row.getNoteID());
+docIter.getItemValueString("NumerOrden");}]]></xp:this.value></xp:text></xp:td>
+							<xp:td style="width:15%;font-size:8pt">
+								<xp:text escape="true" id="computedField2" value="#{row.NumerOrden}"
+									style="font-size:8pt">
+								</xp:text>
+							</xp:td>
+							<xp:td style="width:10%;font-size:8pt">
+								<xp:text escape="true" id="computedField3" value="#{row.NumeroTema}"
+									style="font-size:8pt">
+								</xp:text>
+							</xp:td>
+						</xp:tr>
+					</xp:table>
+				</xp:repeat>
+			</xp:panel>
+		</xe:dialog>
+	</xp:panel>
+
+
+</xp:view>
